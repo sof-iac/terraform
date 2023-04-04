@@ -1,5 +1,5 @@
 module "vpc" {
-  source = "terraform-aws-modules/vpc/aws"
+  source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.19.0"
 
   name = "VPC_TESTE"
@@ -24,7 +24,7 @@ module "vpc" {
 
 
 module "nat" {
-  source = "int128/nat-instance/aws"
+  source  = "int128/nat-instance/aws"
   version = "~> 2.1.0"
 
   enabled                     = true
@@ -35,6 +35,8 @@ module "nat" {
   private_route_table_ids     = module.vpc.private_route_table_ids
   use_spot_instance           = false
   instance_types              = ["t3.small"]
+  image_id                    = "ami-05240a8eacac22db2"
+
   tags = {
     Terraform   = "true"
     Environment = "sof-aws-teste"
