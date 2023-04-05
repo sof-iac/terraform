@@ -61,9 +61,9 @@ module "ec2_instance" {
 
   ami                    = "ami-05240a8eacac22db2"
   instance_type          = "t3.small"
-  # key_name               = "user1"
+  key_name               = "user1"
   monitoring             = true
-  vpc_security_group_ids = ["sg-08b8a4807c43ecba4"]
+  vpc_security_group_ids = ["sg-12345678"]
   subnet_id              = module.vpc.private_subnets[0]
 
   tags = {
