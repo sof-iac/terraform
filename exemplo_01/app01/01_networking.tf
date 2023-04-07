@@ -22,6 +22,15 @@ module "vpc" {
   }
 }
 
+# imagem baseada na ultima amzn2, com gp3
+data "aws_ami" "image" {
+  most_recent = true
+  owners      = ["767969776655"]
+  filter {
+    name   = "name"
+    values = ["amzn2-gp3"]
+  }
+}
 
 module "nat" {
   source  = "int128/nat-instance/aws"
@@ -35,7 +44,8 @@ module "nat" {
   private_route_table_ids     = module.vpc.private_route_table_ids
   use_spot_instance           = false
   instance_types              = ["t3.small"]
-  image_id                    = "ami-05240a8eacac22db2"
+  image_id                    = data.aws_ami.image.id
+  key_name                    = "tf-teste"
 
   tags = {
     Terraform   = "true"
@@ -47,26 +57,6 @@ resource "aws_eip" "nat" {
   network_interface = module.nat.eni_id
   tags = {
     Name        = "nat-instance-sof"
-    Terraform   = "true"
-    Environment = "sof-aws-teste"
-  }
-}
-
-
-module "ec2_instance" {
-  source  = "terraform-aws-modules/ec2-instance/aws"
-  version = "~> 3.0"
-
-  name = "tf-teste-instance"
-
-  ami                    = "ami-05240a8eacac22db2"
-  instance_type          = "t3.small"
-  key_name               = "user1"
-  monitoring             = true
-  vpc_security_group_ids = ["sg-12345678"]
-  subnet_id              = module.vpc.private_subnets[0]
-
-  tags = {
     Terraform   = "true"
     Environment = "sof-aws-teste"
   }
