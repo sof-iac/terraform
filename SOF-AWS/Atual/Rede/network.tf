@@ -10,8 +10,8 @@ module "vpn_gateway" {
   vpc_subnet_route_table_count = length(module.vpc.private_route_table_ids)
   vpc_subnet_route_table_ids   = module.vpc.private_route_table_ids
 
-  #vpn_connection_static_routes_only         = true
-  #vpn_connection_static_routes_destinations = ["10.209.68.0/24", "172.27.1.0/24", "172.27.3.0/24", "192.168.20.0/24", "192.168.22.0/24", "192.168.250.0/23"]
+  vpn_connection_static_routes_only         = true
+  vpn_connection_static_routes_destinations = ["10.209.68.0/24", "172.27.1.0/24", "172.27.3.0/24", "192.168.20.0/24", "192.168.22.0/24", "192.168.250.0/23"]
 
   tags = {
     "Name"        = "VPN_AWS_SOF"
@@ -41,8 +41,6 @@ module "vpc" {
   propagate_public_route_tables_vgw = true
   
   manage_default_route_table           = true
-  default_route_table_name             = "tab_rotas_subredes_privadas"
-  default_route_table_propagating_vgws = [module.vpc.vgw_id]
   
   create_igw = true
 
@@ -64,8 +62,8 @@ module "vpc" {
 
   customer_gateways = {
     sof-onpremise = {
-      bgp_asn    = 65000
-      ip_address = "177.15.130.226"
+      bgp_asn     = 65000
+      ip_address  = "177.15.130.226"
     }
   }
 
@@ -79,4 +77,44 @@ module "vpc" {
     "Terraform"   = "true"
     "Environment" = "sof-aws-prod"
   }
+}
+
+module "ec2_instance" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+  version = "~> 3.0"
+
+  name = "AWS_NATGW01"
+
+  ami                    = "ami-047992932eb72e310"
+  instance_type          = "t3.small"
+  key_name               = "user_svc_aws_inicial"
+  ebs_optimized          = true
+  vpc_security_group_ids = ["sg-04b9eb53336ae176b"]
+  subnet_id              = module.vpc.public_subnets[0]
+  source_dest_check      = false
+  
+  tags = {
+    Terraform   = "true"
+    Environment = "sof-aws-prod"
+  }
+}
+
+resource "aws_eip" "natgw_eip" {
+  network_interface = module.ec2_instance.primary_network_interface_id
+  vpc      = true
+
+  tags = {
+    Name        = "eip_aws_natgw01"
+    Terraform   = "true"
+    Environment = "sof-aws-prod"
+  }
+}
+
+resource "aws_route" "natgw_routes" {
+
+  route_table_id         = module.vpc.private_route_table_ids[count.index]
+  destination_cidr_block = "0.0.0.0/0"
+  #instance_id            = "i-028d4db9ddfc774dd"
+  network_interface_id   = "eni-056b97e553dfc448f"
+  count                  = length(module.vpc.private_route_table_ids)
 }
