@@ -1,63 +1,119 @@
 module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.19.0"
+  source = "terraform-aws-modules/vpc/aws"
 
-  name = "VPC_TESTE"
-  cidr = "10.0.0.0/16"
+  count = length(var.vpc-vpn-sof)
 
-  azs = ["${var.aws_region}a", "${var.aws_region}b", "${var.aws_region}c"]
+  name                 = var.vpc-vpn-sof[count.index].vpc-name
+  cidr                 = var.vpc-vpn-sof[count.index].vpc-cidr
+  enable_dns_hostnames = true
 
-  private_subnets      = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  private_subnet_names = ["Teste-Servico", "Teste-Outro-Servico", "Teste-terceiro-servico"]
+  vpc_tags = {"Name" = var.vpc-vpn-sof[count.index].vpc-name}
 
-  public_subnets      = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
-  public_subnet_names = ["DMZ01", "DMZ02", "DMZ03"]
+  azs                                = var.vpc-vpn-sof[count.index].vpc-azs
+  private_subnets                    = var.vpc-vpn-sof[count.index].private-subnets
+  private_subnet_names               = var.vpc-vpn-sof[count.index].private-subnet-names
+  propagate_private_route_tables_vgw = true
+
+  public_subnets                    = var.vpc-vpn-sof[count.index].public-subnets
+  public_subnet_names               = var.vpc-vpn-sof[count.index].public-subnet-names
+  propagate_public_route_tables_vgw = true
+  
+  manage_default_route_table = true
+  
+  create_igw = true
+
+  igw_tags = {"Name" = var.vpc-vpn-sof[count.index].igw-name}
 
   enable_nat_gateway = false
-  enable_vpn_gateway = false
+
+  enable_vpn_gateway = true
+
+  vpn_gateway_tags = {"Name" = var.vpc-vpn-sof[count.index].vpg-name}
+
+  customer_gateways = {
+    (var.cgw-sof.cgw-name) = {
+      bgp_asn     = var.cgw-sof.bgp-asn
+      ip_address  = var.cgw-sof.ip
+    }
+  }
+
+  customer_gateway_tags = {
+    "Name"        = var.cgw-sof.cgw-name
+    "Environment" = var.cgw-sof.env
+    "Terraform"   = "true"    
+  }
 
   tags = {
-    Terraform   = "true"
-    Environment = "sof-aws-teste"
+    "Environment" = var.vpc-vpn-sof[count.index].env
+    "Terraform"   = "true"
   }
 }
 
-# imagem baseada na ultima amzn2, com gp3
-data "aws_ami" "image" {
-  most_recent = true
-  owners      = ["767969776655"]
-  filter {
-    name   = "name"
-    values = ["amzn2-gp3"]
+module "vpn_gateway" {
+  source  = "terraform-aws-modules/vpn-gateway/aws"
+  version = "~> 2.0"
+
+  count = length(var.vpc-vpn-sof)
+
+  vpc_id              = module.vpc[count.index].vpc_id
+  vpn_gateway_id      = module.vpc[count.index].vgw_id
+  customer_gateway_id = module.vpc[count.index].cgw_ids[0]
+
+  vpc_subnet_route_table_count = length(module.vpc[count.index].private_route_table_ids)
+  vpc_subnet_route_table_ids   = module.vpc[count.index].private_route_table_ids
+
+  vpn_connection_static_routes_only         = true
+  vpn_connection_static_routes_destinations = var.vpc-vpn-sof[count.index].vpn-routes
+
+  tags = {
+    "Name"        = var.vpc-vpn-sof[count.index].vpn-name
+    "Environment" = var.vpc-vpn-sof[count.index].env
+    "Terraform"   = "true"    
   }
 }
 
-module "nat" {
-  source  = "int128/nat-instance/aws"
-  version = "~> 2.1.0"
+module "ec2_instance" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+  version = "~> 3.0"
 
-  enabled                     = true
-  name                        = "nat-instance"
-  vpc_id                      = module.vpc.vpc_id
-  public_subnet               = module.vpc.public_subnets[0]
-  private_subnets_cidr_blocks = module.vpc.private_subnets_cidr_blocks
-  private_route_table_ids     = module.vpc.private_route_table_ids
-  use_spot_instance           = false
-  instance_types              = ["t3.small"]
-  image_id                    = data.aws_ami.image.id
-  key_name                    = "tf-teste"
+  count = length(var.natgw-instance-sof)
 
+  name = var.natgw-instance-sof[count.index].instance-name
+
+  ami                    = var.natgw-instance-sof[count.index].ami
+  instance_type          = var.natgw-instance-sof[count.index].type
+  key_name               = var.natgw-instance-sof[count.index].access-key-name
+  ebs_optimized          = true
+  vpc_security_group_ids = var.natgw-instance-sof[count.index].vpc-security-groups
+  subnet_id              = module.vpc[count.index].public_subnets[0]
+  source_dest_check      = false    #Deve ser setado para false para NAT
+  
   tags = {
+    Environment = var.natgw-instance-sof[count.index].env
     Terraform   = "true"
-    Environment = "sof-aws-teste"
   }
 }
 
-resource "aws_eip" "nat" {
-  network_interface = module.nat.eni_id
+resource "aws_eip" "natgw_eip" {
+
+  count = length(module.ec2_instance)
+
+  network_interface = module.ec2_instance[count.index].primary_network_interface_id
+  vpc      = true
+
   tags = {
-    Name        = "nat-instance-sof"
-    Terraform   = "true"
-    Environment = "sof-aws-teste"
+    Name        = "eip_${var.natgw-instance-sof[count.index].instance-name}"
+    Environment = var.natgw-instance-sof[count.index].env
+    Terraform   = "true"    
   }
+}
+
+resource "aws_route" "natgw_routes" {
+
+  count = length(module.vpc[0].private_route_table_ids)
+
+  route_table_id         = module.vpc[0].private_route_table_ids[count.index]
+  destination_cidr_block = "0.0.0.0/0"
+  network_interface_id   = module.ec2_instance[0].primary_network_interface_id
+  
 }
