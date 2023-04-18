@@ -33,3 +33,5 @@ sof-aws/rede/.terraform/modules/zones/modules/zones/README.md
 sof-aws/rede/.terraform/modules/zones/modules/zones/variables.tf
 sof-aws/rede/.terraform/modules/zones/modules/zones/versions.tf
 sof-aws/rede/.terraform/providers/registry.terraform.io/hashicorp/aws/4.61.0/windows_amd64/terraform-provider-aws_v4.61.0_x5.exe
+sof-aws/hosts/.terraform/modules/modules.json
+sof-aws/hosts/.terraform/providers/registry.terraform.io/hashicorp/aws/4.61.0/windows_amd64/terraform-provider-aws_v4.61.0_x5.exe
