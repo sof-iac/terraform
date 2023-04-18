@@ -89,8 +89,8 @@ module "ec2_instance" {
   source_dest_check      = false    #Deve ser setado para false para NAT
   
   tags = {
-    Environment = var.natgw-instance-sof[count.index].env
-    Terraform   = "true"
+    "Environment" = var.natgw-instance-sof[count.index].env
+    "Terraform"   = "true"
   }
 }
 
@@ -115,5 +115,66 @@ resource "aws_route" "natgw_routes" {
   route_table_id         = module.vpc[0].private_route_table_ids[count.index]
   destination_cidr_block = "0.0.0.0/0"
   network_interface_id   = module.ec2_instance[0].primary_network_interface_id
-  
+}
+
+ module "zones" {
+  source  = "terraform-aws-modules/route53/aws//modules/zones"
+  version = "~> 2.0"
+
+  zones = {
+    "aws.sof.remoto" = {
+      comment = "Managed by Terraform"
+
+       vpc = [{
+        vpc_id     = "vpc-036d6cf078bef8017"
+        vpc_region = "sa-east-1"
+      }]
+
+      tags = {
+        "Name"        = "aws.sof.remoto"
+        "Environment" = "sof-aws-prod"
+        "Type"        = "private.domain"
+      }
+    }
+  }
+
+  tags = {
+    "Terraform"   = "true"
+  }
+}
+
+ module "records" {
+  source  = "terraform-aws-modules/route53/aws//modules/records"
+  version = "~> 2.0"
+
+  zone_id = values(module.zones.route53_zone_zone_id)[0]
+
+  records = [
+    {
+      name    = ""
+      type    = "NS"
+      ttl     = 172800
+      records = ["ns-0.awsdns-00.com.", "ns-1024.awsdns-00.org.", "ns-1536.awsdns-00.co.uk.", "ns-512.awsdns-00.net."]
+    },
+    {
+      name    = ""
+      type    = "SOA"
+      ttl     = 900
+      records = ["ns-1536.awsdns-00.co.uk. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400"]
+    },
+    {
+      name    = "aws_natgw01"
+      type    = "A"
+      ttl     = 300
+      records = ["10.100.254.166"]
+    },
+    {
+      name    = "aws_pshi01"
+      type    = "A"
+      ttl     = 300
+      records = ["10.100.67.240"]
+    }
+  ]
+
+  depends_on = [module.zones]
 }
