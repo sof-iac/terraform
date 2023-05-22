@@ -13,7 +13,7 @@ data "vsphere_network" "PG_Atlas_Servico_Kubernets" {
 }
 resource "vsphere_virtual_machine" "TESTE-TF" {
   count                      = 1
-  name                       = "${TESTE-TF.name_new_vm}-${count.index + 1}"
+  name                       = TESTE-TF
   resource_pool_id           = data.vsphere_resource_pool.pool.id
   datastore_id               = data.vsphere_datastore.datastore.id
   force_power_off            = true
