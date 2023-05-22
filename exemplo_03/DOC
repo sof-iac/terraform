@@ -1,0 +1,6 @@
+Resources
+- vsphere_datacenter: Nome do datacenter que foi configurado dentro do vCenter/vSphere, por padrão o nome que vem configurado é ha-datacenter, esse informação você consegue na cli do ESXi.
+- vsphere_datastore: storage/compartilhamento onde serão provisionados os arquivos e discos das máquinas virtuais que serão criadas.
+- vsphere_resource_pool: Pool de recursos criado para as máquinas virtuais.
+- vsphere_network: Nome da network que as máquinas virtuais usarão para ter comunição com a rede interna e externa do seu datacenter.
+- vsphere_virtual_machine: Cria de fato as máquinas virtuais, aqui fica especificado como as máquinas serão criadas. Os pontos relevantes nesse resource é a quantidade de máquinas, nome, quantidade de vCPU, memória, disco, network utilizada pela vm e o tipo de instalação que será utilizado para criar a máquina, nesse exemplo estou utilizando uma ISO customizada e automatizada.
