@@ -1,42 +1,36 @@
 # Build New VM
-data "vsphere_datacenter" "datacenter" {
-  name = var.data_center
+data "vsphere_datacenter" "SOF" {
+  name = SOF
 }
-data "vsphere_datastore" "datastore" {
-  name          = var.data_store
+data "vsphere_datastore" "Storage_IBM" {
+  name          = Storage_IBM
   datacenter_id = data.vsphere_datacenter.datacenter.id
 }
-data "vsphere_resource_pool" "pool" {}
-data "vsphere_network" "networking" {
-  name          = var.mgmt_lan
+data "vsphere_resource_pool" "DevOps_Atreus_Teste" {}
+data "vsphere_network" "PG_Atlas_Servico_Kubernets" {
+  name          = PG_Atlas_Servico_Kubernets.mgmt_lan
   datacenter_id = data.vsphere_datacenter.datacenter.id
 }
-resource "vsphere_virtual_machine" "virtualmachine" {
-  count                      = var.vm_count
-  name                       = "${var.name_new_vm}-${count.index + 1}"
+resource "vsphere_virtual_machine" "TESTE-TF" {
+  count                      = 1
+  name                       = "${TESTE-TF.name_new_vm}-${count.index + 1}"
   resource_pool_id           = data.vsphere_resource_pool.pool.id
   datastore_id               = data.vsphere_datastore.datastore.id
   force_power_off            = true
   shutdown_wait_timeout      = 1
-  num_cpus                   = var.num_cpus
-  memory                     = var.num_mem
+  num_cpus                   = 1
+  memory                     = 2048
   wait_for_guest_net_timeout = 0
-  guest_id                   = var.guest_id
+  guest_id                   = Ubuntu Linux
   nested_hv_enabled          = true
   
   network_interface {
     network_id   = data.vsphere_network.networking.id
-    adapter_type = var.net_adapter_type
+    adapter_type = vmxnet3
   }
   
-  cdrom {
-    datastore_id = data.vsphere_datastore.datastore.id
-    path         = var.custom_iso_path
-  }
-  disk {
-    size             = var.disk_size
-    label            = "first-disk.vmdk"
-    eagerly_scrub    = false
-    thin_provisioned = true
-  }
+data "vsphere_virtual_machine" "Template_Ubuntu_2204_Server_LTS" {
+  name          = "Template_Ubuntu_2204_Server_LTS"
+  datacenter_id = data.vsphere_datacenter.datacenter.id
+}
 }
