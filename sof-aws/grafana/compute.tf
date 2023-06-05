@@ -52,6 +52,16 @@ resource "aws_instance" "mtc_main" {
 #   }
 # }
 
+resource "null_resource" "grafana_install" {
+  depends_on = [aws_instance.mtc_main]
+  provisioner "local-exec" {
+    command = "ansible-playbook -i aws_hosts --key-file /home/ubuntu/.ssh/chavekey playbooks/grafana.yml"
+  }
+}
+output "grafana_access" {
+    value = {for i in aws_instance.mtc_main[*] : i.tags.Name => "${i.public_ip}:3000"}
+}
+
 output "instance_ips" {
     value = {for i in aws_instance.mtc_main[*] : i.tags.Name => "${i.public_ip}:3000"}
 }
