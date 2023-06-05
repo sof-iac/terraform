@@ -45,6 +45,8 @@ resource "vsphere_virtual_machine" "vm" {
 
   network_interface {
     network_id = "${data.vsphere_network.network.id}"
+    ipv4_address = "192.168.30.252"
+    ipv4_netmask = "255.255.255.0"
   }
 
   dynamic "disk" {
