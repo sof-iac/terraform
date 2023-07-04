@@ -1,1 +1,0 @@
-### Exemplo de uso de Ansible e terraform
