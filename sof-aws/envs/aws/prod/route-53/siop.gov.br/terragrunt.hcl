@@ -20,13 +20,13 @@ inputs = {
   }
 
   records = [{
-    name    = "www.siop.gov.br"
+    name    = "www"
     type    = "A"
     ttl     = 300
     records = ["177.15.128.40"]
   },
   {
-    name    = "webservice.siop.gov.br"
+    name    = "webservice"
     type    = "A"
     ttl     = 300
     records = ["177.15.128.41"]

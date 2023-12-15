@@ -20,13 +20,13 @@ inputs = {
   }
 
   records = [{
-    name    = "www.orcamento.gov.br"
+    name    = "www"
     type    = "A"
     ttl     = 300
-    records = ["177.15.128.42"]
+    records = ["189.9.7.53"]
   },
   {
-    name    = "www2.orcamento.gov.br"
+    name    = "www2"
     type    = "A"
     ttl     = 300
     records = ["177.15.128.44"]
