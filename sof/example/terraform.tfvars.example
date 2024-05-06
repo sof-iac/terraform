@@ -1,0 +1,12 @@
+## VCENTER INFO ##
+vsphere_server   = "pvcn01.sof.intra"
+vsphere_user     = ""
+vsphere_password = ""
+datacenter       = "SOF"
+cluster          = "Blade_Atreus"
+datastore        = "SP_A05"
+
+## VM INFO ##
+vm_user          = ""
+vm_pass          = ""
+ssh_key          = ""

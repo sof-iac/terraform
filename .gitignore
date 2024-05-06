@@ -1,7 +1,14 @@
 .terraform.*
 .terraform/*
 *.tfstate*
-*.tfvars*
+*.tfvars
+*.swp
+.terraform.lock.hcl
+**/.envrc
+**/.DS_store
+**/.terraform
+sof/terraform.tfvars
+
 sof-aws/rede/.terraform/modules/modules.json
 sof-aws/rede/.terraform/modules/zones/CHANGELOG.md
 sof-aws/rede/.terraform/modules/zones/LICENSE
