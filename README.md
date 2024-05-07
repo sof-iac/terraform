@@ -16,7 +16,7 @@ Use arquivos de estado remotos para manter o estado do seu datacenter. Isso perm
 ### Workspaces: 
 Use workspaces do Terraform para separar o estado de diferentes ambientes. Por exemplo, você pode ter um workspace para dev, outro para staging e outro para prod.
 ### Planos de Execução: 
-Sempre execute terraform plan antes de terraform apply para verificar as alterações que serão feitas.
+Sempre execute terraform plan antes de terraform apply para verificar as alterações que serão feitas. Lembrando que estamos utilizando Terragrunt uma camada acima
 ### Controle de Versão: 
 Use um sistema de controle de versão como o Git para rastrear as alterações no seu código Terraform. Isso permite que você veja quem fez o quê e quando, e também permite que você reverta para uma versão anterior se algo der errado.
 
