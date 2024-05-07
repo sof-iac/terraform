@@ -19,6 +19,26 @@ Use workspaces do Terraform para separar o estado de diferentes ambientes. Por e
 Sempre execute terraform plan antes de terraform apply para verificar as alterações que serão feitas.
 ### Controle de Versão: 
 Use um sistema de controle de versão como o Git para rastrear as alterações no seu código Terraform. Isso permite que você veja quem fez o quê e quando, e também permite que você reverta para uma versão anterior se algo der errado.
+
+### Exemplo da estrutura
+.
+├── main.tf
+├── variables.tf
+├── outputs.tf
+└── env
+    ├── dev
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
+    ├── staging
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
+    └── prod
+        ├── main.tf
+        ├── variables.tf
+        └── outputs.tf
+
 ### Link para baixar a release a integrar no VRA e a chave SHA
 https://releases.hashicorp.com/terraform/
 
