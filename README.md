@@ -1,4 +1,9 @@
 ## Terraform
+### Estrutura de trabalho
+```
+1 - modules
+2 - sof-aws
+```
 ### Link para baixar a release a integrar no VRA e a chave SHA
 https://releases.hashicorp.com/terraform/
 
