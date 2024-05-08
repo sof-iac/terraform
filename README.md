@@ -22,11 +22,13 @@ Use um sistema de controle de versão como o Git para rastrear as alterações n
 
 ### Exemplo da estrutura
 ```
-.
-├── main.tf
-├── variables.tf
-├── outputs.tf
-└── env
+modules
+    ubuntu
+    ├── main.tf
+    ├── variables.tf
+    ├── outputs.tf
+aws
+├── env
     ├── dev
     │   ├── main.tf
     │   ├── variables.tf
@@ -39,6 +41,34 @@ Use um sistema de controle de versão como o Git para rastrear as alterações n
         ├── main.tf
         ├── variables.tf
         └── outputs.tf
+blocok
+├── env
+    ├── dev
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
+    ├── staging
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
+    └── prod
+        ├── main.tf
+        ├── variables.tf
+        └── outputs.tf           
+sof
+├── env
+    ├── dev
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
+    ├── staging
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
+    └── prod
+        ├── main.tf
+        ├── variables.tf
+        └── outputs.tf        
 ```
 
 ### Link para baixar a release a integrar no VRA e a chave SHA
