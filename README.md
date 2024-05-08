@@ -2,7 +2,9 @@
 ### Estrutura de trabalho
 ```
 1 - modules
-2 - sof-aws
+2 - aws
+3 - blocok
+4 - sof
 ```
 ## Boas práticas
 ### Estrutura de Diretórios: 
