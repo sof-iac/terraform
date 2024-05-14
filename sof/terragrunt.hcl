@@ -2,9 +2,17 @@ generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
+variable "vsphere_user" {
+  description = "Usuário do vCenter"
+}
+
+variable "vsphere_password" {
+  description = "Senha do vCenter"
+  sensitive   = true
+}  
 provider "vsphere" {
-  user           = ""
-  password       = ""
+  user           = var.vsphere_user
+  password       = var.vsphere_password
   vsphere_server = "pvcn01.sof.intra"
 
   # if you have a self-signed cert
