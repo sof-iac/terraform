@@ -130,6 +130,28 @@ Além disso, você pode especificar o local do arquivo tfstate ao executar os co
 terraform apply -state=/data/terraform.tfstate
 ```
 
+## Terraform: Módulos, Configuração DRY e Imutabilidade
+
+### Módulos no Terraform
+
+Os **módulos** no Terraform são usados para criar blocos de código reutilizáveis que podem ser usados em várias partes do seu código Terraform. Eles ajudam a organizar o código, tornando-o mais legível e manutenível.
+
+### Configuração DRY
+
+DRY significa "Don't Repeat Yourself" (Não se Repita). No contexto do Terraform, uma configuração **DRY** significa que você deve evitar a duplicação de código tanto quanto possível. Em vez disso, você deve usar módulos e variáveis para reutilizar o código.
+
+### Backend DRY
+
+Um **backend DRY** no Terraform é uma maneira de gerenciar o estado do Terraform de forma eficiente. Em vez de definir o backend em cada arquivo, você pode definir uma vez e reutilizá-lo em todos os seus arquivos Terraform.
+
+### Provider DRY
+
+Um **provider DRY** no Terraform é semelhante ao backend DRY. Em vez de definir o provider em cada arquivo, você pode definir uma vez e reutilizá-lo em todos os seus arquivos Terraform.
+
+### Imutabilidade dos Módulos Terraform
+
+A **imutabilidade** é um conceito importante no Terraform. Significa que, uma vez que um recurso é criado, ele não é alterado. Em vez disso, se uma mudança é necessária, o recurso antigo é destruído e um novo é criado. Isso é especialmente útil ao trabalhar com ambientes de trabalho no Terraform, pois garante que cada ambiente seja consistente e previsível.
+
 ### Link para baixar a release a integrar no VRA e a chave SHA
 
 https://releases.hashicorp.com/terraform/
