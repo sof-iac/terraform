@@ -12,3 +12,14 @@ provider "vsphere" {
 }
 EOF
 }
+
+remote_state {
+  backend = "local"
+  generate = {
+    path      = "backend.tf"
+    if_exists = "overwrite"
+  }
+  config = {
+    path = "/data/terraform.tfstate"
+  }
+}
