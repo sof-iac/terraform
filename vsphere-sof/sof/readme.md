@@ -1,10 +1,9 @@
-## Datacenter - Vsphere-sof
+## Datacenter - SOF
 
-### Estrutura
+### Estrutura de trabalho
 
 ```
-1 - blocok
-2 - sof
+1 - envs -
 ```
 
 ### terragrunt.hcl
