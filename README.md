@@ -61,6 +61,8 @@ aws
         ├── main.tf
         ├── variables.tf
         └── outputs.tf
+
+vsphere-sof
 blocok
 ├── env
     ├── dev
@@ -75,8 +77,7 @@ blocok
         ├── main.tf
         ├── variables.tf
         └── outputs.tf
-sof
-├── env
+├── envs
     ├── dev
     │   ├── main.tf
     │   ├── variables.tf
