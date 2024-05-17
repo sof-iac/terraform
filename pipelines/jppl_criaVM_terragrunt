@@ -39,7 +39,7 @@ pipeline {
         stage('Run Terragrunt') {
             steps {
               script {
-                dir("${Datacenter}/${Site}/envs/${Ambiente}/${Projeto}") {              
+                dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {              
                 sh 'terragrunt plan -var-file=vars.tf'
                 }
               }
