@@ -33,8 +33,7 @@ pipeline {
             steps {
               script {
                 dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {                 
-                sh 'terragrunt plan -var-file=vars.tf \
-                    -var "name=${name}" \
+                sh 'terragrunt plan -var "name=${name}" \
                     -var "vm-domain=${vm-domain}" \
                     -var "vsphere-datacenter=${vsphere-datacenter}" \
                     -var "vsphere_network=${vsphere_network}" \
