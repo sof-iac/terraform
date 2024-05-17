@@ -2,32 +2,40 @@ pipeline {
     agent any
 
     parameters {
-        choice(name: 'Datacenter', choices: ['vsphere-sof','aws'], description: 'Datacenter') 
-        choice(name: 'Site', choices: [ 'sof', 'blocok'], description: 'Site')
-        choice(name: 'Ambiente', choices: [ 'lab', 'prod', 'exemplos', 'testes'], description: 'Ambiente')
-        string(name: 'Projeto', defaultValue: 'meu_projeto', description: 'Nome do projeto Terraform a executar')
-        password(name: 'GITEA_TOKEN', description: 'Token gitea')
-        text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')      
-        string(name: 'name', defaultValue: 'prep03', description: 'Nome da maquina')
-        string(name: 'vm-domain', defaultValue: 'sof.intra', description: 'Dominio')
-        string(name: 'vsphere-datacenter', defaultValue: 'SOF', description: 'Datacenter')
-        string(name: 'vsphere_network', defaultValue: 'PG_Atlas_Teste', description: 'vsphere_network')
-        string(name: 'vsphere_resource_pool', defaultValue: 'Blade_Atreus/Resources', description: 'vsphere_resource_pool')
-        string(name: 'vm-guest-id', defaultValue: 'ubuntu64Guest', description: 'Guest Id do SO em uso')
-        string(name: 'host_name', defaultValue: 'ubuntu01tf')
-        string(name: 'dns_server_list', defaultValue: '172.27.3.5,172.27.3.6', description: 'List of DNS servers')
-        string(name: 'ipv4_address', defaultValue: '192.168.30.234', description: 'ipv4 addresses for a vm')
-        string(name: 'ipv4_gateway', defaultValue: '192.168.30.1', description: 'Gateway')
-        string(name: 'ipv4_netmask', defaultValue: '24', description: 'Mascara de rede')
-        string(name: 'ssh_username', defaultValue: 'root', description: 'Usuario root')
-        password(name: 'ssh_password', description: 'Senha do root')
-        string(name: 'svc_username', defaultValue: 'ansible', description: 'Usuario ansible')
-        password(name: 'svc_password', description: 'Senha do ansible')
-        string(name: 'privatekeypath', defaultValue: './id_ed25519')
-        string(name: 'public_key', defaultValue: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra', description: 'Chave publica do ansible')
+      choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
+      choice(name: 'Datacenter', choices: ['vsphere-sof','aws'], description: 'Datacenter') 
+      choice(name: 'Site', choices: [ 'sof', 'blocok'], description: 'Site')
+      choice(name: 'Ambiente', choices: [ 'lab', 'prod', 'exemplos', 'testes'], description: 'Ambiente')
+      string(name: 'Diretorio', defaultValue: 'meu_projeto', description: 'Nome do diretorio do projeto Terraform a executar')
+      password(name: 'GITEA_TOKEN', description: 'Token gitea')
+      text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')      
+      string(name: 'name', defaultValue: 'prep03', description: 'Nome da maquina')
+      string(name: 'vm-domain', defaultValue: 'sof.intra', description: 'Dominio')
+      string(name: 'vsphere-datacenter', defaultValue: 'SOF', description: 'Datacenter')
+      string(name: 'vsphere_network', defaultValue: 'PG_Atlas_Teste', description: 'vsphere_network')
+      string(name: 'vsphere_resource_pool', defaultValue: 'Blade_Atreus/Resources', description: 'vsphere_resource_pool')
+      string(name: 'vm-guest-id', defaultValue: 'ubuntu64Guest', description: 'Guest Id do SO em uso')
+      string(name: 'host_name', defaultValue: 'ubuntu01tf')
+      string(name: 'dns_server_list', defaultValue: '172.27.3.5,172.27.3.6', description: 'List of DNS servers')
+      string(name: 'ipv4_address', defaultValue: '192.168.30.234', description: 'ipv4 addresses for a vm')
+      string(name: 'ipv4_gateway', defaultValue: '192.168.30.1', description: 'Gateway')
+      string(name: 'ipv4_netmask', defaultValue: '24', description: 'Mascara de rede')
+      string(name: 'ssh_username', defaultValue: 'root', description: 'Usuario root')
+      password(name: 'ssh_password', description: 'Senha do root')
+      string(name: 'svc_username', defaultValue: 'ansible', description: 'Usuario ansible')
+      password(name: 'svc_password', description: 'Senha do ansible')
+      string(name: 'privatekeypath', defaultValue: './id_ed25519')
+      string(name: 'public_key', defaultValue: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra', description: 'Chave publica do ansible')
     }
 
     stages {
+        stage('Baixando hcl raiz') {
+          steps {
+            script {
+                sh '''curl --url ${URL}/${Projeto}/terraform/raw/branch/main/${Datacenter}/terragrunt.hcl --insecure -o terragrunt.hcl'''
+            }
+          }
+        }
         stage('Run Terragrunt') {
             steps {
               script {
