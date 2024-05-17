@@ -1,45 +1,15 @@
 pipeline {
-  agent any
-    parameters {
-        choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
-        choice(name: 'Datacenter', choices: ['global', 'sof','aws', 'blocok'], description: 'Datacenter') 
-        string(name: 'Classe', defaultValue: 'postgres', description: 'Nome da classe do arquivo')
-        choice(name: 'OS', choices: [ 'centos', 'ubuntu', 'rocklinux', 'orcl'], description: 'OS Host')     
-        choice(name: 'HOSTS', choices: ['puppet_server'], description: 'Grupo de hosts')        
-        password(name: 'GITEA_TOKEN', description: 'Token gitea')
-        password(name: 'ANSIBLE_PASSWD', description: 'Senha Ansible')
-        text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')
-        text(name: 'INVENTORY', defaultValue: 'puppet.ini', description: 'Nome do inventory')
-        text(name: 'PLAYBOOK', defaultValue: 'configura_puppet.yml', description: 'Nome do playbook')
-        text(name: 'PATH_DEST', defaultValue: '/opt/puppetlabs/puppet/modules/testes', description: 'Path do destino')
-    }
-  stages {     
-    stage ('Executando o playbook ansible') {
-      steps {
-        script {
-          dir("${Datacenter}/classes/${Classe}") {
-            sh 'ansible-playbook -i ${INVENTORY} ${PLAYBOOK} -e "HOSTS=${HOSTS} job_workspace="../puppet/" path_classe=${PATH_DEST}" -vvv'
-          }
-        }
-      }
-    } 
-  }  
-}
-
-pipeline {
     agent any
 
     parameters {
-        choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
         choice(name: 'Datacenter', choices: ['vsphere-sof','aws'], description: 'Datacenter') 
-        string(name: 'A', defaultValue: 'postgres', description: 'Nome da classe do arquivo')
-        choice(name: 'OS', choices: [ 'centos', 'ubuntu', 'rocklinux', 'orcl'], description: 'OS Host')     
-        choice(name: 'HOSTS', choices: ['puppet_server'], description: 'Grupo de hosts')        
+        choice(name: 'Site', choices: [ 'sof', 'blocok'], description: 'Site')
+        choice(name: 'Envs', choices: [ 'lab', 'prod', 'exemplos', 'testes'], description: 'Site')
+        string(name: 'Projeto', defaultValue: 'meu_projeto', description: 'Nome do projeto Terraform a executar')
         password(name: 'GITEA_TOKEN', description: 'Token gitea')
-        password(name: 'ANSIBLE_PASSWD', description: 'Senha Ansible')
         text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')      
-        string(name: 'name', defaultValue: 'prep03', description: 'The name of the vSphere virtual machines and the hostname of the machine')
-        string(name: 'vm-domain', defaultValue: 'sof.intra', description: 'Linux virtual machine domain name for the machine')
+        string(name: 'name', defaultValue: 'prep03', description: 'Nome da maquina')
+        string(name: 'vm-domain', defaultValue: 'sof.intra', description: 'Dominio')
         string(name: 'vsphere-datacenter', defaultValue: 'SOF', description: 'Datacenter')
         string(name: 'vsphere_network', defaultValue: 'PG_Atlas_Teste', description: 'vsphere_network')
         string(name: 'vsphere_resource_pool', defaultValue: 'Blade_Atreus/Resources', description: 'vsphere_resource_pool')
@@ -47,22 +17,22 @@ pipeline {
         string(name: 'host_name', defaultValue: 'ubuntu01tf')
         string(name: 'dns_server_list', defaultValue: '172.27.3.5,172.27.3.6', description: 'List of DNS servers')
         string(name: 'ipv4_address', defaultValue: '192.168.30.234', description: 'ipv4 addresses for a vm')
-        string(name: 'ipv4_gateway', defaultValue: '192.168.30.1')
-        string(name: 'ipv4_netmask', defaultValue: '24')
-        string(name: 'ssh_username')
-        password(name: 'ssh_password')
-        string(name: 'svc_username')
-        password(name: 'svc_password')
+        string(name: 'ipv4_gateway', defaultValue: '192.168.30.1', description: 'Gateway')
+        string(name: 'ipv4_netmask', defaultValue: '24', description: 'Mascara de rede')
+        string(name: 'ssh_username', defaultValue: 'root', description: 'Usuario root')
+        password(name: 'ssh_password', description: 'Senha do root')
+        string(name: 'svc_username', defaultValue: 'ansible', description: 'Usuario ansible')
+        password(name: 'svc_password', description: 'Senha do ansible')
         string(name: 'privatekeypath', defaultValue: './id_ed25519')
-        string(name: 'public_key', defaultValue: '', description: 'Public key to be used to ssh into a machine')
+        string(name: 'public_key', defaultValue: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra', description: 'Chave publica do ansible')
     }
 
     stages {
         stage('Run Terragrunt') {
             steps {
               script {
-                dir("${Datacenter}/classes/${Classe}") {              
-                sh 'terragrunt apply -var-file=vars.tf'
+                dir("${Datacenter}/${Site}/envs/${Envs}/${Projeto}") {              
+                sh 'terragrunt plan -var-file=vars.tf'
                 }
               }
             }
