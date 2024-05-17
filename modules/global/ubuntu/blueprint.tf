@@ -85,7 +85,7 @@ resource "vsphere_virtual_machine" "vmorcl" {
         domain    = "sof.intra"
       }
       network_interface {
-        ipv4_address = "${var.ipv4_address}"
+        ipv4_address = "192.168.30.234"
         ipv4_netmask = "24"
       }
       ipv4_gateway = "192.168.30.1"
