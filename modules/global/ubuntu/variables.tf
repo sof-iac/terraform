@@ -1,7 +1,7 @@
 variable "name" {
   type        = string
   description = "The name of the vSphere virtual machines and the hostname of the machine"
-  default = "ubuntu01tf"
+  default = "prep03"
 }
 variable "vm-domain" {
   type        = string

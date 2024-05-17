@@ -21,9 +21,9 @@ variable "vmname" {
 }
 
 
-provider "vsphere" {
-  allow_unverified_ssl = true
-}
+#provider "vsphere" {
+  #allow_unverified_ssl = true
+#}
 
 data "vsphere_datacenter" "dc" {
   name = "SOF"
@@ -94,7 +94,7 @@ resource "vsphere_virtual_machine" "vmorcl" {
         ipv4_address = "${var.ipv4_address}"
         ipv4_netmask = "24"
       }
-      ipv4_gateway = "1192.168.30.1"
+      ipv4_gateway = "192.168.30.1"
       dns_server_list = ["172.27.3.5", "172.27.3.6"]
     }
   }
