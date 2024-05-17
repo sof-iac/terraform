@@ -29,13 +29,6 @@ pipeline {
     }
 
     stages {
-        stage('Baixando hcl raiz') {
-          steps {
-            script {
-                sh '''curl --url https://git.sof.intra/infra/terraform/raw/commit/8eb5ea1cb50464f67ffa1e614b026fbe6bb3acdb/vsphere-sof/terragrunt.hcl --insecure -o terragrunt.hcl'''
-            }
-          }
-        }
         stage('Run Terragrunt') {
             steps {
               script {
