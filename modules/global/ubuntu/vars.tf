@@ -60,26 +60,10 @@ variable "ipv4_netmask" {
   default = "24"
 }
 
-variable "ssh_username" {
-  type      = string
-  sensitive = true
-  default   = "root"
-}
-variable "ssh_password" {
-  type      = string
-  sensitive = true
-  default   = "sof123"
-}
-variable "svc_username" {
-  type      = string
-  sensitive = true
-  default   = "ansible"
-}
-variable "svc_password" {
-  type      = string
-  sensitive = true
-  default   = "ansible"
-}
+variable "ssh_username" {}
+variable "ssh_password" {}
+variable "svc_username" {}
+variable "svc_password" {}
 
 variable "privatekeypath" {
   type    = string
