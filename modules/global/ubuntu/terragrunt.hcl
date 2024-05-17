@@ -1,6 +1,6 @@
 # terragrunt.hcl
 terraform {
-  source = "bluprint.tf"
+  source = "blueprint.tf"
 }
 
 include {
