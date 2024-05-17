@@ -32,8 +32,25 @@ pipeline {
         stage('Run Terragrunt') {
             steps {
               script {
-                dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {              
-                sh 'terragrunt plan -var-file=vars.tf'
+                dir("${Datacenter}/classes/${Classe}") {              
+                sh 'terragrunt plan -var-file=vars.tf \
+                    -var "name=${params.name}" \
+                    -var "vm-domain=${params.vm-domain}" \
+                    -var "vsphere-datacenter=${params.vsphere-datacenter}" \
+                    -var "vsphere_network=${params.vsphere_network}" \
+                    -var "vsphere_resource_pool=${params.vsphere_resource_pool}" \
+                    -var "vm-guest-id=${params.vm-guest-id}" \
+                    -var "host_name=${params.host_name}" \
+                    -var "dns_server_list=${params.dns_server_list}" \
+                    -var "ipv4_address=${params.ipv4_address}" \
+                    -var "ipv4_gateway=${params.ipv4_gateway}" \
+                    -var "ipv4_netmask=${params.ipv4_netmask}" \
+                    -var "ssh_username=${params.ssh_username}" \
+                    -var "ssh_password=${params.ssh_password}" \
+                    -var "svc_username=${params.svc_username}" \
+                    -var "svc_password=${params.svc_password}" \
+                    -var "privatekeypath=${params.privatekeypath}" \
+                    -var "public_key=${params.public_key}"'
                 }
               }
             }
