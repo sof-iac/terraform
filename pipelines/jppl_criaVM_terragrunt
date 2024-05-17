@@ -4,7 +4,7 @@ pipeline {
     parameters {
         choice(name: 'Datacenter', choices: ['vsphere-sof','aws'], description: 'Datacenter') 
         choice(name: 'Site', choices: [ 'sof', 'blocok'], description: 'Site')
-        choice(name: 'Envs', choices: [ 'lab', 'prod', 'exemplos', 'testes'], description: 'Ambiente')
+        choice(name: 'Ambiente', choices: [ 'lab', 'prod', 'exemplos', 'testes'], description: 'Ambiente')
         string(name: 'Projeto', defaultValue: 'meu_projeto', description: 'Nome do projeto Terraform a executar')
         password(name: 'GITEA_TOKEN', description: 'Token gitea')
         text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')      
@@ -31,7 +31,7 @@ pipeline {
         stage('Run Terragrunt') {
             steps {
               script {
-                dir("${Datacenter}/${Site}/envs/${Envs}/${Projeto}") {              
+                dir("${Datacenter}/${Site}/envs/${Ambiente}/${Projeto}") {              
                 sh 'terragrunt plan -var-file=vars.tf'
                 }
               }
