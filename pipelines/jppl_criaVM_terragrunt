@@ -1,6 +1,9 @@
 pipeline {
     agent any
-
+    environment {
+        vsphere_password = credentials('vsphere_password')
+        vsphere_user = credentials('vsphere_user')
+    }
     parameters {
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
       choice(name: 'Datacenter', choices: ['vsphere-sof','aws'], description: 'Datacenter') 
@@ -114,9 +117,7 @@ pipeline {
           steps {
             script {
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {                 
-              sh 'export vsphere_password=$vsphere_password;
-                  export vsphere_user=$vsphere_user;
-                  terragrunt plan -var "name=${name}" \
+              sh 'terragrunt plan -var "name=${name}" \
                   -var "vm_domain=${vm_domain}" \
                   -var "vsphere_datacenter=${vsphere_datacenter}" \
                   -var "vsphere_network=${vsphere_network}" \
