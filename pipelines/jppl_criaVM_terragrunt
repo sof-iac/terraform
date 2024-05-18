@@ -114,7 +114,8 @@ pipeline {
           steps {
             script {
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {                 
-              sh 'export vsphere_password=$vsphere_password vsphere_user=$vsphere_user
+              sh 'export vsphere_password=$vsphere_password;
+                  export vsphere_user=$vsphere_user;
                   terragrunt plan -var "name=${name}" \
                   -var "vm_domain=${vm_domain}" \
                   -var "vsphere_datacenter=${vsphere_datacenter}" \
