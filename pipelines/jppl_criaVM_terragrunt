@@ -10,11 +10,11 @@ pipeline {
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
       text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')      
       string(name: 'name', defaultValue: 'prep03', description: 'Nome da maquina')
-      string(name: 'vm-domain', defaultValue: 'sof.intra', description: 'Dominio')
-      string(name: 'vsphere-datacenter', defaultValue: 'SOF', description: 'Datacenter')
+      string(name: 'vm_domain', defaultValue: 'sof.intra', description: 'Dominio')
+      string(name: 'vsphere_datacenter', defaultValue: 'SOF', description: 'Datacenter')
       string(name: 'vsphere_network', defaultValue: 'PG_Atlas_Teste', description: 'vsphere_network')
       string(name: 'vsphere_resource_pool', defaultValue: 'Blade_Atreus/Resources', description: 'vsphere_resource_pool')
-      string(name: 'vm-guest-id', defaultValue: 'ubuntu64Guest', description: 'Guest Id do SO em uso')
+      string(name: 'vm_guest_id', defaultValue: 'ubuntu64Guest', description: 'Guest Id do SO em uso')
       string(name: 'host_name', defaultValue: 'ubuntu01tf')
       string(name: 'dns_server_list', defaultValue: '172.27.3.5,172.27.3.6', description: 'List of DNS servers')
       string(name: 'ipv4_address', defaultValue: '192.168.30.234', description: 'ipv4 addresses for a vm')
@@ -39,11 +39,11 @@ pipeline {
                   description = "Nome da maquina"
                   default     = "${name}"
                 }
-                vm-domain = "${vm-domain}"
-                vsphere-datacenter = "${vsphere-datacenter}"
+                vm_domain = "${vm_domain}"
+                vsphere_datacenter = "${vsphere_datacenter}"
                 vsphere_network = "${vsphere_network}"
                 vsphere_resource_pool = "${vsphere_resource_pool}"
-                vm-guest-id = "${vm-guest-id}"
+                vm_guest_id = "${vm_guest_id}"
                 host_name = "${host_name}"
                 dns_server_list = "${dns_server_list}"
                 ipv4_address = "${ipv4_address}"
