@@ -103,7 +103,7 @@ pipeline {
                   description = "Nome da maquina"
                   default     = "${public_key}"
                 }                                                                                                                                                                                             
-                EOF >>
+                EOF
                 '''
                 }
               }
