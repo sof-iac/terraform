@@ -29,6 +29,36 @@ pipeline {
     }
 
     stages {
+        stage('Create vars.tf') {
+            steps {
+                script {
+                    // Cria um mapa com as variáveis
+                    def vars = [
+                        'name': env.name,
+                        'vm-domain': env.vm-domain,
+                        'vsphere-datacenter': env.vsphere-datacenter,
+                        'vsphere_network': env.vsphere_network,
+                        'vsphere_resource_pool': env.vsphere_resource_pool,
+                        'vm-guest-id': env.vm-guest-id,
+                        'host_name': env.host_name,
+                        'dns_server_list': env.dns_server_list,
+                        'ipv4_address': env.ipv4_address,
+                        'ipv4_gateway': env.ipv4_gateway,
+                        'ipv4_netmask': env.ipv4_netmask,
+                        'ssh_username': env.ssh_username,
+                        'ssh_password': env.ssh_password,
+                        'svc_username': env.svc_username,
+                        'svc_password': env.svc_password,
+                        'privatekeypath': env.privatekeypath,
+                        'public_key': env.public_key
+                    ]
+
+                    // Cria o arquivo vars.tf
+                    writeFile file: 'vars.tf', text: vars.collect { k, v -> "${k} = \"${v}\"" }.join('\n')
+                }
+            }
+        }
+
         stage('Run Terragrunt') {
             steps {
               script {
