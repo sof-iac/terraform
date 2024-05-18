@@ -47,20 +47,62 @@ pipeline {
                   description = "Nome da maquina"
                   default     = "${vsphere_datacenter}"
                 }   
-                vsphere_network = "${vsphere_network}"
-                vsphere_resource_pool = "${vsphere_resource_pool}"
-                vm_guest_id = "${vm_guest_id}"
-                host_name = "${host_name}"
-                dns_server_list = "${dns_server_list}"
-                ipv4_address = "${ipv4_address}"
-                ipv4_gateway = "${ipv4_gateway}"
-                ipv4_netmask = "${ipv4_netmask}"
-                ssh_username = "${ssh_username}"
-                ssh_password = "${ssh_password}"
-                svc_username = "${svc_username}"
-                svc_password = "${svc_password}"
-                privatekeypath = "${privatekeypath}"
-                public_key = "${public_key}"
+                variable "vsphere_network" {
+                  description = "Nome da maquina"
+                  default     = "${vsphere_network}"
+                } 
+                variable "vsphere_resource_pool" {
+                  description = "Nome da maquina"
+                  default     = "${vsphere_resource_pool}"
+                } 
+                variable "vm_guest_id" {
+                  description = "Nome da maquina"
+                  default     = "${vm_guest_id}"
+                } 
+                variable "host_name" {
+                  description = "Nome da maquina"
+                  default     = "${host_name}"
+                } 
+                variable "dns_server_list" {
+                  description = "Nome da maquina"
+                  default     = "${dns_server_list}"
+                } 
+                variable "ipv4_address" {
+                  description = "Nome da maquina"
+                  default     = "${ipv4_address}"
+                } 
+                variable "ipv4_gateway" {
+                  description = "Nome da maquina"
+                  default     = "${ipv4_gateway}"
+                } 
+                variable "ipv4_netmask" {
+                  description = "Nome da maquina"
+                  default     = "${ipv4_netmask}"
+                } 
+                variable "ssh_username" {
+                  description = "Nome da maquina"
+                  default     = "${ssh_username}"
+                }        
+                variable "ssh_password" {
+                  description = "Nome da maquina"
+                  default     = "${ssh_password}"
+                }    
+                variable "svc_username" {
+                  description = "Nome da maquina"
+                  default     = "${svc_username}"
+                }    
+                variable "svc_password" {
+                  description = "Nome da maquina"
+                  default     = "${svc_password}"
+                }                                                                                                                                                                                             
+                variable "privatekeypath" {
+                  description = "Nome da maquina"
+                  default     = "${privatekeypath}"
+                }                                                                                                                                                                                             
+                variable "public_key" {
+                  description = "Nome da maquina"
+                  default     = "${public_key}"
+                }                                                                                                                                                                                             
                 EOF >>
                 '''
                 }
