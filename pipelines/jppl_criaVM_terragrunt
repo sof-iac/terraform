@@ -112,30 +112,28 @@ pipeline {
         }
         stage('Terraform Apply') {
           steps {
-              withCredentials([string(credentialsId: 'vsphere_password', variable: 'vsphere_password')]) {
-                script {
-                  dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {                 
-                  sh 'export vsphere_password=$vsphere_password vsphere_user=$vsphere_user
-                      terragrunt plan -var "name=${name}" \
-                      -var "vm_domain=${vm_domain}" \
-                      -var "vsphere_datacenter=${vsphere_datacenter}" \
-                      -var "vsphere_network=${vsphere_network}" \
-                      -var "vsphere_resource_pool=${vsphere_resource_pool}" \
-                      -var "vm_guest_id=${vm_guest_id}" \
-                      -var "host_name=${host_name}" \
-                      -var "dns_server_list=${dns_server_list}" \
-                      -var "ipv4_address=${ipv4_address}" \
-                      -var "ipv4_gateway=${ipv4_gateway}" \
-                      -var "ipv4_netmask=${ipv4_netmask}" \
-                      -var "ssh_username=${ssh_username}" \
-                      -var "ssh_password=${ssh_password}" \
-                      -var "svc_username=${svc_username}" \
-                      -var "svc_password=${svc_password}" \
-                      -var "privatekeypath=${privatekeypath}" \
-                      -var "public_key=${public_key}"'
-                  }
-                }          
+            script {
+              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {                 
+              sh 'export vsphere_password=$vsphere_password vsphere_user=$vsphere_user
+                  terragrunt plan -var "name=${name}" \
+                  -var "vm_domain=${vm_domain}" \
+                  -var "vsphere_datacenter=${vsphere_datacenter}" \
+                  -var "vsphere_network=${vsphere_network}" \
+                  -var "vsphere_resource_pool=${vsphere_resource_pool}" \
+                  -var "vm_guest_id=${vm_guest_id}" \
+                  -var "host_name=${host_name}" \
+                  -var "dns_server_list=${dns_server_list}" \
+                  -var "ipv4_address=${ipv4_address}" \
+                  -var "ipv4_gateway=${ipv4_gateway}" \
+                  -var "ipv4_netmask=${ipv4_netmask}" \
+                  -var "ssh_username=${ssh_username}" \
+                  -var "ssh_password=${ssh_password}" \
+                  -var "svc_username=${svc_username}" \
+                  -var "svc_password=${svc_password}" \
+                  -var "privatekeypath=${privatekeypath}" \
+                  -var "public_key=${public_key}"'
               }
+            }          
           }
         }
     }
