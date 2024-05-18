@@ -57,10 +57,9 @@ pipeline {
                     // Cria o arquivo vars.tf
                     writeFile file: 'vars.tf', text: vars.collect { k, v -> "${k} = \"${v}\"" }.join('\n')
                 }
+                }
               }
             }
-        }
-
         stage('Run Terragrunt') {
             steps {
               script {
