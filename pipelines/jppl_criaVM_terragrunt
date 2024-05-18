@@ -35,7 +35,10 @@ pipeline {
                 dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {               
                 sh '''
                 cat <<EOF > vars.tf
-                name = "${name}"
+                variable "name" {
+                  description = "Nome da maquina"
+                  default     = "${name}"
+                }
                 vm-domain = "${vm-domain}"
                 vsphere-datacenter = "${vsphere-datacenter}"
                 vsphere_network = "${vsphere_network}"
@@ -52,7 +55,7 @@ pipeline {
                 svc_password = "${svc_password}"
                 privatekeypath = "${privatekeypath}"
                 public_key = "${public_key}"
-                EOF
+                EOF >>
                 '''
                 }
               }
