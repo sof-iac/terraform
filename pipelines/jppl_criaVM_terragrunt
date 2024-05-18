@@ -26,7 +26,7 @@ pipeline {
       password(name: 'svc_password', description: 'Senha do ansible')
       string(name: 'privatekeypath', defaultValue: './id_ed25519')
       string(name: 'public_key', defaultValue: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra', description: 'Chave publica do ansible')
-      string(name: 'vsphere_user', defaultValue: 'rogeriovs_admin', description: 'Usuario roVsphereot')
+      string(name: 'vsphere_user', defaultValue: 'rogeriovs_admin', description: 'Usuario Vsphere')
       password(name: 'vsphere_password', description: 'Senha do vsphere')
     }
 
