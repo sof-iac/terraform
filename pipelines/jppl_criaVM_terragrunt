@@ -113,11 +113,11 @@ pipeline {
               script {
                 dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {                 
                 sh 'terragrunt plan -var "name=${name}" \
-                    -var "vm-domain=${vm-domain}" \
-                    -var "vsphere-datacenter=${vsphere-datacenter}" \
+                    -var "vm_domain=${vm_domain}" \
+                    -var "vsphere_datacenter=${vsphere_datacenter}" \
                     -var "vsphere_network=${vsphere_network}" \
                     -var "vsphere_resource_pool=${vsphere_resource_pool}" \
-                    -var "vm-guest-id=${vm-guest-id}" \
+                    -var "vm_guest_id=${vm_guest_id}" \
                     -var "host_name=${host_name}" \
                     -var "dns_server_list=${dns_server_list}" \
                     -var "ipv4_address=${ipv4_address}" \
