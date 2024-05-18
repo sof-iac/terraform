@@ -32,7 +32,6 @@ pipeline {
         stage('Create vars.tf') {
             steps {
                 script {
-                  dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") { 
                     // Cria um mapa com as variáveis
                     def vars = [
                         'name': env.name,
@@ -56,7 +55,6 @@ pipeline {
 
                     // Cria o arquivo vars.tf
                     writeFile file: 'vars.tf', text: vars.collect { k, v -> "${k} = \"${v}\"" }.join('\n')
-                }
                 }
               }
             }
