@@ -39,8 +39,14 @@ pipeline {
                   description = "Nome da maquina"
                   default     = "${name}"
                 }
-                vm_domain = "${vm_domain}"
-                vsphere_datacenter = "${vsphere_datacenter}"
+                variable "vm_domain" {
+                  description = "Nome da maquina"
+                  default     = "${vm_domain}"
+                }                
+                variable "vsphere_datacenter" {
+                  description = "Nome da maquina"
+                  default     = "${vsphere_datacenter}"
+                }   
                 vsphere_network = "${vsphere_network}"
                 vsphere_resource_pool = "${vsphere_resource_pool}"
                 vm_guest_id = "${vm_guest_id}"
