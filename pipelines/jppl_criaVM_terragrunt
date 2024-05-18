@@ -31,6 +31,8 @@ pipeline {
     stages {
         stage('Create vars.tf') {
             steps {
+              script {
+                dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {               
                 sh '''
                 cat <<EOF > vars.tf
                 name = "${name}"
@@ -52,9 +54,10 @@ pipeline {
                 public_key = "${public_key}"
                 EOF
                 '''
+                }
+              }
             }
         }
-
         stage('Run Terragrunt') {
             steps {
               script {
