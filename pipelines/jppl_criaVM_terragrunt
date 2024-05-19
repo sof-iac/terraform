@@ -174,13 +174,13 @@ pipeline {
                     -var "vsphere_resource_pool=${vsphere_resource_pool}" \
                     -var "vm_guest_id=${vm_guest_id}" \
                     -var "template=${template}" \
-                    -var "host_name=${host_name}" \
+                    -var "hostname=${hostname}" \
                     -var "dns_server_list=${dns_server_list}" \
                     -var "ipv4_address=${ipv4_address}" \
                     -var "ipv4_gateway=${ipv4_gateway}" \
                     -var "ipv4_netmask=${ipv4_netmask}" \
-                    -var "ssh_username=${ssh_username}" \
-                    -var "ssh_password=${ssh_password}" \
+                    -var "vm_user=${vm_user}" \
+                    -var "vm_pass=${vm_pass}" \
                     -var "svc_username=${svc_username}" \
                     -var "svc_password=${svc_password}" \
                     -var "privatekeypath=${privatekeypath}" \
