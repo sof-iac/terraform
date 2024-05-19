@@ -20,12 +20,6 @@ variable "vsphere_user" {
   default     = "user_svc_vcenter"
 }
 
-variable "vsphere_password" {
-  description = "Senha do vCenter"
-  sensitive   = true
-  default     = "!Sso2022"
-}
-
 provider "vsphere" {
   user           = var.vsphere_user
   password       = var.vsphere_credentials
