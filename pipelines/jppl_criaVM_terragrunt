@@ -49,7 +49,7 @@ pipeline {
                   default     = "${vsphere_user}"
                 }
                 variable "vsphere_password" {
-                  description = "Senha vsphere"
+                  description = "Senha do vsphere"
                   default     = "${vsphere_password}"
                 }                
                 variable "name" {
