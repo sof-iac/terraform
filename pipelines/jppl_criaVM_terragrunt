@@ -1,9 +1,5 @@
 pipeline {
     agent any
-    environment {
-        vsphere_password = credentials('vsphere_password')
-        vsphere_user = credentials('vsphere_user')
-    }
     parameters {
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
       choice(name: 'Datacenter', choices: ['vsphere-sof','aws'], description: 'Datacenter') 
