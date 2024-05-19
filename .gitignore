@@ -8,7 +8,6 @@
 **/.DS_store
 **/.terraform
 sof/terraform.tfvars
-vars.tf
 
 modules/aws/prod/rede/.terraform/modules/modules.json
 modules/aws/prod/rede/.terraform/modules/zones/CHANGELOG.md
