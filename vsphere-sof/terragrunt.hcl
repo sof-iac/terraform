@@ -28,7 +28,7 @@ variable "vsphere_password" {
 
 provider "vsphere" {
   user           = var.vsphere_user
-  password       = var.vsphere_password
+  password       = var.vsphere_credentials
   vsphere_server = "pvcn01.sof.intra"
 
   # if you have a self-signed cert
