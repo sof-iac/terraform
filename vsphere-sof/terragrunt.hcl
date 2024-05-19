@@ -6,12 +6,6 @@ generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
-
-variable "vsphere_password" {
-  description = "Senha do vCenter"
-  sensitive   = true
-}
-
 provider "vault" {
   address = "https://vault.app.sof.intra"
   token   = var.vault_token
