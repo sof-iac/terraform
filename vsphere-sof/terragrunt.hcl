@@ -17,13 +17,13 @@ generate "provider" {
   contents  = <<EOF
 variable "vsphere_user" {
   description = "Usuário do vCenter"
-  default     = "${data.vault_generic_secret.vsphere_credentials.data["user_svc_vcenter"]}"
+  default     = "user_svc_vcenter"
 }
 
 variable "vsphere_password" {
   description = "Senha do vCenter"
   sensitive   = true
-  default     = "${data.vault_generic_secret.vsphere_credentials.data["user_svc_vcenter_passwd"]}"
+  default     = "!Sso2022"
 }
 
 provider "vsphere" {
