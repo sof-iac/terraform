@@ -1,5 +1,15 @@
-variable "vault_token" {
-  description = "Token do Vault"
+inputs = {
+  vault_token = "hvs.CAESIJ9vAM7KXI0Y8T0GFmiQfd4ucGHVlx3QSG8MFHdFISqkGh4KHGh2cy5jcnJ1R0U1Z0lOU2g0aTg5cm9lR0g4UzU"
+}
+
+generate "provider" {
+  path      = "provider.tf"
+  if_exists = "overwrite_terragrunt"
+  contents  = <<EOF
+
+variable "vsphere_password" {
+  description = "Senha do vCenter"
+  sensitive   = true
 }
 
 provider "vault" {
@@ -11,24 +21,9 @@ data "vault_generic_secret" "vsphere_credentials" {
   path = "servicos/jenkins/user_svc_vcenter"
 }
 
-generate "provider" {
-  path      = "provider.tf"
-  if_exists = "overwrite_terragrunt"
-  contents  = <<EOF
-variable "vsphere_user" {
-  description = "Usuário do vCenter"
-  default     = "user_svc_vcenter"
-}
-
-variable "vsphere_password" {
-  description = "Senha do vCenter"
-  sensitive   = true
-  default     = "${data.vault_generic_secret.vsphere_credentials.data["user_svc_vcenter_passwd"]}"
-}
-
 provider "vsphere" {
-  user           = var.vsphere_user
-  password       = var.vsphere_password
+  user           = "user_svc_vcenter"
+  password       = data.vault_generic_secret.vsphere_credentials.data["user_svc_vcenter_passwd"]
   vsphere_server = "pvcn01.sof.intra"
 
   # if you have a self-signed cert
