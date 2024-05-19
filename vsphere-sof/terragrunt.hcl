@@ -20,9 +20,15 @@ variable "vsphere_user" {
   default     = "user_svc_vcenter"
 }
 
+variable "vsphere_password" {
+  description = "Senha do vCenter"
+  sensitive   = true
+  default     = "${data.vault_generic_secret.vsphere_credentials.data["user_svc_vcenter_passwd"]}"
+}
+
 provider "vsphere" {
   user           = var.vsphere_user
-  password       = var.vsphere_credentials
+  password       = var.vsphere_password
   vsphere_server = "pvcn01.sof.intra"
 
   # if you have a self-signed cert
