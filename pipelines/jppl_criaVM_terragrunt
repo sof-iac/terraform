@@ -11,6 +11,7 @@ pipeline {
       string(name: 'name', defaultValue: 'prep03', description: 'Nome da maquina')
       string(name: 'vm_domain', defaultValue: 'sof.intra', description: 'Dominio')
       string(name: 'vsphere_datacenter', defaultValue: 'SOF', description: 'Datacenter')
+      choice(name: 'vsphere_cluster', choices: [ 'Blade_Atreus', 'Blade_Kratos', 'Dell_R910', 'Dell_R720'], description: 'Cluster do Vcenter')
       string(name: 'vsphere_datastore', defaultValue: 'Storage_Purestorage', description: 'DataStore')
       string(name: 'vsphere_network', defaultValue: 'PG_Atlas_Teste', description: 'vsphere_network')
       string(name: 'vsphere_resource_pool', defaultValue: 'Blade_Atreus/Resources', description: 'vsphere_resource_pool')
@@ -55,13 +56,17 @@ pipeline {
                   default     = "${name}"
                 }
                 variable "vm_domain" {
-                  description = "Nome da maquina"
+                  description = "Nome do Dominio"
                   default     = "${vm_domain}"
                 }                
                 variable "vsphere_datacenter" {
                   description = "Nome do Datacenter"
                   default     = "${vsphere_datacenter}"
                 }   
+                variable "vsphere_cluster" {
+                  description = "Nome do Cluster"
+                  default     = "${vsphere_cluster}"
+                }                   
                 variable "vsphere_datastore" {
                   description = "Nome do datastore"
                   default     = "${vsphere_datastore}"
@@ -138,6 +143,7 @@ pipeline {
               sh 'terragrunt plan -var "name=${name}" \
                   -var "vm_domain=${vm_domain}" \
                   -var "vsphere_datacenter=${vsphere_datacenter}" \
+                  -var "vsphere_cluster=${vsphere_cluster}" \
                   -var "vsphere_network=${vsphere_network}" \
                   -var "vsphere_resource_pool=${vsphere_resource_pool}" \
                   -var "vm_guest_id=${vm_guest_id}" \
