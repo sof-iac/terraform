@@ -2,11 +2,11 @@
 # modules/Ubuntu_Cloud/main.tf
 
 data "vsphere_datacenter" "dc" {
-  name          = var.datacenter
+  name    = var.vsphere_datacenter
 }
 
 data "vsphere_datastore" "datastore" {
-  name          = var.datastore
+  name          = var.vsphere_datastore
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
@@ -16,7 +16,7 @@ data "vsphere_compute_cluster" "cluster" {
 }
 
 data "vsphere_network" "network" {
-  name          = var.network
+  name          = var.vsphere_network
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
