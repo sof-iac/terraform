@@ -156,7 +156,6 @@ pipeline {
                     description = "Chave pública"
                     default     = "${public_key}"
                   }
-                  EOF
                   '''
 
                 }
