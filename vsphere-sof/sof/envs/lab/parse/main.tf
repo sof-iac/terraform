@@ -67,8 +67,8 @@ resource "vsphere_virtual_machine" "vm" {
         ipv4_netmask = var.netmask
       }
 
-      ipv4_gateway    = var.gateway
-      dns_server_list = [var.dns]
+      ipv4_gateway    = var.ipv4_gateway
+      dns_server_list = [var.dns_server_list]
     }
   }
 
@@ -85,7 +85,7 @@ resource "vsphere_virtual_machine" "vm" {
           sudo: 'ALL=(ALL) ALL'
           groups: [adm, audio, cdrom, dialout, floppy, video, plugdev, dip, netdev]
           ssh-authorized-keys:
-          - "${var.ssh_key}"
+          - "${var.public_key}"
         EOT
       )
     }

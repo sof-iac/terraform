@@ -14,16 +14,21 @@ pipeline {
       choice(name: 'vsphere_cluster', choices: [ 'Blade_Atreus', 'Blade_Kratos', 'Dell_R910', 'Dell_R720'], description: 'Cluster do Vcenter')
       string(name: 'vsphere_datastore', defaultValue: 'Storage_Purestorage', description: 'DataStore')
       string(name: 'vsphere_network', defaultValue: 'PG_Atlas_Teste', description: 'vsphere_network')
+      string(name: 'name_prefix', description: 'Prefixo do nome da máquina virtual')
+      string(name: 'cpus', description: 'Número de CPUs para a máquina virtual')
+      string(name: 'memory', description: 'Quantidade de memória para a máquina virtual')
+      string(name: 'domain', defaultValue: 'sof.intra', description: 'Domínio para a máquina virtual')
+      string(name: 'vm_user', defaultValue: 'root', description: 'Nome de usuário para a máquina virtual')
+      password(name: 'vm_pass', description: 'Senha para a máquina virtual')
       string(name: 'vsphere_resource_pool', defaultValue: 'Blade_Atreus/Resources', description: 'vsphere_resource_pool')
       string(name: 'vm_guest_id', defaultValue: 'ubuntu64Guest', description: 'Guest Id do SO em uso')
       choice(name: 'template', choices: ['templateubuntu2204'], description: 'Nome do Template')
-      string(name: 'host_name', defaultValue: 'ubuntu01tf')
+      string(name: 'hostname', defaultValue: 'ubuntu01tf', description: 'Nome do host para a máquina virtual')
+      choice(name: 'vm_count', choices: [ '1', '2', '3', '4', '2', '3', '4'], description: 'ANúmero de máquinas virtuais a serem criadasmbiente')
       string(name: 'dns_server_list', defaultValue: '172.27.3.5,172.27.3.6', description: 'List of DNS servers')
-      string(name: 'ipv4_address', defaultValue: '192.168.30.234', description: 'ipv4 addresses for a vm')
+      string(name: 'ipv4_address', defaultValue: '192.168.30.234', description: 'Endereço IP para a máquina virtual')
       string(name: 'ipv4_gateway', defaultValue: '192.168.30.1', description: 'Gateway')
       string(name: 'ipv4_netmask', defaultValue: '24', description: 'Mascara de rede')
-      string(name: 'ssh_username', defaultValue: 'root', description: 'Usuario root')
-      password(name: 'ssh_password', description: 'Senha do root')
       string(name: 'svc_username', defaultValue: 'ansible', description: 'Usuario ansible')
       password(name: 'svc_password', description: 'Senha do ansible')
       string(name: 'privatekeypath', defaultValue: './id_ed25519')
@@ -37,101 +42,123 @@ pipeline {
             steps {
               script {
                 dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {               
-                sh '''
-                cat <<EOF > vars.tf
-                variable "vault_token" {
-                  type = string
-                  default = "hvs.CAESIJ9vAM7KXI0Y8T0GFmiQfd4ucGHVlx3QSG8MFHdFISqkGh4KHGh2cy5jcnJ1R0U1Z0lOU2g0aTg5cm9lR0g4UzU"
-                }
-                variable "vsphere_user" {
-                  description = "Usuario Vsphere"
-                  default     = "${vsphere_user}"
-                }
-                variable "vsphere_password" {
-                  description = "Senha do vsphere"
-                  default     = "${vsphere_password}"
-                }                
-                variable "name" {
-                  description = "Nome da maquina"
-                  default     = "${name}"
-                }
-                variable "vm_domain" {
-                  description = "Nome do Dominio"
-                  default     = "${vm_domain}"
-                }                
-                variable "vsphere_datacenter" {
-                  description = "Nome do Datacenter"
-                  default     = "${vsphere_datacenter}"
-                }   
-                variable "vsphere_cluster" {
-                  description = "Nome do Cluster"
-                  default     = "${vsphere_cluster}"
-                }                   
-                variable "vsphere_datastore" {
-                  description = "Nome do datastore"
-                  default     = "${vsphere_datastore}"
-                }                
-                variable "vsphere_network" {
-                  description = "Nome da rede"
-                  default     = "${vsphere_network}"
-                } 
-                variable "vsphere_resource_pool" {
-                  description = "Nome do reseource pool"
-                  default     = "${vsphere_resource_pool}"
-                } 
-                variable "vm_guest_id" {
-                  description = "Nome do guest"
-                  default     = "${vm_guest_id}"
-                } 
-                variable "template" {
-                  description = "Nome do template"
-                  default     = "${template}"
-                }                 
-                variable "host_name" {
-                  description = "Nome da maquina"
-                  default     = "${host_name}"
-                } 
-                variable "dns_server_list" {
-                  description = "Lista de DNS"
-                  default     = "${dns_server_list}"
-                } 
-                variable "ipv4_address" {
-                  description = "IP da maquina"
-                  default     = "${ipv4_address}"
-                } 
-                variable "ipv4_gateway" {
-                  description = "Gateway da maquina"
-                  default     = "${ipv4_gateway}"
-                } 
-                variable "ipv4_netmask" {
-                  description = "Mascara de rede"
-                  default     = "${ipv4_netmask}"
-                } 
-                variable "ssh_username" {
-                  description = "Username admin"
-                  default     = "${ssh_username}"
-                }        
-                variable "ssh_password" {
-                  description = "Password admin"
-                  default     = "${ssh_password}"
-                }    
-                variable "svc_username" {
-                  description = "usuario GC"
-                  default     = "${svc_username}"
-                }    
-                variable "svc_password" {
-                  description = "Senha usuario GC"
-                  default     = "${svc_password}"
-                }                                                                                                                                                                                             
-                variable "privatekeypath" {
-                  description = "Private key path"
-                  default     = "${privatekeypath}"
-                }                                                                                                                                                                                             
-                variable "public_key" {
-                  description = "Chave Publica"
-                  default     = "${public_key}"
-                }                                                                                                                                                                                             
-                '''
+                  sh '''
+                  cat <<EOF > vars.tf
+                  variable "vault_token" {
+                    type = string
+                    default = "hvs.CAESIJ9vAM7KXI0Y8T0GFmiQfd4ucGHVlx3QSG8MFHdFISqkGh4KHGh2cy5jcnJ1R0U1Z0lOU2g0aTg5cm9lR0g4UzU"
+                  }
+                  variable "vsphere_user" {
+                    description = "Usuario Vsphere"
+                    default     = "${vsphere_user}"
+                  }
+                  variable "vsphere_password" {
+                    description = "Senha do vsphere"
+                    default     = "${vsphere_password}"
+                  }
+                  variable "name" {
+                    description = "Nome da maquina"
+                    default     = "${name}"
+                  }
+                  variable "vm_domain" {
+                    description = "Nome do Dominio"
+                    default     = "${vm_domain}"
+                  }
+                  variable "vsphere_datacenter" {
+                    description = "Nome do Datacenter"
+                    default     = "${vsphere_datacenter}"
+                  }
+                  variable "vsphere_cluster" {
+                    description = "Nome do Cluster"
+                    default     = "${vsphere_cluster}"
+                  }
+                  variable "vsphere_datastore" {
+                    description = "Nome do datastore"
+                    default     = "${vsphere_datastore}"
+                  }
+                  variable "vsphere_network" {
+                    description = "Nome da rede"
+                    default     = "${vsphere_network}"
+                  }
+                  variable "name_prefix" {
+                    description = "Prefixo do nome da máquina virtual"
+                    default     = "${name_prefix}"
+                  }
+                  variable "cpus" {
+                    description = "Número de CPUs para a máquina virtual"
+                    default     = "${cpus}"
+                  }
+                  variable "memory" {
+                    description = "Quantidade de memória para a máquina virtual"
+                    default     = "${memory}"
+                  }
+                  variable "domain" {
+                    description = "Domínio para a máquina virtual"
+                    default     = "${domain}"
+                  }
+                  variable "vm_user" {
+                    description = "Nome de usuário para a máquina virtual"
+                    default     = "${vm_user}"
+                  }
+                  variable "vm_pass" {
+                    description = "Senha para a máquina virtual"
+                    default     = "${vm_pass}"
+                  }
+                  variable "vsphere_resource_pool" {
+                    description = "Nome do reseource pool"
+                    default     = "${vsphere_resource_pool}"
+                  }
+                  variable "vm_guest_id" {
+                    description = "Guest Id do SO em uso"
+                    default     = "${vm_guest_id}"
+                  }
+                  variable "template" {
+                    description = "Nome do template"
+                    default     = "${template}"
+                  }
+                  variable "hostname" {
+                    description = "Nome do host para a máquina virtual"
+                    default     = "${hostname}"
+                  }
+                  variable "vm_count" {
+                    description = "Número de máquinas virtuais a serem criadas"
+                    default     = "${vm_count}"
+                  }
+                  variable "dns_server_list" {
+                    description = "Lista de servidores DNS"
+                    default     = "${dns_server_list}"
+                  }
+                  variable "ipv4_address" {
+                    description = "Endereço IP para a máquina virtual"
+                    default     = "${ipv4_address}"
+                  }
+                  variable "ipv4_gateway" {
+                    description = "Gateway"
+                    default     = "${ipv4_gateway}"
+                  }
+                  variable "ipv4_netmask" {
+                    description = "Máscara de rede"
+                    default     = "${ipv4_netmask}"
+                  }
+                  variable "svc_username" {
+                    description = "Usuário do serviço"
+                    default     = "${svc_username}"
+                  }
+                  variable "svc_password" {
+                    description = "Senha do serviço"
+                    default     = "${svc_password}"
+                  }
+                  variable "privatekeypath" {
+                    description = "Caminho da chave privada"
+                    default     = "${privatekeypath}"
+                  }
+                  variable "public_key" {
+                    description = "Chave pública"
+                    default     = "${public_key}"
+                  }
+                  EOF
+                  '''
+
                 }
               }
             }
@@ -140,27 +167,29 @@ pipeline {
           steps {
             script {
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {                 
-              sh 'terragrunt plan -var "name=${name}" \
-                  -var "vm_domain=${vm_domain}" \
-                  -var "vsphere_datacenter=${vsphere_datacenter}" \
-                  -var "vsphere_cluster=${vsphere_cluster}" \
-                  -var "vsphere_network=${vsphere_network}" \
-                  -var "vsphere_resource_pool=${vsphere_resource_pool}" \
-                  -var "vm_guest_id=${vm_guest_id}" \
-                  -var "template=${template}" \
-                  -var "host_name=${host_name}" \
-                  -var "dns_server_list=${dns_server_list}" \
-                  -var "ipv4_address=${ipv4_address}" \
-                  -var "ipv4_gateway=${ipv4_gateway}" \
-                  -var "ipv4_netmask=${ipv4_netmask}" \
-                  -var "ssh_username=${ssh_username}" \
-                  -var "ssh_password=${ssh_password}" \
-                  -var "svc_username=${svc_username}" \
-                  -var "svc_password=${svc_password}" \
-                  -var "privatekeypath=${privatekeypath}" \
-                  -var "public_key=${public_key}" \
-                  -var "vsphere_user=${vsphere_user}" \
-                  -var "vsphere_password=${vsphere_password}"'
+                sh 'terragrunt plan -var "name=${name}" \
+                    -var "vm_domain=${vm_domain}" \
+                    -var "vsphere_datacenter=${vsphere_datacenter}" \
+                    -var "vsphere_cluster=${vsphere_cluster}" \
+                    -var "vsphere_network=${vsphere_network}" \
+                    -var "vsphere_resource_pool=${vsphere_resource_pool}" \
+                    -var "vm_guest_id=${vm_guest_id}" \
+                    -var "template=${template}" \
+                    -var "host_name=${host_name}" \
+                    -var "dns_server_list=${dns_server_list}" \
+                    -var "ipv4_address=${ipv4_address}" \
+                    -var "ipv4_gateway=${ipv4_gateway}" \
+                    -var "ipv4_netmask=${ipv4_netmask}" \
+                    -var "ssh_username=${ssh_username}" \
+                    -var "ssh_password=${ssh_password}" \
+                    -var "svc_username=${svc_username}" \
+                    -var "svc_password=${svc_password}" \
+                    -var "privatekeypath=${privatekeypath}" \
+                    -var "public_key=${public_key}" \
+                    -var "vsphere_user=${vsphere_user}" \
+                    -var "vsphere_password=${vsphere_password}" \
+                    -var "vsphere_datastore=${vsphere_datastore}" \
+                    -var "name_prefix=${name_prefix}"'
               }
             }          
           }
