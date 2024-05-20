@@ -12,7 +12,7 @@ provider "vault" {
 }
 
 data "vault_generic_secret" "vsphere_credentials" {
-  path = "servicos/jenkins/user_svc_vcenter"
+  path = "servicos/jenkins/user_svc_vcenter/user_svc_vcenter_passwd"
 }
 
 provider "vsphere" {
