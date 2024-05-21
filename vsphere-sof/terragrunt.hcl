@@ -12,7 +12,7 @@ provider "vault" {
 }
 
 data "vault_generic_secret" "vsphere_credentials" {
-  path = "servicos/user_svc_vcenter"
+  path = "secrets/servicos/user_svc_vcenter"
 }
 
 provider "vsphere" {
