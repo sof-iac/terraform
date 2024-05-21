@@ -85,7 +85,7 @@ pipeline {
                     default     = "${name_prefix}"
                   }
                   variable "cpus" {
-                    description = "Número de CPUs para a maquina virtual"
+                    description = "Numero de CPUs para a maquina virtual"
                     default     = "${cpus}"
                   }
                   variable "memory" {
@@ -116,12 +116,12 @@ pipeline {
                     description = "Nome do template"
                     default     = "${template}"
                   }
-                  variable "hostname" {
+                  variable "host_name" {
                     description = "Nome do host para a maquina virtual"
-                    default     = "${host_name}"
+                    default     = "${name}"
                   }
                   variable "vm_count" {
-                    description = "Número de maquinas virtuais a serem criadas"
+                    description = "Numero de maquinas virtuais a serem criadas"
                     default     = "${vm_count}"
                   }
                   variable "dns_server_list" {
@@ -174,7 +174,7 @@ pipeline {
                     -var "vsphere_resource_pool=${vsphere_resource_pool}" \
                     -var "vm_guest_id=${vm_guest_id}" \
                     -var "template=${template}" \
-                    -var "hostname=${host_name}" \
+                    -var "host_name=${name}" \
                     -var "dns_server_list=${dns_server_list}" \
                     -var "ipv4_address=${ipv4_address}" \
                     -var "ipv4_gateway=${ipv4_gateway}" \

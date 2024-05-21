@@ -1,6 +1,13 @@
 # sof/envs/lab/test_connection.tf
 # modules/Ubuntu_Cloud/main.tf
 
+locals {
+  templatevars = {
+    name         = var.name,
+    host_name    = var.host_name,
+  }
+}
+
 data "vsphere_datacenter" "dc" {
   name = "SOF"
 }
@@ -73,7 +80,7 @@ resource "vsphere_virtual_machine" "vm" {
 
     customize {
       linux_options {
-        host_name = var.hostname
+        host_name = var.host_name
         domain    = var.domain
       }
 
