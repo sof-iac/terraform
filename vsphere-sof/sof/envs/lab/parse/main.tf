@@ -85,7 +85,7 @@ resource "vsphere_virtual_machine" "vm" {
       }
 
       network_interface {
-        ipv4_address = format("%s.%d", regex("^[0-9]+.[0-9]+.[0-9]+", var.ipv4_address), regex("[0-9]+$", var.ipv4_address) + count.index)
+        ipv4_address = var.ipv4_addres
         ipv4_netmask = var.ipv4_netmask
       }
 
