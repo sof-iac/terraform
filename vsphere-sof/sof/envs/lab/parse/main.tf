@@ -4,16 +4,26 @@
 data "vsphere_datacenter" "dc" {
   name = "SOF"
 }
+data "vsphere_datastore_cluster" "datastore_cluster" {
+  name          = "Storage_Purestorage"
+  datacenter_id = "${data.vsphere_datacenter.dc.id}"
+}
+
+data "vsphere_resource_pool" "pool" {
+  name          = "Blade_Atreus/Resources" 
+  datacenter_id = "${data.vsphere_datacenter.dc.id}"
+}
+
 
 data "vsphere_datastore" "datastore" {
   name          = var.vsphere_datastore
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
-data "vsphere_compute_cluster" "cluster" {
-  name          = var.vsphere_cluster
-  datacenter_id = data.vsphere_datacenter.dc.id
-}
+#data "vsphere_compute_cluster" "cluster" {
+  #name          = var.vsphere_cluster
+  #datacenter_id = data.vsphere_datacenter.dc.id
+#}
 
 data "vsphere_network" "network" {
   name          = var.vsphere_network
@@ -28,7 +38,9 @@ data "vsphere_virtual_machine" "template" {
 resource "vsphere_virtual_machine" "vm" {
   count             = var.vm_count
   name              = upper(format("%s%02d", var.name_prefix, count.index + 1))
-  resource_pool_id  = data.vsphere_compute_cluster.cluster.id
+  resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
+  datastore_cluster_id     = "${data.vsphere_datastore_cluster.datastore_cluster.id}"
+  #resource_pool_id  = data.vsphere_compute_cluster.cluster.id
   datastore_id      = data.vsphere_datastore.datastore.id
 
   num_cpus          = var.cpus
