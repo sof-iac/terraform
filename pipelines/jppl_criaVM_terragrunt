@@ -25,7 +25,7 @@ pipeline {
       choice(name: 'template', choices: ['templateubuntu2204'], description: 'Nome do Template')
       string(name: 'host_name', defaultValue: 'ubuntu01tf', description: 'Nome do host para a maquina virtual')
       choice(name: 'vm_count', choices: [ '1', '2', '3', '4', '2', '3', '4'], description: 'Número de maquinas virtuais a serem criadas')
-      string(name: 'dns_server_list', defaultValue: '"172.27.3.5","172.27.3.6"', description: 'List of DNS servers')
+      string(name: 'dns_server_list', defaultValue: '172.27.3.5,172.27.3.6', description: 'List of DNS servers')
       string(name: 'ipv4_address', defaultValue: '192.168.30.234', description: 'Endereço IP para a máquina virtual')
       string(name: 'ipv4_gateway', defaultValue: '192.168.30.1', description: 'Gateway')
       string(name: 'ipv4_netmask', defaultValue: '24', description: 'Mascara de rede')
@@ -41,6 +41,8 @@ pipeline {
         stage('Create vars.tf') {
             steps {
               script {
+                def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
+                echo "Processed IP addresses: ${ipAddresses}"
                 dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {               
                   sh '''
                   cat <<EOF > vars.tf
@@ -126,7 +128,7 @@ pipeline {
                   }
                   variable "dns_server_list" {
                     description = "Lista de servidores DNS"
-                    default     = "${dns_server_list}"
+                    default     = "${ipAddresses}"
                   }
                   variable "ipv4_address" {
                     description = "Endereço IP para a maquina virtual"
@@ -165,6 +167,8 @@ pipeline {
         stage('Terraform Plan') {
           steps {
             script {
+              def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
+              echo "Processed IP addresses: ${ipAddresses}"              
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {                 
                 sh 'terragrunt plan -var "name=${name}" \
                     -var "vm_domain=${vm_domain}" \
@@ -175,7 +179,7 @@ pipeline {
                     -var "vm_guest_id=${vm_guest_id}" \
                     -var "template=${template}" \
                     -var "host_name=${name}" \
-                    -var "dns_server_list=${dns_server_list}" \
+                    -var "dns_server_list=${ipAddresses}" \
                     -var "ipv4_address=${ipv4_address}" \
                     -var "ipv4_gateway=${ipv4_gateway}" \
                     -var "ipv4_netmask=${ipv4_netmask}" \
