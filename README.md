@@ -131,6 +131,18 @@ Além disso, você pode especificar o local do arquivo tfstate ao executar os co
 terraform apply -state=/data/terraform.tfstate
 ```
 
+### Automatizar a aprovação
+
+Para automatizar a aprovação em um comando terragrunt apply em um pipeline Jenkins, você pode usar a opção -auto-approve do Terragrunt. Isso evitará que o Terragrunt solicite a confirmação do usuário antes de fazer alterações.
+
+Aqui está um exemplo de como você pode fazer isso no seu pipeline Jenkins:
+
+```
+sh '''
+    terragrunt apply -auto-approve
+'''
+```
+
 ## Terraform: Módulos, Configuração DRY e Imutabilidade
 
 ### Módulos no Terraform

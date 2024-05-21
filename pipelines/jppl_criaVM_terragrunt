@@ -197,7 +197,7 @@ pipeline {
           steps {
             script {
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {                 
-                sh 'terragrunt apply -var "name=${name}" \
+                sh 'terragrunt apply -auto-approve -var "name=${name}" \
                     -var "vm_domain=${vm_domain}" \
                     -var "vsphere_datacenter=${vsphere_datacenter}" \
                     -var "vsphere_cluster=${vsphere_cluster}" \
