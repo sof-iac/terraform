@@ -98,7 +98,7 @@ resource "vsphere_virtual_machine" "vm" {
     properties = {
       "user-data" = base64encode(<<-EOT
         #cloud-config
-        hostname: "${var.hostname}"
+        hostname: "${var.host_name}"
 
         users:
         - name: "${var.vm_user}"
