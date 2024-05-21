@@ -85,7 +85,7 @@ resource "vsphere_virtual_machine" "vm" {
       }
 
       network_interface {
-        ipv4_address = var.ipv4_addres
+        ipv4_address = var.ipv4_address
         ipv4_netmask = var.ipv4_netmask
       }
 
