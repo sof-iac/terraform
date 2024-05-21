@@ -15,10 +15,10 @@ data "vsphere_resource_pool" "pool" {
 }
 
 
-data "vsphere_datastore" "datastore" {
-  name          = var.vsphere_datastore
-  datacenter_id = data.vsphere_datacenter.dc.id
-}
+#data "vsphere_datastore" "datastore" {
+  #name          = var.vsphere_datastore
+  #datacenter_id = data.vsphere_datacenter.dc.id
+#}
 
 #data "vsphere_compute_cluster" "cluster" {
   #name          = var.vsphere_cluster
@@ -41,7 +41,7 @@ resource "vsphere_virtual_machine" "vm" {
   resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
   datastore_cluster_id     = "${data.vsphere_datastore_cluster.datastore_cluster.id}"
   #resource_pool_id  = data.vsphere_compute_cluster.cluster.id
-  datastore_id      = data.vsphere_datastore.datastore.id
+ # datastore_id      = data.vsphere_datastore.datastore.id
 
   num_cpus          = var.cpus
   memory            = var.memory
