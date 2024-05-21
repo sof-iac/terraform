@@ -54,11 +54,14 @@ resource "vsphere_virtual_machine" "vm" {
     adapter_type     = data.vsphere_virtual_machine.template.network_interface_types[0]
   }
 
-  disk {
-    label            = "disk0"
-    size             = data.vsphere_virtual_machine.template.disks.0.size
-    eagerly_scrub    = data.vsphere_virtual_machine.template.disks.0.eagerly_scrub
-    thin_provisioned = data.vsphere_virtual_machine.template.disks.0.thin_provisioned
+  dynamic "disk" {
+    for_each = "${data.vsphere_virtual_machine.template.disks}"
+      content {
+        label = "${disk.value["label"]}"
+        size = disk.value["size"]
+        unit_number = disk.value["unit_number"]
+        thin_provisioned  = disk.value["thin_provisioned"]
+    }
   }
 
   cdrom {
