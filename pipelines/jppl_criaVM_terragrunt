@@ -128,7 +128,7 @@ pipeline {
                   }
                   variable "dns_server_list" {
                     description = "Lista de servidores DNS"
-                    default     = ${ipAddresses}
+                    default     = "${ipAddresses}"
                   }
                   variable "ipv4_address" {
                     description = "Endereço IP para a maquina virtual"
