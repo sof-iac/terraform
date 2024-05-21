@@ -12,12 +12,12 @@ provider "vault" {
 }
 
 data "vault_generic_secret" "vsphere_credentials" {
-  path = "servicos/jenkins/user_svc_vcenter"
+  path = "servicos/user_svc_vcenter"
 }
 
 provider "vsphere" {
   user           = "user_svc_vcenter"
-  password       = data.vault_generic_secret.vsphere_credentials.data["user_svc_vcenter_passwd"]
+  password       = data.vault_generic_secret.vsphere_credentials.data["username"]
   vsphere_server = "pvcn01.sof.intra"
 
   # if you have a self-signed cert
