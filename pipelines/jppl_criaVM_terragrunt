@@ -23,7 +23,7 @@ pipeline {
       string(name: 'vsphere_resource_pool', defaultValue: 'Blade_Atreus/Resources', description: 'vsphere_resource_pool')
       string(name: 'vm_guest_id', defaultValue: 'ubuntu64Guest', description: 'Guest Id do SO em uso')
       choice(name: 'template', choices: ['templateubuntu2204'], description: 'Nome do Template')
-      string(name: 'hostname', defaultValue: 'ubuntu01tf', description: 'Nome do host para a maquina virtual')
+      string(name: 'host_name', defaultValue: 'ubuntu01tf', description: 'Nome do host para a maquina virtual')
       choice(name: 'vm_count', choices: [ '1', '2', '3', '4', '2', '3', '4'], description: 'Número de maquinas virtuais a serem criadas')
       string(name: 'dns_server_list', defaultValue: '172.27.3.5,172.27.3.6', description: 'List of DNS servers')
       string(name: 'ipv4_address', defaultValue: '192.168.30.234', description: 'Endereço IP para a máquina virtual')
@@ -81,27 +81,27 @@ pipeline {
                     default     = "${vsphere_network}"
                   }
                   variable "name_prefix" {
-                    description = "Prefixo do nome da máquina virtual"
+                    description = "Prefixo do nome da maquina virtual"
                     default     = "${name_prefix}"
                   }
                   variable "cpus" {
-                    description = "Número de CPUs para a máquina virtual"
+                    description = "Número de CPUs para a maquina virtual"
                     default     = "${cpus}"
                   }
                   variable "memory" {
-                    description = "Quantidade de memória para a máquina virtual"
+                    description = "Quantidade de memória para a maquina virtual"
                     default     = "${memory}"
                   }
                   variable "domain" {
-                    description = "Domínio para a máquina virtual"
+                    description = "Domínio para a maquina virtual"
                     default     = "${domain}"
                   }
                   variable "vm_user" {
-                    description = "Nome de usuário para a máquina virtual"
+                    description = "Nome de usuario para a máquina virtual"
                     default     = "${vm_user}"
                   }
                   variable "vm_pass" {
-                    description = "Senha para a máquina virtual"
+                    description = "Senha para a maquina virtual"
                     default     = "${vm_pass}"
                   }
                   variable "vsphere_resource_pool" {
@@ -117,11 +117,11 @@ pipeline {
                     default     = "${template}"
                   }
                   variable "hostname" {
-                    description = "Nome do host para a máquina virtual"
-                    default     = "${hostname}"
+                    description = "Nome do host para a maquina virtual"
+                    default     = "${host_name}"
                   }
                   variable "vm_count" {
-                    description = "Número de máquinas virtuais a serem criadas"
+                    description = "Número de maquinas virtuais a serem criadas"
                     default     = "${vm_count}"
                   }
                   variable "dns_server_list" {
@@ -129,7 +129,7 @@ pipeline {
                     default     = "${dns_server_list}"
                   }
                   variable "ipv4_address" {
-                    description = "Endereço IP para a máquina virtual"
+                    description = "Endereço IP para a maquina virtual"
                     default     = "${ipv4_address}"
                   }
                   variable "ipv4_gateway" {
@@ -137,11 +137,11 @@ pipeline {
                     default     = "${ipv4_gateway}"
                   }
                   variable "ipv4_netmask" {
-                    description = "Máscara de rede"
+                    description = "Mascara de rede"
                     default     = "${ipv4_netmask}"
                   }
                   variable "svc_username" {
-                    description = "Usuário do serviço"
+                    description = "Usuario do serviço"
                     default     = "${svc_username}"
                   }
                   variable "svc_password" {
@@ -174,7 +174,7 @@ pipeline {
                     -var "vsphere_resource_pool=${vsphere_resource_pool}" \
                     -var "vm_guest_id=${vm_guest_id}" \
                     -var "template=${template}" \
-                    -var "hostname=${hostname}" \
+                    -var "hostname=${host_name}" \
                     -var "dns_server_list=${dns_server_list}" \
                     -var "ipv4_address=${ipv4_address}" \
                     -var "ipv4_gateway=${ipv4_gateway}" \
