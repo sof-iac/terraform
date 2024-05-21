@@ -93,25 +93,6 @@ resource "vsphere_virtual_machine" "vm" {
       dns_server_list = [var.dns_server_list]
     }
   }
-
-  vapp {
-    properties = {
-      "user-data" = base64encode(<<-EOT
-        #cloud-config
-        hostname: "${var.host_name}"
-
-        users:
-        - name: "${var.vm_user}"
-          passwd: "${var.vm_pass}"
-          lock_passwd: false
-          sudo: 'ALL=(ALL) ALL'
-          groups: [adm, audio, cdrom, dialout, floppy, video, plugdev, dip, netdev]
-          ssh-authorized-keys:
-          - "${var.public_key}"
-        EOT
-      )
-    }
-  }
 }
 
 
