@@ -25,7 +25,7 @@ pipeline {
       choice(name: 'template', choices: ['templateubuntu2204'], description: 'Nome do Template')
       string(name: 'host_name', defaultValue: 'ubuntu01tf', description: 'Nome do host para a maquina virtual')
       choice(name: 'vm_count', choices: [ '1', '2', '3', '4', '2', '3', '4'], description: 'Número de maquinas virtuais a serem criadas')
-      string(name: 'dns_server_list', defaultValue: '172.27.3.5,172.27.3.6', description: 'List of DNS servers')
+      string(name: 'dns_server_list', defaultValue: '"172.27.3.5","172.27.3.6"', description: 'List of DNS servers')
       string(name: 'ipv4_address', defaultValue: '192.168.30.234', description: 'Endereço IP para a máquina virtual')
       string(name: 'ipv4_gateway', defaultValue: '192.168.30.1', description: 'Gateway')
       string(name: 'ipv4_netmask', defaultValue: '24', description: 'Mascara de rede')
