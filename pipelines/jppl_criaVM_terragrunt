@@ -33,8 +33,6 @@ pipeline {
       password(name: 'svc_password', description: 'Senha do ansible')
       string(name: 'privatekeypath', defaultValue: './id_ed25519')
       string(name: 'public_key', defaultValue: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra', description: 'Chave publica do ansible')
-      string(name: 'vsphere_user', defaultValue: 'rogeriovs_admin', description: 'Usuario Vsphere')
-      password(name: 'vsphere_password', description: 'Senha do vsphere')
     }
 
     stages {
@@ -49,14 +47,6 @@ pipeline {
                   variable "vault_token" {
                     type = string
                     default = "hvs.CAESIJ9vAM7KXI0Y8T0GFmiQfd4ucGHVlx3QSG8MFHdFISqkGh4KHGh2cy5jcnJ1R0U1Z0lOU2g0aTg5cm9lR0g4UzU"
-                  }
-                  variable "vsphere_user" {
-                    description = "Usuario Vsphere"
-                    default     = "${vsphere_user}"
-                  }
-                  variable "vsphere_password" {
-                    description = "Senha do vsphere"
-                    default     = "${vsphere_password}"
                   }
                   variable "name" {
                     description = "Nome da maquina"
@@ -189,8 +179,6 @@ pipeline {
                     -var "svc_password=${svc_password}" \
                     -var "privatekeypath=${privatekeypath}" \
                     -var "public_key=${public_key}" \
-                    -var "vsphere_user=${vsphere_user}" \
-                    -var "vsphere_password=${vsphere_password}" \
                     -var "vsphere_datastore=${vsphere_datastore}" \
                     -var "name_prefix=${name_prefix}"'
               }
@@ -222,8 +210,6 @@ pipeline {
                     -var "svc_password=${svc_password}" \
                     -var "privatekeypath=${privatekeypath}" \
                     -var "public_key=${public_key}" \
-                    -var "vsphere_user=${vsphere_user}" \
-                    -var "vsphere_password=${vsphere_password}" \
                     -var "vsphere_datastore=${vsphere_datastore}" \
                     -var "name_prefix=${name_prefix}"'
               }
