@@ -85,12 +85,11 @@ resource "vsphere_virtual_machine" "vm" {
       }
 
       network_interface {
-        ipv4_address = var.ipv4_address
-        ipv4_netmask = var.ipv4_netmask
+        ipv4_address = "192.168.30.234"
+        ipv4_netmask = "255.255.255.0/24"
       }
-
-      ipv4_gateway    = var.ipv4_gateway
-      dns_server_list = [var.dns_server_list]
+      ipv4_gateway = "192.168.30.1"
+      dns_server_list = ["172.27.3.5", "172.27.3.6"]
     }
   }
 }
