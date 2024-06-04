@@ -1,5 +1,5 @@
 inputs = {
-  vault_token = "hvs.CAESIJ9vAM7KXI0Y8T0GFmiQfd4ucGHVlx3QSG8MFHdFISqkGh4KHGh2cy5jcnJ1R0U1Z0lOU2g0aTg5cm9lR0g4UzU"
+  vault_token = "hvs.CAESIIs8y0vTnfWXDlcTWqmK_7YLOoB_RpBqAZ6mLiXg-Og5Gh4KHGh2cy5rZHVBWm5VTmZEWGs5cmVVN3Z5bjdvNTg"
 }
 
 generate "provider" {
