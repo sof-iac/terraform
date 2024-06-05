@@ -5,6 +5,10 @@ locals {
   templatevars = {
     name         = var.name,
     host_name    = var.host_name,
+    cpus         = var.cpus
+    memory       = var.memory
+    vm_domain    = var.vm_domain
+    ipv4_address = var.ipv4_address
   }
 }
 
@@ -87,7 +91,7 @@ resource "vsphere_virtual_machine" "vm" {
       }
 
       network_interface {
-        ipv4_address = "192.168.30.234"
+        ipv4_address = var.ipv4_address
         ipv4_netmask = "24"
       }
       ipv4_gateway = "192.168.30.1"

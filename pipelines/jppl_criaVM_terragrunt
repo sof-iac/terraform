@@ -81,7 +81,7 @@ pipeline {
                     default     = "${cpus}"
                   }
                   variable "memory" {
-                    description = "Quantidade de memória para a maquina virtual"
+                    description = "Quantidade de memoria para a maquina virtual"
                     default     = "${memory}"
                   }
                   variable "domain" {
@@ -137,7 +137,7 @@ pipeline {
                     default     = "${svc_username}"
                   }
                   variable "svc_password" {
-                    description = "Senha do serviço"
+                    description = "Senha do servico"
                     default     = "${svc_password}"
                   }
                   variable "privatekeypath" {
@@ -169,6 +169,8 @@ pipeline {
                     -var "vm_guest_id=${vm_guest_id}" \
                     -var "template=${template}" \
                     -var "host_name=${name}" \
+                    -var "memory=${memory}" \
+                    -var "cpus=${cpus}" \
                     -var "dns_server_list=${ipAddresses}" \
                     -var "ipv4_address=${ipv4_address}" \
                     -var "ipv4_gateway=${ipv4_gateway}" \
@@ -200,6 +202,8 @@ pipeline {
                     -var "vm_guest_id=${vm_guest_id}" \
                     -var "template=${template}" \
                     -var "host_name=${name}" \
+                    -var "memory=${memory}" \
+                    -var "cpus=${cpus}" \                    
                     -var "dns_server_list=${ipAddresses}" \
                     -var "ipv4_address=${ipv4_address}" \
                     -var "ipv4_gateway=${ipv4_gateway}" \
