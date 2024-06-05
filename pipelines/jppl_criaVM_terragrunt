@@ -170,7 +170,7 @@ pipeline {
                     -var "template=${template}" \
                     -var "host_name=${name}" \
                     -var "memory=${memory}" \
-                    -var "cpus=${cpus}" \
+                    -var "cpus=${cpus}" \                                        
                     -var "dns_server_list=${ipAddresses}" \
                     -var "ipv4_address=${ipv4_address}" \
                     -var "ipv4_gateway=${ipv4_gateway}" \
@@ -203,7 +203,7 @@ pipeline {
                     -var "template=${template}" \
                     -var "host_name=${name}" \
                     -var "memory=${memory}" \
-                    -var "cpus=${cpus}" \                    
+                    -var "cpus=${cpus}" \                       
                     -var "dns_server_list=${ipAddresses}" \
                     -var "ipv4_address=${ipv4_address}" \
                     -var "ipv4_gateway=${ipv4_gateway}" \
