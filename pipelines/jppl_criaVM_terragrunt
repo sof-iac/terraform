@@ -160,28 +160,28 @@ pipeline {
               def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
               echo "Processed IP addresses: ${ipAddresses}"              
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {                 
-                sh 'terragrunt plan -var "name=${name}" \
-                    -var "vm_domain=${vm_domain}" \
-                    -var "vsphere_datacenter=${vsphere_datacenter}" \
-                    -var "vsphere_cluster=${vsphere_cluster}" \
-                    -var "vsphere_network=${vsphere_network}" \
-                    -var "vsphere_resource_pool=${vsphere_resource_pool}" \
-                    -var "vm_guest_id=${vm_guest_id}" \
-                    -var "template=${template}" \
-                    -var "host_name=${name}" \
-                    -var "memory=${memory}" \
-                    -var "cpus=${cpus}" \                                        
-                    -var "dns_server_list=${ipAddresses}" \
-                    -var "ipv4_address=${ipv4_address}" \
-                    -var "ipv4_gateway=${ipv4_gateway}" \
-                    -var "ipv4_netmask=${ipv4_netmask}" \
-                    -var "vm_user=${vm_user}" \
-                    -var "vm_pass=${vm_pass}" \
-                    -var "svc_username=${svc_username}" \
-                    -var "svc_password=${svc_password}" \
-                    -var "privatekeypath=${privatekeypath}" \
-                    -var "public_key=${public_key}" \
-                    -var "vsphere_datastore=${vsphere_datastore}" \
+                sh 'terragrunt plan -var "name=${name}" +
+                    -var "vm_domain=${vm_domain}" +
+                    -var "vsphere_datacenter=${vsphere_datacenter}" +
+                    -var "vsphere_cluster=${vsphere_cluster}" +
+                    -var "vsphere_network=${vsphere_network}" +
+                    -var "vsphere_resource_pool=${vsphere_resource_pool}" +
+                    -var "vm_guest_id=${vm_guest_id}" +
+                    -var "template=${template}" +
+                    -var "host_name=${name}" +
+                    -var "memory=${memory}" +
+                    -var "cpus=${cpus}" +                                        
+                    -var "dns_server_list=${ipAddresses}" +
+                    -var "ipv4_address=${ipv4_address}" +
+                    -var "ipv4_gateway=${ipv4_gateway}" +
+                    -var "ipv4_netmask=${ipv4_netmask}" +
+                    -var "vm_user=${vm_user}" +
+                    -var "vm_pass=${vm_pass}" +
+                    -var "svc_username=${svc_username}" +
+                    -var "svc_password=${svc_password}" +
+                    -var "privatekeypath=${privatekeypath}" +
+                    -var "public_key=${public_key}" +
+                    -var "vsphere_datastore=${vsphere_datastore}" +
                     -var "name_prefix=${name_prefix}"'
               }
             }          
@@ -193,28 +193,28 @@ pipeline {
               def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
               echo "Processed IP addresses: ${ipAddresses}"               
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {                 
-                sh 'terragrunt apply -auto-approve -var "name=${name}" \
-                    -var "vm_domain=${vm_domain}" \
-                    -var "vsphere_datacenter=${vsphere_datacenter}" \
-                    -var "vsphere_cluster=${vsphere_cluster}" \
-                    -var "vsphere_network=${vsphere_network}" \
-                    -var "vsphere_resource_pool=${vsphere_resource_pool}" \
-                    -var "vm_guest_id=${vm_guest_id}" \
-                    -var "template=${template}" \
-                    -var "host_name=${name}" \
-                    -var "memory=${memory}" \
-                    -var "cpus=${cpus}" \                       
-                    -var "dns_server_list=${ipAddresses}" \
-                    -var "ipv4_address=${ipv4_address}" \
-                    -var "ipv4_gateway=${ipv4_gateway}" \
-                    -var "ipv4_netmask=${ipv4_netmask}" \
-                    -var "vm_user=${vm_user}" \
-                    -var "vm_pass=${vm_pass}" \
-                    -var "svc_username=${svc_username}" \
-                    -var "svc_password=${svc_password}" \
-                    -var "privatekeypath=${privatekeypath}" \
-                    -var "public_key=${public_key}" \
-                    -var "vsphere_datastore=${vsphere_datastore}" \
+                sh 'terragrunt apply -auto-approve -var "name=${name}" +
+                    -var "vm_domain=${vm_domain}" +
+                    -var "vsphere_datacenter=${vsphere_datacenter}" +
+                    -var "vsphere_cluster=${vsphere_cluster}" +
+                    -var "vsphere_network=${vsphere_network}" +
+                    -var "vsphere_resource_pool=${vsphere_resource_pool}" +
+                    -var "vm_guest_id=${vm_guest_id}" +
+                    -var "template=${template}" +
+                    -var "host_name=${name}" +
+                    -var "memory=${memory}" +
+                    -var "cpus=${cpus}" +                       
+                    -var "dns_server_list=${ipAddresses}" +
+                    -var "ipv4_address=${ipv4_address}" +
+                    -var "ipv4_gateway=${ipv4_gateway}" +
+                    -var "ipv4_netmask=${ipv4_netmask}" +
+                    -var "vm_user=${vm_user}" +
+                    -var "vm_pass=${vm_pass}" +
+                    -var "svc_username=${svc_username}" +
+                    -var "svc_password=${svc_password}" +
+                    -var "privatekeypath=${privatekeypath}" +
+                    -var "public_key=${public_key}" +
+                    -var "vsphere_datastore=${vsphere_datastore}" +
                     -var "name_prefix=${name_prefix}"'
               }
             }          
