@@ -133,7 +133,7 @@ pipeline {
                     default     = "${ipv4_netmask}"
                   }
                   variable "svc_username" {
-                    description = "Usuario do serviço"
+                    description = "Usuario do servico"
                     default     = "${svc_username}"
                   }
                   variable "svc_password" {
@@ -145,7 +145,7 @@ pipeline {
                     default     = "${privatekeypath}"
                   }
                   variable "public_key" {
-                    description = "Chave pública"
+                    description = "Chave publica"
                     default     = "${public_key}"
                   }
                   '''
