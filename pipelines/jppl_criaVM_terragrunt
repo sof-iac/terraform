@@ -157,10 +157,24 @@ pipeline {
         stage('Terragrant Plan') {
           steps {
             script {
+              // define the vault configuration
+              def vaultConfig = [
+                vaultUrl: 'https://vault.app.sof.intra',
+                vaultCredentialId: 'token_vault',
+                engineVersion: 2
+              ]
               def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
-              echo "Processed IP addresses: ${ipAddresses}"              
+              echo "Processed IP addresses: ${ipAddresses}"           
+                // wrap the pipeline block with the `withVault` block
+              withVault([configuration: vaultConfig]) {
+                // read the secret from the vault
+              def secrets = [
+                [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
+                  [envVar: 'VAULT_TOKEN', vaultKey: 'username']
+                ]]
+              ]
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {        
-              withCredentials([string(credentialsId: 'vault_jenkins_role', variable: 'VAULT_TOKEN')]) {
+              withVaultSecrets(secrets) {
               sh '''terragrunt plan -var "vault_token=$VAULT_TOKEN" ' +
                     '-var "name=${name}" ' +
                     '-var "vm_domain=${vm_domain}" ' +
@@ -189,7 +203,8 @@ pipeline {
                 }
 
               }
-            }          
+            }    
+            }      
           }
         }
         stage('Terragrant Apply') {
