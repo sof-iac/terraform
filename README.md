@@ -172,3 +172,21 @@ https://releases.hashicorp.com/terraform/
 ### Guest OS Indentifier VM no Vsphere - Utilizado para identificar o Guestid a usar no Terraform
 
 https://vdc-download.vmware.com/vmwb-repository/dcr-public/b50dcbbf-051d-4204-a3e7-e1b618c1e384/538cf2ec-b34f-4bae-a332-3820ef9e7773/vim.vm.GuestOsDescriptor.GuestOsIdentifier.html
+
+### Tamanho de um disco específico no bloco dynamic "disk"
+
+Para determinar o tamanho de um disco específico no bloco dynamic "disk" do Ansible, você pode usar uma condição para verificar o rótulo (label) do disco:
+
+```
+dynamic "disk" {
+  for_each = data.vsphere_virtual_machine.template.disks
+  content {
+    label            = disk.value["label"]
+    unit_number      = disk.value["unit_number"]
+    thin_provisioned = disk.value["thin_provisioned"]
+
+    # Verifique o rótulo do disco e defina o tamanho de acordo
+    size = disk.value["label"] == "nome_do_disco" ? "tamanho_desejado" : disk.value["size"]
+  }
+}
+```
