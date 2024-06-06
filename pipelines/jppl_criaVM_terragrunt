@@ -157,26 +157,10 @@ pipeline {
         stage('Terragrant Plan') {
           steps {
             script {
-              // define the vault configuration
-              def vaultConfig = [
-                vaultUrl: 'https://vault.app.sof.intra',
-                vaultCredentialId: 'token_vault',
-                engineVersion: 1
-              ]
               def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
-              echo "Processed IP addresses: ${ipAddresses}"           
-                // wrap the pipeline block with the `withVault` block
-              withVault([configuration: vaultConfig]) {
-                // read the secret from the vault
-              def secrets = [
-                [path: 'secrets/secrets/servicos/user_svc_vcenter', engineVersion: 1, secretValues: [
-                  [envVar: 'VAULT_TOKEN', vaultKey: 'username']
-                ]]
-              ]
-              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {        
-              withVaultSecrets(secrets) {
-              sh '''terragrunt plan -var "vault_token=$VAULT_TOKEN" ' +
-                    '-var "name=${name}" ' +
+              echo "Processed IP addresses: ${ipAddresses}"              
+              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {                 
+                sh 'terragrunt plan -var "name=${name}" ' +
                     '-var "vm_domain=${vm_domain}" ' +
                     '-var "vsphere_datacenter=${vsphere_datacenter}" ' +
                     '-var "vsphere_cluster=${vsphere_cluster}" ' +
@@ -198,13 +182,9 @@ pipeline {
                     '-var "privatekeypath=${privatekeypath}" ' +
                     '-var "public_key=${public_key}" ' +
                     '-var "vsphere_datastore=${vsphere_datastore}" ' +
-                    '-var "name_prefix=${name_prefix}"
-                  '''
-                }
-
+                    '-var "name_prefix=${name_prefix}"'
               }
-            }    
-            }      
+            }          
           }
         }
         stage('Terragrant Apply') {
