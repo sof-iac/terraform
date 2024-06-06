@@ -161,7 +161,7 @@ pipeline {
               def vaultConfig = [
                 vaultUrl: 'https://vault.app.sof.intra',
                 vaultCredentialId: 'token_vault',
-                engineVersion: 2
+                engineVersion: 1
               ]
               def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
               echo "Processed IP addresses: ${ipAddresses}"           
@@ -169,7 +169,7 @@ pipeline {
               withVault([configuration: vaultConfig]) {
                 // read the secret from the vault
               def secrets = [
-                [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
+                [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 1, secretValues: [
                   [envVar: 'VAULT_TOKEN', vaultKey: 'username']
                 ]]
               ]
