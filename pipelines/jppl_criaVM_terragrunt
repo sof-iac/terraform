@@ -154,7 +154,7 @@ pipeline {
               }
             }
         }
-        stage('Terraform Plan') {
+        stage('Terragrant Plan') {
           steps {
             script {
               def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
@@ -187,7 +187,7 @@ pipeline {
             }          
           }
         }
-        stage('Terraform Apply') {
+        stage('Terragrant Apply') {
           steps {
             script {
               def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
