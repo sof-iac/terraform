@@ -160,7 +160,7 @@ pipeline {
               def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
               echo "Processed IP addresses: ${ipAddresses}"              
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {        
-              withCredentials([string(credentialsId: 'token_vault', variable: 'VAULT_TOKEN')]) {
+              withCredentials([string(credentialsId: 'vault_jenkins_role', variable: 'VAULT_TOKEN')]) {
               sh '''terragrunt plan -var "vault_token=$VAULT_TOKEN" ' +
                     '-var "name=${name}" ' +
                     '-var "vm_domain=${vm_domain}" ' +
