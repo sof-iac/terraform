@@ -1,5 +1,3 @@
-# sof/envs/lab/test_connection.tf
-# modules/Ubuntu_Cloud/main.tf
 
 locals {
   templatevars = {

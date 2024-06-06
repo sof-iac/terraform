@@ -159,8 +159,10 @@ pipeline {
             script {
               def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
               echo "Processed IP addresses: ${ipAddresses}"              
-              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {                 
-                sh 'terragrunt plan -var "name=${name}" ' +
+              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {        
+              withCredentials([string(credentialsId: 'token_vault', variable: 'VAULT_TOKEN')]) {
+              sh '''terragrunt plan -var "vault_token=$VAULT_TOKEN" ' +
+                    '-var "name=${name}" ' +
                     '-var "vm_domain=${vm_domain}" ' +
                     '-var "vsphere_datacenter=${vsphere_datacenter}" ' +
                     '-var "vsphere_cluster=${vsphere_cluster}" ' +
@@ -182,7 +184,10 @@ pipeline {
                     '-var "privatekeypath=${privatekeypath}" ' +
                     '-var "public_key=${public_key}" ' +
                     '-var "vsphere_datastore=${vsphere_datastore}" ' +
-                    '-var "name_prefix=${name_prefix}"'
+                    '-var "name_prefix=${name_prefix}"
+                  '''
+                }
+
               }
             }          
           }
