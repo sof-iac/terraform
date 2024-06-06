@@ -169,7 +169,7 @@ pipeline {
               withVault([configuration: vaultConfig]) {
                 // read the secret from the vault
               def secrets = [
-                [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 1, secretValues: [
+                [path: 'secrets/secrets/servicos/user_svc_vcenter', engineVersion: 1, secretValues: [
                   [envVar: 'VAULT_TOKEN', vaultKey: 'username']
                 ]]
               ]
