@@ -22,7 +22,7 @@ pipeline {
       password(name: 'vm_pass', description: 'Senha para a máquina virtual')
       string(name: 'vsphere_resource_pool', defaultValue: 'Blade_Atreus/Resources', description: 'vsphere_resource_pool')
       string(name: 'vm_guest_id', defaultValue: 'ubuntu64Guest', description: 'Guest Id do SO em uso')
-      choice(name: 'template', choices: ['templateubuntu2204','templateubuntu2204-teste'], description: 'Nome do Template')
+      choice(name: 'template', choices: ['templateubuntu2204','templateubuntu2204_ansible'], description: 'Nome do Template')
       string(name: 'host_name', defaultValue: 'ubuntu01tf', description: 'Nome do host para a maquina virtual')
       choice(name: 'vm_count', choices: [ '1', '2', '3', '4', '2', '3', '4'], description: 'Número de maquinas virtuais a serem criadas')
       string(name: 'dns_server_list', defaultValue: '172.27.3.5,172.27.3.6', description: 'List of DNS servers')
