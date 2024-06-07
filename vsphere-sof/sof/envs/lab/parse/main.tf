@@ -7,6 +7,7 @@ locals {
     memory          = var.memory
     vm_domain       = var.vm_domain
     ipv4_address    = var.ipv4_address
+    ipv4_gateway    = var.ipv4_gateway
     disco_adicional = var.disco_adicional
     disksize        = var.disksize
   }
@@ -104,7 +105,7 @@ resource "vsphere_virtual_machine" "vm" {
         ipv4_address = var.ipv4_address
         ipv4_netmask = "24"
       }
-      ipv4_gateway = "192.168.30.1"
+      ipv4_gateway = var.ipv4_gateway
       dns_server_list = ["172.27.3.5", "172.27.3.6"]
     }
   }
