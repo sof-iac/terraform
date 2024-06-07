@@ -17,6 +17,8 @@ pipeline {
       string(name: 'name_prefix', description: 'Prefixo do nome da máquina virtual')
       string(name: 'cpus', description: 'Número de CPUs para a máquina virtual')
       string(name: 'memory', description: 'Quantidade de memória para a máquina virtual')
+      string(name: 'disksize', defaultValue: '0', description: 'Tamanho do disco adicional - Se houver')
+      choice(name: 'disco_adicional', choices: [ '0', '1'], description: 'Possui disco de dados adicional ?')
       string(name: 'domain', defaultValue: 'sof.intra', description: 'Domínio para a máquina virtual')
       string(name: 'vm_user', defaultValue: 'root', description: 'Nome de usuário para a máquina virtual')
       password(name: 'vm_pass', description: 'Senha para a máquina virtual')
@@ -84,6 +86,14 @@ pipeline {
                     description = "Quantidade de memoria para a maquina virtual"
                     default     = "${memory}"
                   }
+                  variable "disksize" {
+                    description = "Tamanho do disco adicional"
+                    default     = "${disksize}"
+                  }
+                  variable "disco_adicional" {
+                    description = "Determina se possui disco adicional"
+                    default     = "${disco_adicional}"
+                  }                                    
                   variable "domain" {
                     description = "Domínio para a maquina virtual"
                     default     = "${domain}"
@@ -170,6 +180,8 @@ pipeline {
                     '-var "template=${template}" ' +
                     '-var "host_name=${name}" ' +
                     '-var "memory=${memory}" ' +
+                    '-var "disksize=${disksize}" ' +
+                    '-var "disco_adicional=${disco_adicional}" ' +                    
                     '-var "cpus=${cpus}" ' +                                        
                     '-var "dns_server_list=${ipAddresses}" ' +
                     '-var "ipv4_address=${ipv4_address}" ' +
@@ -203,7 +215,9 @@ pipeline {
                     '-var "template=${template}" ' +
                     '-var "host_name=${name}" ' +
                     '-var "memory=${memory}" ' +
-                    '-var "cpus=${cpus}" ' +                       
+                    '-var "cpus=${cpus}" ' +   
+                    '-var "disksize=${disksize}" ' +
+                    '-var "disco_adicional=${disco_adicional}" ' +                                          
                     '-var "dns_server_list=${ipAddresses}" ' +
                     '-var "ipv4_address=${ipv4_address}" ' +
                     '-var "ipv4_gateway=${ipv4_gateway}" ' +

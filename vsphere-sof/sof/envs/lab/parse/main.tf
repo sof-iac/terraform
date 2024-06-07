@@ -1,12 +1,14 @@
 
 locals {
   templatevars = {
-    name         = var.name,
-    host_name    = var.host_name,
-    cpus         = var.cpus
-    memory       = var.memory
-    vm_domain    = var.vm_domain
-    ipv4_address = var.ipv4_address
+    name            = var.name,
+    host_name       = var.host_name,
+    cpus            = var.cpus
+    memory          = var.memory
+    vm_domain       = var.vm_domain
+    ipv4_address    = var.ipv4_address
+    disco_adicional = var.disco_adicional
+    disksize        = var.disksize
   }
 }
 
@@ -72,6 +74,16 @@ resource "vsphere_virtual_machine" "vm" {
         size = disk.value["size"]
         unit_number = disk.value["unit_number"]
         thin_provisioned  = disk.value["thin_provisioned"]
+    }
+  }
+  # Adicionar um disco complementar se disco_adicional for verdadeiro
+  dynamic "disk" {
+    for_each = var.disco_adicional ? [1] : []
+    content {
+      label            = "data_disk"
+      size             = var.disksize
+      unit_number      = length(data.vsphere_virtual_machine.template.disks) + 1
+      thin_provisioned = true
     }
   }
 
