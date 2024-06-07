@@ -7,7 +7,8 @@ pipeline {
       choice(name: 'Ambiente', choices: [ 'lab', 'prod', 'exemplos', 'testes'], description: 'Ambiente')
       string(name: 'Diretorio', defaultValue: 'meu_projeto', description: 'Nome do diretorio do projeto Terraform a executar')
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
-      text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')      
+      text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
+      choice(name: 'distro', choices: ['ubuntu', 'centos', 'rocklinux', 'orcl'], description: 'Distribuição Linux')      
       string(name: 'name', defaultValue: 'prep03', description: 'Nome da maquina')
       string(name: 'vm_domain', defaultValue: 'sof.intra', description: 'Dominio')
       string(name: 'vsphere_datacenter', defaultValue: 'SOF', description: 'Datacenter')
@@ -50,6 +51,10 @@ pipeline {
                   variable "vault_token" {
                     type = string
                     default = "hvs.CAESIGhsj_18pbD0DyDL0PrtxOCsjOHzQyJhYArY_9FOnRxZGh4KHGh2cy5OZVJ3N29QU2RFMXRuTGloRFZtNkJFbFA"
+                  }
+                  variable "distro" {
+                    description = "Distribuicao Linux"
+                    default     = "${distro}"
                   }
                   variable "name" {
                     description = "Nome da maquina"
@@ -182,8 +187,9 @@ pipeline {
                     '-var "vsphere_network=${vsphere_network}" ' +
                     '-var "vsphere_resource_pool=${vsphere_resource_pool}" ' +
                     '-var "vm_guest_id=${vm_guest_id}" ' +
-                    '-var "template=${template}" ' +
+                    '-var "template=${template}" ' + 
                     '-var "host_name=${name}" ' +
+                    '-var "distro=${distro}" ' +
                     '-var "memory=${memory}" ' +
                     '-var "disksize=${disksize}" ' +
                     '-var "disco_adicional=${disco_adicional}" ' +                    
@@ -220,6 +226,7 @@ pipeline {
                     '-var "vm_guest_id=${vm_guest_id}" ' +
                     '-var "template=${template}" ' +
                     '-var "host_name=${name}" ' +
+                    '-var "distro=${distro}" ' +
                     '-var "memory=${memory}" ' +
                     '-var "cpus=${cpus}" ' +   
                     '-var "annotation=${annotation}" ' +   

@@ -13,6 +13,7 @@ locals {
     annotation      = var.annotation
     svc_username    = var.svc_username
     svc_password    = var.svc_password
+    distro          = var.distro
   }
 }
 
