@@ -110,6 +110,60 @@ resource "vsphere_virtual_machine" "vm" {
       dns_server_list = ["172.27.3.5", "172.27.3.6"]
     }
   }
+  provisioner "file" {
+    source      = "setup-ansible-user"
+    destination = "/tmp/setup-ansible-user"
+    connection {
+      type     = "ssh"
+      user     = "${var.ssh_username}"
+      password = "${var.ssh_password}"
+      # private_key = file(var.privatekeypath)
+      host     = "${var.ipv4_address}"
+    }
+  }
+  provisioner "file" {
+    source      = "/home/ansible/.ssh/id_ed25519"
+    destination = "/tmp/"
+    connection {
+      type     = "ssh"
+      user     = "${var.ssh_username}"
+      password = "${var.ssh_password}"
+      # private_key = file(var.privatekeypath)
+      host     = "${var.ipv4_address}"
+    }
+  }
+  provisioner "file" {
+    source      = "/home/ansible/.ssh/id_ed25519.pub"
+    destination = "/tmp/"
+    connection {
+      type     = "ssh"
+      user     = "${var.ssh_username}"
+      password = "${var.ssh_password}"
+      # private_key = file(var.privatekeypath)
+      host     = "${var.ipv4_address}"
+    }
+  }
+  # Muda as permissões para ser executado
+  provisioner "remote-exec" {
+    connection {
+      type     = "ssh"
+      user     = "${var.ssh_username}"
+      password = "${var.ssh_password}"
+      # private_key = file(var.privatekeypath)
+      host     = "${var.ipv4_address}"
+    }
+    inline = [
+      "chmod +x /tmp/setup-ansible-user",
+      "/tmp/setup-ansible-user ${var.svc_password}",
+      "echo 'options edns0 trust-ad' > /etc/resolv.conf",
+      "echo 'nameserver 172.27.3.5' >> /etc/resolv.conf",
+      "echo 'nameserver 172.27.3.6' >> /etc/resolv.conf",
+      "echo 'nameserver 172.27.3.7' >> /etc/resolv.conf",
+      "echo 'search sof.intra blocok.sof.remoto' >> /etc/resolv.conf",
+      "echo 192.168.250.163         PREP02 >> /etc/hosts",
+      "echo 192.168.250.125         PREP01 >> /etc/hosts",
+    ]
+  }
 }
 
 
