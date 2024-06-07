@@ -10,6 +10,7 @@ locals {
     ipv4_gateway    = var.ipv4_gateway
     disco_adicional = var.disco_adicional
     disksize        = var.disksize
+    annotation      = var.annotation
   }
 }
 
@@ -60,7 +61,7 @@ resource "vsphere_virtual_machine" "vm" {
   num_cpus          = var.cpus
   memory            = var.memory
   guest_id          = data.vsphere_virtual_machine.template.guest_id
-
+  annotation        = var.annotation
   scsi_type = data.vsphere_virtual_machine.template.scsi_type
 
   network_interface {
