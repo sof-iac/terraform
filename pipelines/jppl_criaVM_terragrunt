@@ -164,7 +164,7 @@ pipeline {
               }
             }
         }
-        stage('Terragrant Plan') {
+        stage('Terragrunt Plan') {
           steps {
             script {
               def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
@@ -199,7 +199,7 @@ pipeline {
             }          
           }
         }
-        stage('Terragrant Apply') {
+        stage('Terragrunt Apply') {
           steps {
             script {
               def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
