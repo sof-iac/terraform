@@ -11,6 +11,8 @@ locals {
     disco_adicional = var.disco_adicional
     disksize        = var.disksize
     annotation      = var.annotation
+    svc_username    = var.svc_username
+    svc_password    = var.svc_password
   }
 }
 
@@ -115,8 +117,8 @@ resource "vsphere_virtual_machine" "vm" {
     destination = "/tmp/setup-ansible-user"
     connection {
       type     = "ssh"
-      user     = "${var.ssh_username}"
-      password = "${var.ssh_password}"
+      user     = "${var.svc_username}"
+      password = "${var.svc_password}"
       # private_key = file(var.privatekeypath)
       host     = "${var.ipv4_address}"
     }
@@ -126,8 +128,8 @@ resource "vsphere_virtual_machine" "vm" {
     destination = "/tmp/"
     connection {
       type     = "ssh"
-      user     = "${var.ssh_username}"
-      password = "${var.ssh_password}"
+      user     = "${var.svc_username}"
+      password = "${var.svc_password}"
       # private_key = file(var.privatekeypath)
       host     = "${var.ipv4_address}"
     }
@@ -137,8 +139,8 @@ resource "vsphere_virtual_machine" "vm" {
     destination = "/tmp/"
     connection {
       type     = "ssh"
-      user     = "${var.ssh_username}"
-      password = "${var.ssh_password}"
+      user     = "${var.svc_username}"
+      password = "${var.svc_password}"
       # private_key = file(var.privatekeypath)
       host     = "${var.ipv4_address}"
     }
@@ -147,8 +149,8 @@ resource "vsphere_virtual_machine" "vm" {
   provisioner "remote-exec" {
     connection {
       type     = "ssh"
-      user     = "${var.ssh_username}"
-      password = "${var.ssh_password}"
+      user     = "${var.svc_username}"
+      password = "${var.svc_password}"
       # private_key = file(var.privatekeypath)
       host     = "${var.ipv4_address}"
     }
