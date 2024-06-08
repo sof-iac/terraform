@@ -40,7 +40,7 @@ pipeline {
     }
 
     stages {
-      stage('Escolha') {
+      stage('Escolha Blade/rede') {
             steps {
                 script {
                     def userInput = input(id: 'userInput', message: 'Escolha uma Blade:', parameters: [choice(name: 'Blades', choices: 'Blade_Atreus\nBlade_Kratos', description: 'Selecione uma Blade')])
