@@ -156,28 +156,16 @@ resource "vsphere_virtual_machine" "vm" {
       host     = "${var.ipv4_address}"
     } 
     inline = [
-        "if [ ${var.distro} == 'ubuntu' ]; then",
-            "chmod +x /tmp/setup-ansible-user",
-            "/tmp/setup-ansible-user ${var.svc_password}",
-            "echo 'options edns0 trust-ad' > /etc/systemd/resolved.conf",
-            "echo 'nameserver 172.27.3.5' | tee -a /etc/systemd/resolved.conf",
-            "echo 'nameserver 172.27.3.6' | tee -a /etc/systemd/resolved.conf",
-            "echo 'nameserver 172.27.3.7' | tee -a /etc/systemd/resolved.conf",
-            "echo 'search sof.intra blocok.sof.remoto' | tee -a /etc/systemd/resolved.conf",
-            "echo 192.168.250.163         PREP02 | tee -a /etc/systemd/resolved.conf",
-            "echo 192.168.250.125         PREP01 | tee -a /etc/systemd/resolved.conf",
-            "systemctl restart systemd-resolved",
-        "elif [ ${var.distro} == 'centos' ]; then",
-            "chmod +x /tmp/setup-ansible-user",
-            "/tmp/setup-ansible-user ${var.svc_password}",
-            "echo 'options edns0 trust-ad' > /etc/resolv.conf",
-            "echo 'nameserver 172.27.3.5' >> /etc/resolv.conf",
-            "echo 'nameserver 172.27.3.6' >> /etc/resolv.conf",
-            "echo 'nameserver 172.27.3.7' >> /etc/resolv.conf",
-            "echo 'search sof.intra blocok.sof.remoto' >> /etc/resolv.conf",
-            "echo 192.168.250.163         PREP02 >> /etc/hosts",
-            "echo 192.168.250.125         PREP01 >> /etc/hosts",
-        "fi"
+      "chmod +x /tmp/setup-ansible-user",
+      "/tmp/setup-ansible-user ${var.svc_password}",
+      "echo 'options edns0 trust-ad' > /etc/systemd/resolved.conf",
+      "echo 'nameserver 172.27.3.5' | tee -a /etc/systemd/resolved.conf",
+      "echo 'nameserver 172.27.3.6' | tee -a /etc/systemd/resolved.conf",
+      "echo 'nameserver 172.27.3.7' | tee -a /etc/systemd/resolved.conf",
+      "echo 'search sof.intra blocok.sof.remoto' | tee -a /etc/systemd/resolved.conf",
+      "echo 192.168.250.163         PREP02 | tee -a /etc/systemd/resolved.conf",
+      "echo 192.168.250.125         PREP01 | tee -a /etc/systemd/resolved.conf",
+      "systemctl restart systemd-resolved",
     ]
   }  
 }
