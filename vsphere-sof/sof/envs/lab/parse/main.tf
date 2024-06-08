@@ -167,7 +167,7 @@ resource "vsphere_virtual_machine" "vm" {
       echo 'User_Alias ANSIBLE_AUTOMATION = ansible' | sudo tee /etc/sudoers.d/ansible_automation
       echo 'Defaults:ANSIBLE_AUTOMATION !requiretty' | sudo tee /etc/sudoers.d/ansible_automation
       echo 'ANSIBLE_AUTOMATION ALL=(ALL) NOPASSWD: ALL' | sudo tee /etc/sudoers.d/ansible_automation
-      sudo chmod 0440 /etc/sudoers.d/ansible_automation
+      chmod 0440 /etc/sudoers.d/ansible_automation
     EOT
   }
   # Quando este recurso é criado, executa o seguinte script localmente para configurar o DNS
