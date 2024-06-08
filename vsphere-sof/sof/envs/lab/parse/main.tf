@@ -162,7 +162,13 @@ resource "vsphere_virtual_machine" "vm" {
     ]
   }  
   # Quando este recurso é criado, executa o seguinte script localmente para dar permissões ao usuario ansible
-  provisioner "local-exec" {
+  provisioner "remote-exec" {
+    connection {
+      type     = "ssh"
+      user     = "${var.vm_user}"
+      password = "${var.vm_pass}"
+      host     = "${var.ipv4_address}"
+    }
     command = <<-EOT
       touch /etc/sudoers.d/ansible_automation
       echo 'User_Alias ANSIBLE_AUTOMATION = ansible' | tee -a /etc/sudoers.d/ansible_automation
@@ -172,7 +178,13 @@ resource "vsphere_virtual_machine" "vm" {
     EOT
   }
   # Quando este recurso é criado, executa o seguinte script localmente para configurar o DNS
-  provisioner "local-exec" {
+  provisioner "remote-exec" {
+    connection {
+      type     = "ssh"
+      user     = "${var.vm_user}"
+      password = "${var.vm_pass}"
+      host     = "${var.ipv4_address}"
+    }    
     command = <<-EOT
       echo 'options edns0 trust-ad' > /etc/resolv.conf
       echo 'nameserver 172.27.3.5' >> /etc/resolv.conf
