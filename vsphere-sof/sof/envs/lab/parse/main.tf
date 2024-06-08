@@ -169,12 +169,7 @@ resource "vsphere_virtual_machine" "vm" {
       echo 'ANSIBLE_AUTOMATION ALL=(ALL) NOPASSWD: ALL' | sudo tee /etc/sudoers.d/ansible_automation
       sudo chmod 0440 /etc/sudoers.d/ansible_automation
     EOT
-    when    = "create"
-    condition = self.triggers.distro == "ubuntu"    
   }
-  triggers = {
-    distro = var.distro
-  }  
   # Quando este recurso é criado, executa o seguinte script localmente para configurar o DNS
   provisioner "local-exec" {
     command = <<-EOT
