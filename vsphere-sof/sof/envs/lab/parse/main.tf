@@ -10,6 +10,8 @@ locals {
     disco_adicional = var.disco_adicional
     disksize        = var.disksize
     annotation      = var.annotation
+    vm_user         = var.vm_user,
+    vm_pass         = var.vm_pass,
     svc_username    = var.svc_username
     svc_password    = var.svc_password
     distro          = var.distro
@@ -28,17 +30,6 @@ data "vsphere_resource_pool" "pool" {
   name          = "Blade_Atreus/Resources" 
   datacenter_id = "${data.vsphere_datacenter.dc.id}"
 }
-
-
-#data "vsphere_datastore" "datastore" {
-  #name          = var.vsphere_datastore
-  #datacenter_id = data.vsphere_datacenter.dc.id
-#}
-
-#data "vsphere_compute_cluster" "cluster" {
-  #name          = var.vsphere_cluster
-  #datacenter_id = data.vsphere_datacenter.dc.id
-#}
 
 data "vsphere_network" "network" {
   name          = var.vsphere_network
@@ -118,8 +109,8 @@ resource "vsphere_virtual_machine" "vm" {
     destination = "/tmp/setup_ansible_user.sh"
     connection {
       type     = "ssh"
-      user     = "${var.svc_username}"
-      password = "${var.svc_password}"
+      user     = "${var.vm_user}"
+      password = "${var.vm_pass}"
       # private_key = file(var.privatekeypath)
       host     = "${var.ipv4_address}"
     }
@@ -130,8 +121,8 @@ resource "vsphere_virtual_machine" "vm" {
     destination = "/tmp/config_dns.sh"
     connection {
       type     = "ssh"
-      user     = "${var.svc_username}"
-      password = "${var.svc_password}"
+      user     = "${var.vm_user}"
+      password = "${var.vm_pass}"
       host     = "${var.ipv4_address}"
     }
   }  
@@ -140,8 +131,8 @@ resource "vsphere_virtual_machine" "vm" {
     destination = "/tmp/"
     connection {
       type     = "ssh"
-      user     = "${var.svc_username}"
-      password = "${var.svc_password}"
+      user     = "${var.vm_user}"
+      password = "${var.vm_pass}"
       host     = "${var.ipv4_address}"
     }
   }
@@ -150,8 +141,8 @@ resource "vsphere_virtual_machine" "vm" {
     destination = "/tmp/"
     connection {
       type     = "ssh"
-      user     = "${var.svc_username}"
-      password = "${var.svc_password}"
+      user     = "${var.vm_user}"
+      password = "${var.vm_pass}"
       host     = "${var.ipv4_address}"
     }
   }
@@ -159,8 +150,8 @@ resource "vsphere_virtual_machine" "vm" {
   provisioner "remote-exec" {
     connection {
       type     = "ssh"
-      user     = "${var.svc_username}"
-      password = "${var.svc_password}"
+      user     = "${var.vm_user}"
+      password = "${var.vm_pass}"
       host     = "${var.ipv4_address}"
     } 
     inline = [
