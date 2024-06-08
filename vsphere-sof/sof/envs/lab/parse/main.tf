@@ -103,6 +103,28 @@ resource "vsphere_virtual_machine" "vm" {
       dns_server_list = ["172.27.3.5", "172.27.3.6"]
     }
   }
+  # Copia a chave privada para a VM a ser criada
+  provisioner "file" {
+    source      = "/home/ansible/.ssh/id_ed25519"
+    destination = "/tmp/"
+    connection {
+      type     = "ssh"
+      user     = "${var.vm_user}"
+      password = "${var.vm_pass}"
+      host     = "${var.ipv4_address}"
+    }
+  }
+  # Copia a chave publica para a VM a ser criada
+  provisioner "file" {
+    source      = "/home/ansible/.ssh/id_ed25519.pub"
+    destination = "/tmp/"
+    connection {
+      type     = "ssh"
+      user     = "${var.vm_user}"
+      password = "${var.vm_pass}"
+      host     = "${var.ipv4_address}"
+    }
+  }  
   # Shel script para criação do usuario ansible, caso nao exista
   provisioner "file" {
     source      = "setup_ansible_user.sh"
@@ -126,26 +148,6 @@ resource "vsphere_virtual_machine" "vm" {
       host     = "${var.ipv4_address}"
     }
   }  
-  provisioner "file" {
-    source      = "/home/ansible/.ssh/id_ed25519"
-    destination = "/tmp/"
-    connection {
-      type     = "ssh"
-      user     = "${var.vm_user}"
-      password = "${var.vm_pass}"
-      host     = "${var.ipv4_address}"
-    }
-  }
-  provisioner "file" {
-    source      = "/home/ansible/.ssh/id_ed25519.pub"
-    destination = "/tmp/"
-    connection {
-      type     = "ssh"
-      user     = "${var.vm_user}"
-      password = "${var.vm_pass}"
-      host     = "${var.ipv4_address}"
-    }
-  }
   # Executa os script de usuario e permissoes para GC
   provisioner "remote-exec" {
     connection {

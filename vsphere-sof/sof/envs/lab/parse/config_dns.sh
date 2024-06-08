@@ -23,6 +23,7 @@ case $distro in
     echo 'search sof.intra blocok.sof.remoto' >> /etc/resolv.conf
     echo 192.168.250.163         PREP02 >> /etc/hosts
     echo 192.168.250.125         PREP01 >> /etc/hosts
+    systemctl restart systemd-resolved.service
     ;;
   orcl)
     echo 'options edns0 trust-ad' > /etc/resolv.conf
@@ -32,6 +33,7 @@ case $distro in
     echo 'search sof.intra blocok.sof.remoto' >> /etc/resolv.conf
     echo 192.168.250.163         PREP02 >> /etc/hosts
     echo 192.168.250.125         PREP01 >> /etc/hosts
+    systemctl restart systemd-resolved.service
     ;;
   rocklinux)
     echo 'options edns0 trust-ad' > /etc/resolv.conf
@@ -41,6 +43,7 @@ case $distro in
     echo 'search sof.intra blocok.sof.remoto' >> /etc/resolv.conf
     echo 192.168.250.163         PREP02 >> /etc/hosts
     echo 192.168.250.125         PREP01 >> /etc/hosts
+    systemctl restart systemd-resolved.service
     ;;
   *)
     echo 'options edns0 trust-ad' > /etc/resolv.conf
@@ -50,6 +53,7 @@ case $distro in
     echo 'search sof.intra blocok.sof.remoto' >> /etc/resolv.conf
     echo 192.168.250.163         PREP02 >> /etc/hosts
     echo 192.168.250.125         PREP01 >> /etc/hosts
+    systemctl restart systemd-resolved.service
     ;;
 esac
 
