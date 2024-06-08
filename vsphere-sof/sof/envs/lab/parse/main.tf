@@ -1,4 +1,3 @@
-
 locals {
   templatevars = {
     name            = var.name,
@@ -113,9 +112,10 @@ resource "vsphere_virtual_machine" "vm" {
       dns_server_list = ["172.27.3.5", "172.27.3.6"]
     }
   }
+  # Shel script para criação do usuario ansible, caso nao exista
   provisioner "file" {
-    source      = "setup-ansible-user"
-    destination = "/tmp/setup-ansible-user"
+    source      = "setup_ansible_user.sh"
+    destination = "/tmp/setup_ansible_user.sh"
     connection {
       type     = "ssh"
       user     = "${var.svc_username}"
@@ -124,6 +124,17 @@ resource "vsphere_virtual_machine" "vm" {
       host     = "${var.ipv4_address}"
     }
   }
+  # Shell script para configurar o dns e o sudoers
+  provisioner "file" {
+    source      = "config_dns.sh"
+    destination = "/tmp/config_dns.sh"
+    connection {
+      type     = "ssh"
+      user     = "${var.svc_username}"
+      password = "${var.svc_password}"
+      host     = "${var.ipv4_address}"
+    }
+  }  
   provisioner "file" {
     source      = "/home/ansible/.ssh/id_ed25519"
     destination = "/tmp/"
@@ -131,7 +142,6 @@ resource "vsphere_virtual_machine" "vm" {
       type     = "ssh"
       user     = "${var.svc_username}"
       password = "${var.svc_password}"
-      # private_key = file(var.privatekeypath)
       host     = "${var.ipv4_address}"
     }
   }
@@ -142,30 +152,22 @@ resource "vsphere_virtual_machine" "vm" {
       type     = "ssh"
       user     = "${var.svc_username}"
       password = "${var.svc_password}"
-      # private_key = file(var.privatekeypath)
       host     = "${var.ipv4_address}"
     }
   }
-  # Muda as permissões para ser executado se ubuntu
+  # Executa os script de usuario e permissoes para GC
   provisioner "remote-exec" {
     connection {
       type     = "ssh"
       user     = "${var.svc_username}"
       password = "${var.svc_password}"
-      # private_key = file(var.privatekeypath)
       host     = "${var.ipv4_address}"
     } 
     inline = [
-      "chmod +x /tmp/setup-ansible-user",
-      "/tmp/setup-ansible-user ${var.svc_password}",
-      "echo 'options edns0 trust-ad' > /etc/systemd/resolved.conf",
-      "echo 'nameserver 172.27.3.5' | tee -a /etc/systemd/resolved.conf",
-      "echo 'nameserver 172.27.3.6' | tee -a /etc/systemd/resolved.conf",
-      "echo 'nameserver 172.27.3.7' | tee -a /etc/systemd/resolved.conf",
-      "echo 'search sof.intra blocok.sof.remoto' | tee -a /etc/systemd/resolved.conf",
-      "echo 192.168.250.163         PREP02 | tee -a /etc/systemd/resolved.conf",
-      "echo 192.168.250.125         PREP01 | tee -a /etc/systemd/resolved.conf",
-      "systemctl restart systemd-resolved",
+      "chmod +x /tmp/setup_ansible_user.sh",
+      "/tmp/setup_ansible_user.sh ${var.svc_password}",
+      "chmod +x /tmp/config_dns.sh",
+      "/tmp/config_dns.sh ${var.distro}",
     ]
   }  
 }
