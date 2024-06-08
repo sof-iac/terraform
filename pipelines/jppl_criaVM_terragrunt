@@ -40,6 +40,21 @@ pipeline {
     }
 
     stages {
+      stage('Escolha') {
+            steps {
+                script {
+                    def userInput = input(id: 'userInput', message: 'Escolha uma opção:', parameters: [choice(name: 'CHOICES', choices: 'x\nw', description: 'Selecione X ou W')])
+                    if (userInput == 'x') {
+                        echo "A lista X foi selecionada"
+                        // Código para apresentar a lista X
+                    } else if (userInput == 'w') {
+                        echo "A lista W foi selecionada"
+                        // Código para apresentar a lista W
+                    }
+                    // Adicione mais condições conforme necessário
+                }
+            }
+        }
         stage('Create vars.tf') {
             steps {
               script {
