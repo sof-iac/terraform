@@ -32,14 +32,14 @@ fi
 chown -R ansible:ansible /home/ansible/.ssh
 chmod 700 /home/ansible/.ssh
 # setup sudo access for Ansible
-if [ ! -s /etc/sudoers/ansible ]
+if [ ! -s /etc/sudoers.d/ansible ]
 then
 echo "Usuario ansible nao existe.  Sera incluido.."
-cat << 'EOF' > /etc/sudoers/ansible
+cat << 'EOF' > /etc/sudoers.d/ansible
 User_Alias ANSIBLE_AUTOMATION = ansible
 Defaults:ANSIBLE_AUTOMATION !requiretty
 ANSIBLE_AUTOMATION ALL=(ALL) NOPASSWD: ALL
 EOF
-chmod 400 /etc/sudoers/ansible
+chmod 400 /etc/sudoers.d/ansible
 fi
 # end of script
