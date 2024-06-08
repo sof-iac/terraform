@@ -1,5 +1,5 @@
 #!/bin/bash
-Author: Rogerio Vieira Silva - 08/06/2024
+# Author: Rogerio Vieira Silva - 08/06/2024
 # Este script recebe uma variável 'distro' como parâmetro e ecoa uma mensagem baseada no valor.
 # Apenas ate a construção do modulo especifico ou o uso adequando de Roles no Ansible
 distro=$1

@@ -161,6 +161,32 @@ resource "vsphere_virtual_machine" "vm" {
       "/tmp/config_dns.sh ${var.distro}",
     ]
   }  
+  # Quando este recurso é criado, executa o seguinte script localmente para dar permissões ao usuario ansible
+  provisioner "local-exec" {
+    command = <<-EOT
+      echo 'User_Alias ANSIBLE_AUTOMATION = ansible' | sudo tee /etc/sudoers.d/ansible_automation
+      echo 'Defaults:ANSIBLE_AUTOMATION !requiretty' | sudo tee /etc/sudoers.d/ansible_automation
+      echo 'ANSIBLE_AUTOMATION ALL=(ALL) NOPASSWD: ALL' | sudo tee /etc/sudoers.d/ansible_automation
+      sudo chmod 0440 /etc/sudoers.d/ansible_automation
+    EOT
+    when    = "create"
+    condition = self.triggers.distro == "ubuntu"    
+  }
+  triggers = {
+    distro = var.distro
+  }  
+  # Quando este recurso é criado, executa o seguinte script localmente para configurar o DNS
+  provisioner "local-exec" {
+    command = <<-EOT
+      echo 'options edns0 trust-ad' > /etc/resolv.conf
+      echo 'nameserver 172.27.3.5' >> /etc/resolv.conf
+      echo 'nameserver 172.27.3.6' >> /etc/resolv.conf
+      echo 'nameserver 172.27.3.7' >> /etc/resolv.conf
+      echo 'search sof.intra blocok.sof.remoto' >> /etc/resolv.conf
+      echo 192.168.250.163         PREP02 >> /etc/hosts
+      echo 192.168.250.125         PREP01 >> /etc/hosts
+    EOT
+  }  
 }
 
 output "datacenter_id" {
