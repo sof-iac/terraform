@@ -52,7 +52,7 @@ pipeline {
                     if (vsphere_cluster == 'Blade_Atreus') {
                         vsphere_network = input(id: 'userInput', message: 'Escolha uma Blade:', parameters: [choice(name: 'Redes Atreus', choices: ['PG_Atlas_Apl_Internas','PG_Atlas_App_Shared_MP','PG_Atlas_Backup','PG_Atlas_BRIDGE_MP','PG_Atlas_BRIDGE_SOF_INFOVIA','PG_Atlas_BRIDGE_SOF_TELEBRAS','PG_Atlas_CODIN_DEVS','PG_Atlas_COINF_Admin','PG_Atlas_COINF_OPERACOES','PG_Atlas_Desenvolvimento','PG_Atlas_DIPLA','PG_Atlas_DMZ_Hom_Aplic_Intern','PG_Atlas_DMZ_Homologacao','PG_Atlas_DMZ_Producao','PG_Atlas_DMZ_Servico_Homologacao','PG_Atlas_DMZ_Servico_Producao','PG_Atlas_Dominio_Recurso','PG_Atlas_Gerencia','PG_Atlas_Kubestag','PG_Atlas_LABOCOINF','PG_Atlas_LINK_FIREWALLS','PG_Atlas_LINK_MP_SOF','PG_Atlas_LINK_SOF_IPEA','PG_Atlas_LINK_SOF_MP','PG_Atlas_RedeInterna','PG_Atlas_SEAIN_DMZ','PG_Atlas_SEAIN_SERVICO','PG_Atlas_Servico_Kubernets','PG_Atlas_Sip_Service','PG_Atlas_Sip_Vivo','PG_Atlas_T2','PG_Atlas_Teste','PG_Atlas_TESTE_FGT_DC','PG_Atlas_UPLINK_INFOVIA'].join('\n'), description: 'Selecione uma rede')])
                     } else if (vsphere_cluster == 'Blade_Kratos') {
-                        vsphere_network = input(id: 'userInput', message: 'Escolha uma Blade:', parameters: [choice(name: 'Redes Atreus', choices: ['PG_Gaia_Apl_Internas', 'PG_Gaia_App_Shared_MP', 'PG_Gaia_Backup', 'PG_Gaia_BRIDGE_MP', 'PG_Gaia_BRIDGE_SOF_INFOVIA', 'PG_Gaia_BRIDGE_SOF_TELEBRAS', 'PG_Gaia_CODIN_DEVS', 'PG_Gaia_COINF_Admin', 'PG_Gaia_COINF_OPERACOES', 'PG_Gaia_Desenvolvimento', 'PG_Gaia_DIPLA', 'PG_Gaia_DMZ_Hom_Aplic_Intern', 'PG_Gaia_DMZ_Homologacao', 'PG_Gaia_DMZ_Producao', 'PG_Gaia_DMZ_Servico_Homologacao', 'PG_Gaia_DMZ_Servico_Producao', 'PG_Gaia_Dominio_Recurso', 'PG_Gaia_Gerencia', 'PG_Gaia_Kubestag', 'PG_Gaia_LINK_FIREWALLS', 'PG_Gaia_LINK_MP_SOF', 'PG_Gaia_LINK_SOF_IPEA', 'PG_Gaia_LINK_SOF_MP', 'PG_Gaia_RedeInterna', 'PG_Gaia_SEAIN_DMZ', 'PG_Gaia_SEAIN_SERVICO', 'PG_Gaia_Servico_Kubernets', 'PG_Gaia_Sip_Service', 'PG_Gaia_Sip_Vivo', 'PG_Gaia_T2', 'PG_Gaia_Teste', 'PG_Gaia_TESTE_FGT_DC', 'PG_Gaia_UPLINK_INFOVIA', 'PG_Gaia_UPLINK_TELEBRAS', 'PG_Gaia_vCenter_HA', 'PG_Gaia_vMotion'].join('\n'), description: 'Selecione uma rede')])
+                        vsphere_network = input(id: 'userInput', message: 'Escolha uma Blade:', parameters: [choice(name: 'Redes Kratos', choices: ['PG_Gaia_Apl_Internas', 'PG_Gaia_App_Shared_MP', 'PG_Gaia_Backup', 'PG_Gaia_BRIDGE_MP', 'PG_Gaia_BRIDGE_SOF_INFOVIA', 'PG_Gaia_BRIDGE_SOF_TELEBRAS', 'PG_Gaia_CODIN_DEVS', 'PG_Gaia_COINF_Admin', 'PG_Gaia_COINF_OPERACOES', 'PG_Gaia_Desenvolvimento', 'PG_Gaia_DIPLA', 'PG_Gaia_DMZ_Hom_Aplic_Intern', 'PG_Gaia_DMZ_Homologacao', 'PG_Gaia_DMZ_Producao', 'PG_Gaia_DMZ_Servico_Homologacao', 'PG_Gaia_DMZ_Servico_Producao', 'PG_Gaia_Dominio_Recurso', 'PG_Gaia_Gerencia', 'PG_Gaia_Kubestag', 'PG_Gaia_LINK_FIREWALLS', 'PG_Gaia_LINK_MP_SOF', 'PG_Gaia_LINK_SOF_IPEA', 'PG_Gaia_LINK_SOF_MP', 'PG_Gaia_RedeInterna', 'PG_Gaia_SEAIN_DMZ', 'PG_Gaia_SEAIN_SERVICO', 'PG_Gaia_Servico_Kubernets', 'PG_Gaia_Sip_Service', 'PG_Gaia_Sip_Vivo', 'PG_Gaia_T2', 'PG_Gaia_Teste', 'PG_Gaia_TESTE_FGT_DC', 'PG_Gaia_UPLINK_INFOVIA', 'PG_Gaia_UPLINK_TELEBRAS', 'PG_Gaia_vCenter_HA', 'PG_Gaia_vMotion'].join('\n'), description: 'Selecione uma rede')])
                     }
                 }
             }
@@ -88,7 +88,7 @@ pipeline {
                   }
                   variable "vsphere_cluster" {
                     description = "Nome do Cluster"
-                    default     = "${env.vsphere_cluster}"
+                    default     = "${vsphere_cluster}"
                   }
                   variable "vsphere_datastore" {
                     description = "Nome do datastore"
@@ -96,7 +96,7 @@ pipeline {
                   }
                   variable "vsphere_network" {
                     description = "Nome da rede"
-                    default     = "${env.vsphere_network}"
+                    default     = "${vsphere_network}"
                   }
                   variable "name_prefix" {
                     description = "Prefixo do nome da maquina virtual"
@@ -201,8 +201,8 @@ pipeline {
                 sh 'terragrunt plan -var "name=${name}" ' +
                     '-var "vm_domain=${vm_domain}" ' +
                     '-var "vsphere_datacenter=${vsphere_datacenter}" ' +
-                    '-var "vsphere_cluster=${env.vsphere_cluster}" ' +
-                    '-var "vsphere_network=${env.vsphere_network}" ' +
+                    '-var "vsphere_cluster=${vsphere_cluster}" ' +
+                    '-var "vsphere_network=${vsphere_network}" ' +
                     '-var "vsphere_resource_pool=${vsphere_resource_pool}" ' +
                     '-var "vm_guest_id=${vm_guest_id}" ' +
                     '-var "template=${template}" ' + 
@@ -238,8 +238,8 @@ pipeline {
                 sh 'terragrunt apply -auto-approve -var "name=${name}" ' +
                     '-var "vm_domain=${vm_domain}" ' +
                     '-var "vsphere_datacenter=${vsphere_datacenter}" ' +
-                    '-var "vsphere_cluster=${env.vsphere_cluster}" ' +
-                    '-var "vsphere_network=${env.vsphere_network}" ' +
+                    '-var "vsphere_cluster=${vsphere_cluster}" ' +
+                    '-var "vsphere_network=${vsphere_network}" ' +
                     '-var "vsphere_resource_pool=${vsphere_resource_pool}" ' +
                     '-var "vm_guest_id=${vm_guest_id}" ' +
                     '-var "template=${template}" ' +
