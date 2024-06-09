@@ -55,7 +55,7 @@ pipeline {
         stage('Create vars.tf') {
             steps {
               script {
-                echo "Rede 1: ${vsphere_network}"
+                def rede1 = "${vsphere_network}"
                 def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
                 echo "Processed IP addresses: ${ipAddresses}"
                 dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {               
@@ -91,7 +91,7 @@ pipeline {
                   }
                   variable "vsphere_network" {
                     description = "Nome da rede"
-                    default     = "${vsphere_network}"
+                    default     = "${rede1}"
                   }
                   variable "name_prefix" {
                     description = "Prefixo do nome da maquina virtual"
