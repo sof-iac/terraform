@@ -60,6 +60,7 @@ pipeline {
         stage('Create vars.tf') {
             steps {
               script {
+                def teste_rede = params.vsphere_network
                 echo "${vsphere_network}"
                 def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
                 echo "Processed IP addresses: ${ipAddresses}"
