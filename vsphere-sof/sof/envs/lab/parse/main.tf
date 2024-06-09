@@ -2,18 +2,20 @@ locals {
   templatevars = {
     name            = var.name,
     host_name       = var.host_name,
-    cpus            = var.cpus
-    memory          = var.memory
-    vm_domain       = var.vm_domain
-    ipv4_address    = var.ipv4_address
-    ipv4_gateway    = var.ipv4_gateway
-    disco_adicional = var.disco_adicional
-    disksize        = var.disksize
-    annotation      = var.annotation
+    cpus            = var.cpus,
+    memory          = var.memory,
+    vm_domain       = var.vm_domain,
+    vsphere_cluster = var.vsphere_cluster,
+    vsphere_network = var.vsphere_network,
+    ipv4_address    = var.ipv4_address,
+    ipv4_gateway    = var.ipv4_gateway,
+    disco_adicional = var.disco_adicional,
+    disksize        = var.disksize,
+    annotation      = var.annotation,
     vm_user         = var.vm_user,
     vm_pass         = var.vm_pass,
-    svc_username    = var.svc_username
-    svc_password    = var.svc_password
+    svc_username    = var.svc_username,
+    svc_password    = var.svc_password,
     distro          = var.distro
   }
 }
