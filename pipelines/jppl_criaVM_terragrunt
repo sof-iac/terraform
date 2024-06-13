@@ -58,7 +58,7 @@ pipeline {
                     // Lê o conteúdo do arquivo.txt e armazena na variável 'vaultToken'
                     // def vaultToken = readFile 'arquivo.txt'.trim()
                     // Escreve o conteúdo na vars.tf
-                    writeFile file: 'vars.tf', content: """
+                    writeFile file: 'vars.tf', text: """
                       variable "vault_token" {
                         type = string
                         default = "hvs.CAESIGhsj_18pbD0DyDL0PrtxOCsjOHzQyJhYArY_9FOnRxZGh4KHGh2cy5OZVJ3N29QU2RFMXRuTGloRFZtNkJFbFA"
