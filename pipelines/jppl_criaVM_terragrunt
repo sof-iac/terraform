@@ -52,7 +52,7 @@ pipeline {
                         echo "${vsphere_network}"
                     }
                   // Salva a escolha do usuário em um arquivo
-                  writeFile file: 'blade.txt', text: vsphere_network
+                  writeFile file: 'blade.txt', text: "${vsphere_network}"
               }
           }
       }         
