@@ -1,7 +1,9 @@
-def vsphere_network = ''
-def vsphere_cluster = ''
 pipeline {
     agent any
+    environment {
+      vsphere_cluster = ''
+      vsphere_cluster = ''
+    }
     parameters {
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
       choice(name: 'Datacenter', choices: ['vsphere-sof','aws'], description: 'Datacenter') 
@@ -43,151 +45,154 @@ pipeline {
       stage('Escolha Blade/rede') {
             steps {
                 script {
-                    vsphere_cluster = input(id: 'userInput', message: 'Escolha uma Blade:', parameters: [choice(name: 'Blades', choices: 'Blade_Atreus\nBlade_Kratos', description: 'Selecione uma Blade')])
-                    if (vsphere_cluster == 'Blade_Atreus') {
-                        vsphere_network = input(id: 'userInput', message: 'Escolha uma Blade:', parameters: [choice(name: 'Redes Atreus', choices: ['PG_Atlas_Apl_Internas','PG_Atlas_App_Shared_MP','PG_Atlas_Backup','PG_Atlas_BRIDGE_MP','PG_Atlas_BRIDGE_SOF_INFOVIA','PG_Atlas_BRIDGE_SOF_TELEBRAS','PG_Atlas_CODIN_DEVS','PG_Atlas_COINF_Admin','PG_Atlas_COINF_OPERACOES','PG_Atlas_Desenvolvimento','PG_Atlas_DIPLA','PG_Atlas_DMZ_Hom_Aplic_Intern','PG_Atlas_DMZ_Homologacao','PG_Atlas_DMZ_Producao','PG_Atlas_DMZ_Servico_Homologacao','PG_Atlas_DMZ_Servico_Producao','PG_Atlas_Dominio_Recurso','PG_Atlas_Gerencia','PG_Atlas_Kubestag','PG_Atlas_LABOCOINF','PG_Atlas_LINK_FIREWALLS','PG_Atlas_LINK_MP_SOF','PG_Atlas_LINK_SOF_IPEA','PG_Atlas_LINK_SOF_MP','PG_Atlas_RedeInterna','PG_Atlas_SEAIN_DMZ','PG_Atlas_SEAIN_SERVICO','PG_Atlas_Servico_Kubernets','PG_Atlas_Sip_Service','PG_Atlas_Sip_Vivo','PG_Atlas_T2','PG_Atlas_Teste','PG_Atlas_TESTE_FGT_DC','PG_Atlas_UPLINK_INFOVIA'].join('\n'), description: 'Selecione uma rede')])
-                    } else if (vsphere_cluster == 'Blade_Kratos') {
-                        vsphere_network = input(id: 'userInput', message: 'Escolha uma Blade:', parameters: [choice(name: 'Redes Kratos', choices: ['PG_Gaia_Apl_Internas', 'PG_Gaia_App_Shared_MP', 'PG_Gaia_Backup', 'PG_Gaia_BRIDGE_MP', 'PG_Gaia_BRIDGE_SOF_INFOVIA', 'PG_Gaia_BRIDGE_SOF_TELEBRAS', 'PG_Gaia_CODIN_DEVS', 'PG_Gaia_COINF_Admin', 'PG_Gaia_COINF_OPERACOES', 'PG_Gaia_Desenvolvimento', 'PG_Gaia_DIPLA', 'PG_Gaia_DMZ_Hom_Aplic_Intern', 'PG_Gaia_DMZ_Homologacao', 'PG_Gaia_DMZ_Producao', 'PG_Gaia_DMZ_Servico_Homologacao', 'PG_Gaia_DMZ_Servico_Producao', 'PG_Gaia_Dominio_Recurso', 'PG_Gaia_Gerencia', 'PG_Gaia_Kubestag', 'PG_Gaia_LINK_FIREWALLS', 'PG_Gaia_LINK_MP_SOF', 'PG_Gaia_LINK_SOF_IPEA', 'PG_Gaia_LINK_SOF_MP', 'PG_Gaia_RedeInterna', 'PG_Gaia_SEAIN_DMZ', 'PG_Gaia_SEAIN_SERVICO', 'PG_Gaia_Servico_Kubernets', 'PG_Gaia_Sip_Service', 'PG_Gaia_Sip_Vivo', 'PG_Gaia_T2', 'PG_Gaia_Teste', 'PG_Gaia_TESTE_FGT_DC', 'PG_Gaia_UPLINK_INFOVIA', 'PG_Gaia_UPLINK_TELEBRAS', 'PG_Gaia_vCenter_HA', 'PG_Gaia_vMotion'].join('\n'), description: 'Selecione uma rede')])
+                  def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
+                   
+                  echo "Processed IP addresses: ${ipAddresses}"
+                  dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") { 
+                    env.vsphere_cluster = input(id: 'userInput', message: 'Escolha uma Blade:', parameters: [choice(name: 'Blades', choices: 'Blade_Atreus\nBlade_Kratos', description: 'Selecione uma Blade')])
+                    if (env.vsphere_cluster == 'Blade_Atreus') {
+                        env.vsphere_network = input(id: 'userInput', message: 'Escolha uma Blade:', parameters: [choice(name: 'Redes Atreus', choices: ['PG_Atlas_Apl_Internas','PG_Atlas_App_Shared_MP','PG_Atlas_Backup','PG_Atlas_BRIDGE_MP','PG_Atlas_BRIDGE_SOF_INFOVIA','PG_Atlas_BRIDGE_SOF_TELEBRAS','PG_Atlas_CODIN_DEVS','PG_Atlas_COINF_Admin','PG_Atlas_COINF_OPERACOES','PG_Atlas_Desenvolvimento','PG_Atlas_DIPLA','PG_Atlas_DMZ_Hom_Aplic_Intern','PG_Atlas_DMZ_Homologacao','PG_Atlas_DMZ_Producao','PG_Atlas_DMZ_Servico_Homologacao','PG_Atlas_DMZ_Servico_Producao','PG_Atlas_Dominio_Recurso','PG_Atlas_Gerencia','PG_Atlas_Kubestag','PG_Atlas_LABOCOINF','PG_Atlas_LINK_FIREWALLS','PG_Atlas_LINK_MP_SOF','PG_Atlas_LINK_SOF_IPEA','PG_Atlas_LINK_SOF_MP','PG_Atlas_RedeInterna','PG_Atlas_SEAIN_DMZ','PG_Atlas_SEAIN_SERVICO','PG_Atlas_Servico_Kubernets','PG_Atlas_Sip_Service','PG_Atlas_Sip_Vivo','PG_Atlas_T2','PG_Atlas_Teste','PG_Atlas_TESTE_FGT_DC','PG_Atlas_UPLINK_INFOVIA'].join('\n'), description: 'Selecione uma rede')])
+                    } else if (env.vsphere_cluster == 'Blade_Kratos') {
+                        env.vsphere_network = input(id: 'userInput', message: 'Escolha uma Blade:', parameters: [choice(name: 'Redes Kratos', choices: ['PG_Gaia_Apl_Internas', 'PG_Gaia_App_Shared_MP', 'PG_Gaia_Backup', 'PG_Gaia_BRIDGE_MP', 'PG_Gaia_BRIDGE_SOF_INFOVIA', 'PG_Gaia_BRIDGE_SOF_TELEBRAS', 'PG_Gaia_CODIN_DEVS', 'PG_Gaia_COINF_Admin', 'PG_Gaia_COINF_OPERACOES', 'PG_Gaia_Desenvolvimento', 'PG_Gaia_DIPLA', 'PG_Gaia_DMZ_Hom_Aplic_Intern', 'PG_Gaia_DMZ_Homologacao', 'PG_Gaia_DMZ_Producao', 'PG_Gaia_DMZ_Servico_Homologacao', 'PG_Gaia_DMZ_Servico_Producao', 'PG_Gaia_Dominio_Recurso', 'PG_Gaia_Gerencia', 'PG_Gaia_Kubestag', 'PG_Gaia_LINK_FIREWALLS', 'PG_Gaia_LINK_MP_SOF', 'PG_Gaia_LINK_SOF_IPEA', 'PG_Gaia_LINK_SOF_MP', 'PG_Gaia_RedeInterna', 'PG_Gaia_SEAIN_DMZ', 'PG_Gaia_SEAIN_SERVICO', 'PG_Gaia_Servico_Kubernets', 'PG_Gaia_Sip_Service', 'PG_Gaia_Sip_Vivo', 'PG_Gaia_T2', 'PG_Gaia_Teste', 'PG_Gaia_TESTE_FGT_DC', 'PG_Gaia_UPLINK_INFOVIA', 'PG_Gaia_UPLINK_TELEBRAS', 'PG_Gaia_vCenter_HA', 'PG_Gaia_vMotion'].join('\n'), description: 'Selecione uma rede')])
                     }
+                    // Lê o conteúdo do arquivo.txt e armazena na variável 'vaultToken'
+                    // def vaultToken = readFile 'arquivo.txt'.trim()
+                    // Escreve o conteúdo na vars.tf
+                    writeFile file: 'vars.tf', content: """
+                      variable "vault_token" {
+                        type = string
+                        default = "hvs.CAESIGhsj_18pbD0DyDL0PrtxOCsjOHzQyJhYArY_9FOnRxZGh4KHGh2cy5OZVJ3N29QU2RFMXRuTGloRFZtNkJFbFA"
+                      }
+                      variable "distro" {
+                        description = "Distribuicao Linux"
+                        default     = "${distro}"
+                      }
+                      variable "name" {
+                        description = "Nome da maquina"
+                        default     = "${name}"
+                      }
+                      variable "vm_domain" {
+                        description = "Nome do Dominio"
+                        default     = "${vm_domain}"
+                      }
+                      variable "vsphere_datacenter" {
+                        description = "Nome do Datacenter"
+                        default     = "${vsphere_datacenter}"
+                      }
+                      variable "vsphere_cluster" {
+                        description = "Nome do Cluster"
+                        default     = "${env.vsphere_cluster}"
+                      }
+                      variable "vsphere_datastore" {
+                        description = "Nome do datastore"
+                        default     = "${vsphere_datastore}"
+                      }
+                      variable "vsphere_network" {
+                        description = "Nome da rede"
+                        default     = "${env.vsphere_network}"
+                      }
+                      variable "name_prefix" {
+                        description = "Prefixo do nome da maquina virtual"
+                        default     = "${name_prefix}"
+                      }
+                      variable "cpus" {
+                        description = "Numero de CPUs para a maquina virtual"
+                        default     = "${cpus}"
+                      }
+                      variable "memory" {
+                        description = "Quantidade de memoria para a maquina virtual"
+                        default     = "${memory}"
+                      }
+                      variable "annotation" {
+                        description = "Notas informativas sobre a finalidade da VM"
+                        default     = "${annotation}"
+                      }                  
+                      variable "disksize" {
+                        description = "Tamanho do disco adicional"
+                        default     = "${disksize}"
+                      }
+                      variable "disco_adicional" {
+                        description = "Determina se possui disco adicional"
+                        default     = "${disco_adicional}"
+                      }                                    
+                      variable "domain" {
+                        description = "Domínio para a maquina virtual"
+                        default     = "${domain}"
+                      }
+                      variable "vm_user" {
+                        description = "Nome de usuario para a máquina virtual"
+                        default     = "${vm_user}"
+                      }
+                      variable "vm_pass" {
+                        description = "Senha para a maquina virtual"
+                        default     = "${vm_pass}"
+                      }
+                      variable "vsphere_resource_pool" {
+                        description = "Nome do reseource pool"
+                        default     = "${vsphere_resource_pool}"
+                      }
+                      variable "vm_guest_id" {
+                        description = "Guest Id do SO em uso"
+                        default     = "${vm_guest_id}"
+                      }
+                      variable "template" {
+                        description = "Nome do template"
+                        default     = "${template}"
+                      }
+                      variable "host_name" {
+                        description = "Nome do host para a maquina virtual"
+                        default     = "${name}"
+                      }
+                      variable "vm_count" {
+                        description = "Numero de maquinas virtuais a serem criadas"
+                        default     = "${vm_count}"
+                      }
+                      variable "dns_server_list" {
+                        description = "Lista de servidores DNS"
+                        default     = "${ipAddresses}"
+                      }
+                      variable "ipv4_address" {
+                        description = "Endereço IP para a maquina virtual"
+                        default     = "${ipv4_address}"
+                      }
+                      variable "ipv4_gateway" {
+                        description = "Gateway"
+                        default     = "${ipv4_gateway}"
+                      }
+                      variable "ipv4_netmask" {
+                        description = "Mascara de rede"
+                        default     = "${ipv4_netmask}"
+                      }
+                      variable "svc_username" {
+                        description = "Usuario do servico"
+                        default     = "${svc_username}"
+                      }
+                      variable "svc_password" {
+                        description = "Senha do servico"
+                        default     = "${svc_password}"
+                      }
+                      variable "privatekeypath" {
+                        description = "Caminho da chave privada"
+                        default     = "${privatekeypath}"
+                      }
+                      variable "public_key" {
+                        description = "Chave publica"
+                        default     = "${public_key}"
+                      }
+                    """                  
+                    }                    
+                  }
                 }
-            }
-        }
-        stage('Create vars.tf') {
+      }
+      stage('Create vars.tf') {
             steps {
               script {
                 def rede1 = "${vsphere_network}"
-                def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
-                echo "Processed IP addresses: ${ipAddresses}"
-                dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {               
-                  sh '''
-                  cat <<EOF > vars.tf
-                  variable "vault_token" {
-                    type = string
-                    default = "hvs.CAESIGhsj_18pbD0DyDL0PrtxOCsjOHzQyJhYArY_9FOnRxZGh4KHGh2cy5OZVJ3N29QU2RFMXRuTGloRFZtNkJFbFA"
-                  }
-                  variable "distro" {
-                    description = "Distribuicao Linux"
-                    default     = "${distro}"
-                  }
-                  variable "name" {
-                    description = "Nome da maquina"
-                    default     = "${name}"
-                  }
-                  variable "vm_domain" {
-                    description = "Nome do Dominio"
-                    default     = "${vm_domain}"
-                  }
-                  variable "vsphere_datacenter" {
-                    description = "Nome do Datacenter"
-                    default     = "${vsphere_datacenter}"
-                  }
-                  variable "vsphere_cluster" {
-                    description = "Nome do Cluster"
-                    default     = "${vsphere_cluster}"
-                  }
-                  variable "vsphere_datastore" {
-                    description = "Nome do datastore"
-                    default     = "${vsphere_datastore}"
-                  }
-                  variable "vsphere_network" {
-                    description = "Nome da rede"
-                    default     = "${rede1}"
-                  }
-                  variable "name_prefix" {
-                    description = "Prefixo do nome da maquina virtual"
-                    default     = "${name_prefix}"
-                  }
-                  variable "cpus" {
-                    description = "Numero de CPUs para a maquina virtual"
-                    default     = "${cpus}"
-                  }
-                  variable "memory" {
-                    description = "Quantidade de memoria para a maquina virtual"
-                    default     = "${memory}"
-                  }
-                  variable "annotation" {
-                    description = "Notas informativas sobre a finalidade da VM"
-                    default     = "${annotation}"
-                  }                  
-                  variable "disksize" {
-                    description = "Tamanho do disco adicional"
-                    default     = "${disksize}"
-                  }
-                  variable "disco_adicional" {
-                    description = "Determina se possui disco adicional"
-                    default     = "${disco_adicional}"
-                  }                                    
-                  variable "domain" {
-                    description = "Domínio para a maquina virtual"
-                    default     = "${domain}"
-                  }
-                  variable "vm_user" {
-                    description = "Nome de usuario para a máquina virtual"
-                    default     = "${vm_user}"
-                  }
-                  variable "vm_pass" {
-                    description = "Senha para a maquina virtual"
-                    default     = "${vm_pass}"
-                  }
-                  variable "vsphere_resource_pool" {
-                    description = "Nome do reseource pool"
-                    default     = "${vsphere_resource_pool}"
-                  }
-                  variable "vm_guest_id" {
-                    description = "Guest Id do SO em uso"
-                    default     = "${vm_guest_id}"
-                  }
-                  variable "template" {
-                    description = "Nome do template"
-                    default     = "${template}"
-                  }
-                  variable "host_name" {
-                    description = "Nome do host para a maquina virtual"
-                    default     = "${name}"
-                  }
-                  variable "vm_count" {
-                    description = "Numero de maquinas virtuais a serem criadas"
-                    default     = "${vm_count}"
-                  }
-                  variable "dns_server_list" {
-                    description = "Lista de servidores DNS"
-                    default     = "${ipAddresses}"
-                  }
-                  variable "ipv4_address" {
-                    description = "Endereço IP para a maquina virtual"
-                    default     = "${ipv4_address}"
-                  }
-                  variable "ipv4_gateway" {
-                    description = "Gateway"
-                    default     = "${ipv4_gateway}"
-                  }
-                  variable "ipv4_netmask" {
-                    description = "Mascara de rede"
-                    default     = "${ipv4_netmask}"
-                  }
-                  variable "svc_username" {
-                    description = "Usuario do servico"
-                    default     = "${svc_username}"
-                  }
-                  variable "svc_password" {
-                    description = "Senha do servico"
-                    default     = "${svc_password}"
-                  }
-                  variable "privatekeypath" {
-                    description = "Caminho da chave privada"
-                    default     = "${privatekeypath}"
-                  }
-                  variable "public_key" {
-                    description = "Chave publica"
-                    default     = "${public_key}"
-                  }
-                  '''
-
-                }
-              }
+                echo "rede1: ${rede1}"
             }
         }
-        stage('Terragrunt Plan') {
+      }
+      stage('Terragrunt Plan') {
           steps {
             script {
               def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
