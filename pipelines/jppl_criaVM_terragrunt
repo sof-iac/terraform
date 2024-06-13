@@ -81,7 +81,7 @@ pipeline {
                   "variable \"template\" { \n type = string \n default = \"${template}\" \n}\n" +
                   "variable \"name\" { \n type = string \n default = \"${name}\" \n}\n" +
                   "variable \"vm_count\" { \n type = string \n default = \"${vm_count}\" \n}\n" +
-                  "variable \"ipAddresses\" { \n type = string \n default = \"${ipAddresses}\" \n}\n" +
+                  "variable \"dns_server_list\" { \n type = string \n default = ${ipAddresses} \n}\n" +
                   "variable \"ipv4_address\" { \n type = string \n default = \"${ipv4_address}\" \n}\n" +
                   "variable \"ipv4_gateway\" { \n type = string \n default = \"${ipv4_gateway}\" \n}\n" +
                   "variable \"ipv4_netmask\" { \n type = string \n default = \"${ipv4_netmask}\" \n}\n" +
@@ -181,7 +181,7 @@ pipeline {
                       }
                       variable "dns_server_list" {
                         description = "Lista de servidores DNS"
-                        default     = "${ipAddresses}"
+                        default     = ${ipAddresses}
                       }
                       variable "ipv4_address" {
                         description = "Endereço IP para a maquina virtual"
