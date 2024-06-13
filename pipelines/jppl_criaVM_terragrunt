@@ -245,7 +245,7 @@ pipeline {
                       }
                       variable "vsphere_cluster" {
                         description = "Nome do Cluster"
-                        default     = "${env.vsphere_cluster}"
+                        default     = "${vsphere_cluster}"
                       }
                       variable "vsphere_datastore" {
                         description = "Nome do datastore"
@@ -253,7 +253,7 @@ pipeline {
                       }
                       variable "vsphere_network" {
                         description = "Nome da rede"
-                        default     = "${env.vsphere_network}"
+                        default     = "${evsphere_network}"
                       }
                       variable "name_prefix" {
                         description = "Prefixo do nome da maquina virtual"
@@ -313,7 +313,7 @@ pipeline {
                       }
                       variable "dns_server_list" {
                         description = "Lista de servidores DNS"
-                        default     = "${ipAddresses}"
+                        default     = ${ipAddresses}
                       }
                       variable "ipv4_address" {
                         description = "Endereço IP para a maquina virtual"
