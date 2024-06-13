@@ -253,7 +253,7 @@ pipeline {
                       }
                       variable "vsphere_network" {
                         description = "Nome da rede"
-                        default     = "${evsphere_network}"
+                        default     = "${vsphere_network}"
                       }
                       variable "name_prefix" {
                         description = "Prefixo do nome da maquina virtual"
