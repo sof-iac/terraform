@@ -43,10 +43,10 @@ pipeline {
                 script {
                   def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
                   
-                  def vsphere_cluster = ''        
+                  def vsphere_network = ''        
                   echo "Processed IP addresses: ${ipAddresses}"
                   dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") { 
-                    def vsphere_network = input(id: 'userInput', message: 'Escolha uma Blade:', parameters: [choice(name: 'Blades', choices: 'Blade_Atreus\nBlade_Kratos', description: 'Selecione uma Blade')])
+                    def vsphere_cluster = input(id: 'userInput', message: 'Escolha uma Blade:', parameters: [choice(name: 'Blades', choices: 'Blade_Atreus\nBlade_Kratos', description: 'Selecione uma Blade')])
                     if (vsphere_cluster == 'Blade_Atreus') {
                         vsphere_network = input(id: 'userInput', message: 'Escolha uma Blade:', parameters: [choice(name: 'Redes Atreus', choices: ['PG_Atlas_Apl_Internas','PG_Atlas_App_Shared_MP','PG_Atlas_Backup','PG_Atlas_BRIDGE_MP','PG_Atlas_BRIDGE_SOF_INFOVIA','PG_Atlas_BRIDGE_SOF_TELEBRAS','PG_Atlas_CODIN_DEVS','PG_Atlas_COINF_Admin','PG_Atlas_COINF_OPERACOES','PG_Atlas_Desenvolvimento','PG_Atlas_DIPLA','PG_Atlas_DMZ_Hom_Aplic_Intern','PG_Atlas_DMZ_Homologacao','PG_Atlas_DMZ_Producao','PG_Atlas_DMZ_Servico_Homologacao','PG_Atlas_DMZ_Servico_Producao','PG_Atlas_Dominio_Recurso','PG_Atlas_Gerencia','PG_Atlas_Kubestag','PG_Atlas_LABOCOINF','PG_Atlas_LINK_FIREWALLS','PG_Atlas_LINK_MP_SOF','PG_Atlas_LINK_SOF_IPEA','PG_Atlas_LINK_SOF_MP','PG_Atlas_RedeInterna','PG_Atlas_SEAIN_DMZ','PG_Atlas_SEAIN_SERVICO','PG_Atlas_Servico_Kubernets','PG_Atlas_Sip_Service','PG_Atlas_Sip_Vivo','PG_Atlas_T2','PG_Atlas_Teste','PG_Atlas_TESTE_FGT_DC','PG_Atlas_UPLINK_INFOVIA'].join('\n'), description: 'Selecione uma rede')])
                     } else if (vsphere_cluster == 'Blade_Kratos') {
