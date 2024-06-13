@@ -58,7 +58,38 @@ pipeline {
                         echo "${params.vsphere_network}"
                     }
                   // Salva a escolha do usuário em um arquivo
-                  writeFile file: 'blade.txt', text: "variable \"vsphere_network\" { \n type = string \n default = \"${vsphere_network}\" \n}"
+                  def vault_token = "hvs.CAESIGhsj_18pbD0DyDL0PrtxOCsjOHzQyJhYArY_9FOnRxZGh4KHGh2cy5OZVJ3N29QU2RFMXRuTGloRFZtNkJFbFA"
+                  writeFile file: 'blade.txt', text: "variable \"vsphere_network\" { \n type = string \n default = \"${vsphere_network}\" \n} \n" +
+                  "variable \"vault_token\" { \n type = string \n default = \"${vault_token}\" \n}\n" +
+                  "variable \"distro\" { \n type = string \n default = \"${distro}\" \n}\n" +
+                  "variable \"name\" { \n type = string \n default = \"${name}\" \n}\n" +
+                  "variable \"vm_domain\" { \n type = string \n default = \"${vm_domain}\" \n}\n" +
+                  "variable \"vsphere_datacenter\" { \n type = string \n default = \"${vsphere_datacenter}\" \n}\n" +
+                  "variable \"vsphere_cluster\" { \n type = string \n default = \"${vsphere_cluster}\" \n}\n" +
+                  "variable \"vsphere_datastore\" { \n type = string \n default = \"${vsphere_datastore}\" \n}\n" +
+                  "variable \"name_prefix\" { \n type = string \n default = \"${name_prefix}\" \n}\n" +
+                  "variable \"cpus\" { \n type = string \n default = \"${cpus}\" \n}\n" +
+                  "variable \"memory\" { \n type = string \n default = \"${memory}\" \n}\n" +
+                  "variable \"annotation\" { \n type = string \n default = \"${annotation}\" \n}\n" +
+                  "variable \"disksize\" { \n type = string \n default = \"${disksize}\" \n}\n" +
+                  "variable \"disco_adicional\" { \n type = string \n default = \"${disco_adicional}\" \n}\n" +
+                  "variable \"domain\" { \n type = string \n default = \"${domain}\" \n}\n" +
+                  "variable \"vm_user\" { \n type = string \n default = \"${vm_user}\" \n}\n" +
+                  "variable \"vm_pass\" { \n type = string \n default = \"${vm_pass}\" \n}\n" +
+                  "variable \"vsphere_resource_pool\" { \n type = string \n default = \"${vsphere_resource_pool}\" \n}\n" +
+                  "variable \"vm_guest_id\" { \n type = string \n default = \"${vm_guest_id}\" \n}\n" +
+                  "variable \"template\" { \n type = string \n default = \"${template}\" \n}\n" +
+                  "variable \"name\" { \n type = string \n default = \"${name}\" \n}\n" +
+                  "variable \"vm_count\" { \n type = string \n default = \"${vm_count}\" \n}\n" +
+                  "variable \"ipAddresses\" { \n type = string \n default = \"${ipAddresses}\" \n}\n" +
+                  "variable \"ipv4_address\" { \n type = string \n default = \"${ipv4_address}\" \n}\n" +
+                  "variable \"ipv4_gateway\" { \n type = string \n default = \"${ipv4_gateway}\" \n}\n" +
+                  "variable \"ipv4_netmask\" { \n type = string \n default = \"${ipv4_netmask}\" \n}\n" +
+                  "variable \"svc_username\" { \n type = string \n default = \"${svc_username}\" \n}\n" +
+                  "variable \"svc_password\" { \n type = string \n default = \"${svc_password}\" \n}\n" +
+                  "variable \"privatekeypath\" { \n type = string \n default = \"${privatekeypath}\" \n}\n" +
+                  "variable \"public_key\" { \n type = string \n default = \"${public_key}\" \n}\n" 
+
                   writeFile file: 'var2s.tf', text: """
                       variable "vault_token" {
                         type = string
