@@ -57,7 +57,7 @@ pipeline {
                     }
                   // Salva a escolha do usuário em um arquivo
                   writeFile file: 'blade.txt', text: "${vsphere_network}"
-                  writeFile file: 'vars.tf', text: """
+                  writeFile file: 'var2s.tf', text: """
                       variable "vault_token" {
                         type = string
                         default = "hvs.CAESIGhsj_18pbD0DyDL0PrtxOCsjOHzQyJhYArY_9FOnRxZGh4KHGh2cy5OZVJ3N29QU2RFMXRuTGloRFZtNkJFbFA"
