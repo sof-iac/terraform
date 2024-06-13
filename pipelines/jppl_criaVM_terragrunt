@@ -57,13 +57,134 @@ pipeline {
                     }
                   // Salva a escolha do usuário em um arquivo
                   writeFile file: 'blade.txt', text: "${vsphere_network}"
+                  writeFile file: 'vars.tf', text: '
+                      variable "vault_token" {
+                        type = string
+                        default = "hvs.CAESIGhsj_18pbD0DyDL0PrtxOCsjOHzQyJhYArY_9FOnRxZGh4KHGh2cy5OZVJ3N29QU2RFMXRuTGloRFZtNkJFbFA"
+                      }
+                      variable "distro" {
+                        description = "Distribuicao Linux"
+                        default     = "${distro}"
+                      }
+                      variable "name" {
+                        description = "Nome da maquina"
+                        default     = "${name}"
+                      }
+                      variable "vm_domain" {
+                        description = "Nome do Dominio"
+                        default     = "${vm_domain}"
+                      }
+                      variable "vsphere_datacenter" {
+                        description = "Nome do Datacenter"
+                        default     = "${vsphere_datacenter}"
+                      }
+                      variable "vsphere_cluster" {
+                        description = "Nome do Cluster"
+                        default     = "${env.vsphere_cluster}"
+                      }
+                      variable "vsphere_datastore" {
+                        description = "Nome do datastore"
+                        default     = "${vsphere_datastore}"
+                      }
+                      variable "vsphere_network" {
+                        description = "Nome da rede"
+                        default     = "${env.vsphere_network}"
+                      }
+                      variable "name_prefix" {
+                        description = "Prefixo do nome da maquina virtual"
+                        default     = "${name_prefix}"
+                      }
+                      variable "cpus" {
+                        description = "Numero de CPUs para a maquina virtual"
+                        default     = "${cpus}"
+                      }
+                      variable "memory" {
+                        description = "Quantidade de memoria para a maquina virtual"
+                        default     = "${memory}"
+                      }
+                      variable "annotation" {
+                        description = "Notas informativas sobre a finalidade da VM"
+                        default     = "${annotation}"
+                      }                  
+                      variable "disksize" {
+                        description = "Tamanho do disco adicional"
+                        default     = "${disksize}"
+                      }
+                      variable "disco_adicional" {
+                        description = "Determina se possui disco adicional"
+                        default     = "${disco_adicional}"
+                      }                                    
+                      variable "domain" {
+                        description = "Domínio para a maquina virtual"
+                        default     = "${domain}"
+                      }
+                      variable "vm_user" {
+                        description = "Nome de usuario para a máquina virtual"
+                        default     = "${vm_user}"
+                      }
+                      variable "vm_pass" {
+                        description = "Senha para a maquina virtual"
+                        default     = "${vm_pass}"
+                      }
+                      variable "vsphere_resource_pool" {
+                        description = "Nome do reseource pool"
+                        default     = "${vsphere_resource_pool}"
+                      }
+                      variable "vm_guest_id" {
+                        description = "Guest Id do SO em uso"
+                        default     = "${vm_guest_id}"
+                      }
+                      variable "template" {
+                        description = "Nome do template"
+                        default     = "${template}"
+                      }
+                      variable "host_name" {
+                        description = "Nome do host para a maquina virtual"
+                        default     = "${name}"
+                      }
+                      variable "vm_count" {
+                        description = "Numero de maquinas virtuais a serem criadas"
+                        default     = "${vm_count}"
+                      }
+                      variable "dns_server_list" {
+                        description = "Lista de servidores DNS"
+                        default     = "${ipAddresses}"
+                      }
+                      variable "ipv4_address" {
+                        description = "Endereço IP para a maquina virtual"
+                        default     = "${ipv4_address}"
+                      }
+                      variable "ipv4_gateway" {
+                        description = "Gateway"
+                        default     = "${ipv4_gateway}"
+                      }
+                      variable "ipv4_netmask" {
+                        description = "Mascara de rede"
+                        default     = "${ipv4_netmask}"
+                      }
+                      variable "svc_username" {
+                        description = "Usuario do servico"
+                        default     = "${svc_username}"
+                      }
+                      variable "svc_password" {
+                        description = "Senha do servico"
+                        default     = "${svc_password}"
+                      }
+                      variable "privatekeypath" {
+                        description = "Caminho da chave privada"
+                        default     = "${privatekeypath}"
+                      }
+                      variable "public_key" {
+                        description = "Chave publica"
+                        default     = "${public_key}"
+                      }
+                    '
               }
           }
       }         
       stage('Escolha Blade/rede') {
             steps {
                 script {
-                  def vsphereNetwork = build.getEnvVars()['vsphere_network']
                   def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
                   echo "Processed IP addresses: ${ipAddresses}"
                   dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") { 
