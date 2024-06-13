@@ -1,12 +1,12 @@
 provider "vault" {}
 
 resource "vault_mount" "pki" {
-  path        = "pki"
+  path        = "secrets/pki_sof_int/sof-intra"
   type        = "pki"
   description = "PKI backend to issue certificates"
 }
 
-resource "vault_pki_secret_backend_role" "my_role" {
+resource "vault_pki_secret_backend_role" "teste234.sof.intra" {
   backend               = vault_mount.pki.path
   name                  = "my-role"
   allowed_domains       = ["example.com"]
