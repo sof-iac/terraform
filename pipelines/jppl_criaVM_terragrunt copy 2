@@ -42,8 +42,7 @@ pipeline {
             steps {
                 script {
                   def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
-                  
-                  def vsphere_network = ''        
+                   
                   echo "Processed IP addresses: ${ipAddresses}"
                   dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") { 
                     def vsphere_cluster = input(id: 'userInput', message: 'Escolha uma Blade:', parameters: [choice(name: 'Blades', choices: 'Blade_Atreus\nBlade_Kratos', description: 'Selecione uma Blade')])
@@ -52,8 +51,10 @@ pipeline {
                     } else if (vsphere_cluster == 'Blade_Kratos') {
                         vsphere_network = input(id: 'userInput', message: 'Escolha uma Blade:', parameters: [choice(name: 'Redes Kratos', choices: ['PG_Gaia_Apl_Internas', 'PG_Gaia_App_Shared_MP', 'PG_Gaia_Backup', 'PG_Gaia_BRIDGE_MP', 'PG_Gaia_BRIDGE_SOF_INFOVIA', 'PG_Gaia_BRIDGE_SOF_TELEBRAS', 'PG_Gaia_CODIN_DEVS', 'PG_Gaia_COINF_Admin', 'PG_Gaia_COINF_OPERACOES', 'PG_Gaia_Desenvolvimento', 'PG_Gaia_DIPLA', 'PG_Gaia_DMZ_Hom_Aplic_Intern', 'PG_Gaia_DMZ_Homologacao', 'PG_Gaia_DMZ_Producao', 'PG_Gaia_DMZ_Servico_Homologacao', 'PG_Gaia_DMZ_Servico_Producao', 'PG_Gaia_Dominio_Recurso', 'PG_Gaia_Gerencia', 'PG_Gaia_Kubestag', 'PG_Gaia_LINK_FIREWALLS', 'PG_Gaia_LINK_MP_SOF', 'PG_Gaia_LINK_SOF_IPEA', 'PG_Gaia_LINK_SOF_MP', 'PG_Gaia_RedeInterna', 'PG_Gaia_SEAIN_DMZ', 'PG_Gaia_SEAIN_SERVICO', 'PG_Gaia_Servico_Kubernets', 'PG_Gaia_Sip_Service', 'PG_Gaia_Sip_Vivo', 'PG_Gaia_T2', 'PG_Gaia_Teste', 'PG_Gaia_TESTE_FGT_DC', 'PG_Gaia_UPLINK_INFOVIA', 'PG_Gaia_UPLINK_TELEBRAS', 'PG_Gaia_vCenter_HA', 'PG_Gaia_vMotion'].join('\n'), description: 'Selecione uma rede')])
                     }
-                    sh '''
-                      cat <<EOF > vars.tf
+                    // Lê o conteúdo do arquivo.txt e armazena na variável 'vaultToken'
+                    // def vaultToken = readFile 'arquivo.txt'.trim()
+                    // Escreve o conteúdo na vars.tf
+                    writeFile file: 'vars.tf', content: """
                       variable "vault_token" {
                         type = string
                         default = "hvs.CAESIGhsj_18pbD0DyDL0PrtxOCsjOHzQyJhYArY_9FOnRxZGh4KHGh2cy5OZVJ3N29QU2RFMXRuTGloRFZtNkJFbFA"
@@ -174,21 +175,20 @@ pipeline {
                         description = "Chave publica"
                         default     = "${public_key}"
                       }
-                      '''
-
+                    """                  
                     }                    
                   }
                 }
-            }
-        }
-        stage('Create vars.tf') {
+      }
+      stage('Create vars.tf') {
             steps {
               script {
                 def rede1 = "${vsphere_network}"
                 echo "rede1: ${rede1}"
             }
         }
-        stage('Terragrunt Plan') {
+      }
+      stage('Terragrunt Plan') {
           steps {
             script {
               def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
