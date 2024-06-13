@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
       vsphere_cluster = ''
-      vsphere_cluster = ''
+      vsphere_network = ''
     }
     parameters {
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
