@@ -58,7 +58,7 @@ pipeline {
                         echo "${params.vsphere_network}"
                     }
                   // Salva a escolha do usuário em um arquivo
-                  writeFile file: 'blade.txt', text: "variable 'vsphere_network' \\{ \\n type = string \\n default = ${vsphere_network} \\}"
+                  writeFile file: 'blade.txt', text: "variable 'vsphere_network' { \n type = string \n default = ${vsphere_network} }"
                   writeFile file: 'var2s.tf', text: """
                       variable "vault_token" {
                         type = string
