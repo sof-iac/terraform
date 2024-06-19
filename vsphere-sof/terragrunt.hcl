@@ -1,6 +1,6 @@
-#inputs = {
-  #vault_token = ""
-#}
+inputs = {
+  vault_token = "hvs.CAESIKuXMnQEV7Th8eDo2tRMo0BQ7COCpxnVw1Pj-GMuvBRuGh4KHGh2cy5WRnNFSzFaRTk0bVJsVGhVZU40dzQ1RE8"
+}
 
 generate "provider" {
   path      = "provider.tf"
