@@ -58,7 +58,7 @@ pipeline {
                         echo "${params.vsphere_network}"
                     }
                   // Salva a escolha do usuário em um arquivo
-                  def vault_token = "hvs.CAESIGhsj_18pbD0DyDL0PrtxOCsjOHzQyJhYArY_9FOnRxZGh4KHGh2cy5OZVJ3N29QU2RFMXRuTGloRFZtNkJFbFA"
+                  def vault_token = "hvs.CAESIKuXMnQEV7Th8eDo2tRMo0BQ7COCpxnVw1Pj-GMuvBRuGh4KHGh2cy5WRnNFSzFaRTk0bVJsVGhVZU40dzQ1RE8"
                   writeFile file: 'blade.txt', text: "variable \"vsphere_network\" { \n type = string \n default = \"${vsphere_network}\" \n} \n" +
                   "variable \"vault_token\" { \n type = string \n default = \"${vault_token}\" \n}\n" +
                   "variable \"distro\" { \n type = string \n default = \"${distro}\" \n}\n" +
@@ -93,7 +93,7 @@ pipeline {
                   writeFile file: 'var2s.tf', text: """
                       variable "vault_token" {
                         type = string
-                        default = "hvs.CAESIGhsj_18pbD0DyDL0PrtxOCsjOHzQyJhYArY_9FOnRxZGh4KHGh2cy5OZVJ3N29QU2RFMXRuTGloRFZtNkJFbFA"
+                        default = "hvs.CAESIKuXMnQEV7Th8eDo2tRMo0BQ7COCpxnVw1Pj-GMuvBRuGh4KHGh2cy5WRnNFSzFaRTk0bVJsVGhVZU40dzQ1RE8"
                       }
                       variable "distro" {
                         description = "Distribuicao Linux"
@@ -225,7 +225,7 @@ pipeline {
                     writeFile file: 'vars.tf', text: """
                       variable "vault_token" {
                         type = string
-                        default = "hvs.CAESIGhsj_18pbD0DyDL0PrtxOCsjOHzQyJhYArY_9FOnRxZGh4KHGh2cy5OZVJ3N29QU2RFMXRuTGloRFZtNkJFbFA"
+                        default = "hvs.CAESIKuXMnQEV7Th8eDo2tRMo0BQ7COCpxnVw1Pj-GMuvBRuGh4KHGh2cy5WRnNFSzFaRTk0bVJsVGhVZU40dzQ1RE8"
                       }
                       variable "distro" {
                         description = "Distribuicao Linux"
