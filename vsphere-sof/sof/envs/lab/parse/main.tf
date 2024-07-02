@@ -105,6 +105,14 @@ resource "vsphere_virtual_machine" "vm" {
       dns_server_list = ["172.27.3.5", "172.27.3.6"]
     }
   }
+  # Tenta rebootar a maquina
+  provisioner "remote-exec" {
+    inline = [
+      "sleep 120",
+      "shutdown -r now",  # Reinicia a máquina
+      "echo 'Continuando após o reboot'",
+    ]
+  }
   # Copia a chave privada para a VM a ser criada
   provisioner "file" {
     source      = "/home/ansible/.ssh/id_ed25519"
