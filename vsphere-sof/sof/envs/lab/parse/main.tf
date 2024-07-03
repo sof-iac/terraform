@@ -109,13 +109,13 @@ resource "vsphere_virtual_machine" "vm" {
   provisioner "remote-exec" {
     connection {
       type     = "ssh"
-      user     = "${var.svc_username}"
-      password = "${var.svc_password}"
+      user     = "${var.vm_user}"
+      password = "${var.vm_pass}"
       host     = "${var.ipv4_address}"
     }
     inline = [
-      "sleep 20",
-      "sudo shutdown -r now",  # Reinicia a máquina
+      "sleep 120",
+      "shutdown -r now",  # Reinicia a máquina
       "echo 'Continuando após o reboot'",
     ]
   }
