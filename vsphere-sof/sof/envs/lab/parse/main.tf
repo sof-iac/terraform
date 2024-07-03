@@ -107,6 +107,12 @@ resource "vsphere_virtual_machine" "vm" {
   }
   # Tenta rebootar a maquina
   provisioner "remote-exec" {
+    connection {
+      type     = "ssh"
+      user     = "${var.vm_user}"
+      password = "${var.vm_pass}"
+      host     = "${var.ipv4_address}"
+    }
     inline = [
       "sleep 120",
       "shutdown -r now",  # Reinicia a máquina
