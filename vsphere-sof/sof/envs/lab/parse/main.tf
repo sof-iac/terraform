@@ -114,7 +114,7 @@ resource "vsphere_virtual_machine" "vm" {
       host     = "${var.ipv4_address}"
     }
     inline = [
-      "sleep 120",
+      "sleep 20",
       "sudo shutdown -r now",  # Reinicia a máquina
       "echo 'Continuando após o reboot'",
     ]
