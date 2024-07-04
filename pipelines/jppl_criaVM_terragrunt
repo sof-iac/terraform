@@ -3,6 +3,7 @@ pipeline {
     environment {
       def vsphere_network = ''
       VAULT_PATH = 'secrets/secrets/servicos/ansible/ansible'
+      
       user_svc_passwd = ''
     }
     parameters {
