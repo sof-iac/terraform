@@ -13,7 +13,7 @@ pipeline {
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
       text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
       choice(name: 'distro', choices: ['ubuntu', 'centos', 'rocklinux', 'orcl'], description: 'Distribuição Linux')      
-      string(name: 'name', defaultValue: 'PREP03', description: 'Nome da maquina')
+      string(name: 'name', defaultValue: 'ubuntu01', description: 'Nome da maquina')
       string(name: 'vm_domain', defaultValue: 'sof.intra', description: 'Dominio')
       string(name: 'vsphere_datacenter', defaultValue: 'SOF', description: 'Datacenter')
       string(name: 'vsphere_datastore', defaultValue: 'Storage_Purestorage', description: 'DataStore')
@@ -45,18 +45,25 @@ pipeline {
 
     stages {
       stage('Retornando Private Key do vault') {
-          steps {
-              script {
-                  def privateKey = withVault([
-                      vaultUrl: 'https://vault.app.sof.intra',
-                      vaultCredentialId: 'token_vault',
-                      skipSslVerification: true
-                  ]) {
-                      return vault(path: "${VAULT_PATH}", secretValues: [[vaultKey: 'private_key']])
-                  }
-                  writeFile file: '/tmp/id_ed25519', text: privateKey
-              }
-          }
+        steps {
+            script {
+                // define the secrets and the env variables
+                def secrets = [
+                    [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
+                        [envVar: 'user_svc_vcenter', vaultKey: 'username']]]
+                ]
+
+                // optional configuration
+                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
+                                      vaultCredentialId: 'token_vault',
+                                      engineVersion: 2]
+
+                // inside this block your credentials will be available as env variables
+                withVault([configuration: configuration, vaultSecrets: secrets]) {
+                    sh 'echo $user_svc_vcenter'
+                }
+            }
+        }
       }
       stage('Inicilamente escolha um Blade') {
           steps {
