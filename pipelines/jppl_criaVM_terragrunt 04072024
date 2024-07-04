@@ -2,7 +2,6 @@ pipeline {
     agent any
     environment {
       def vsphere_network = ''
-      VAULT_PATH = 'secrets/servicos/ansible/ansible'
     }
     parameters {
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
@@ -44,21 +43,6 @@ pipeline {
     }
 
     stages {
-    stages {
-      stage('Retornando Private Key do vault') {
-          steps {
-              script {
-                  def privateKey = withVault([
-                      vaultUrl: 'https://vault.app.sof.intra',
-                      vaultCredentialId: 'token_vault',
-                      skipSslVerification: true
-                  ]) {
-                      return vault(path: "${VAULT_PATH}", secretValues: [[vaultKey: 'private_key']])
-                  }
-                  writeFile file: '/tmp/id_ed25519', text: privateKey
-              }
-          }
-      }
       stage('Inicilamente escolha um Blade') {
           steps {
               script {

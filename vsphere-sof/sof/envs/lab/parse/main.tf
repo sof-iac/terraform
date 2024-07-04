@@ -124,7 +124,7 @@ resource "vsphere_virtual_machine" "vm" {
   }
   # Copia a chave privada para a VM a ser criada
   provisioner "file" {
-    source      = "/tmp/id_ed25519"
+    source      = "/home/ansible/.ssh/id_ed25519"
     destination = "/tmp/"
     connection {
       type     = "ssh"
@@ -135,7 +135,7 @@ resource "vsphere_virtual_machine" "vm" {
   }
   # Copia a chave publica para a VM a ser criada
   provisioner "file" {
-    source      = "/tmp/id_ed25519.pub"
+    source      = "/home/ansible/.ssh/id_ed25519.pub"
     destination = "/tmp/"
     connection {
       type     = "ssh"
