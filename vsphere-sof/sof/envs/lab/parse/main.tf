@@ -16,7 +16,8 @@ locals {
     vm_pass         = var.vm_pass,
     svc_username    = var.svc_username,
     svc_password    = var.svc_password,
-    distro          = var.distro
+    distro          = var.distro,
+    public_key      = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra"
   }
 }
 
@@ -88,6 +89,10 @@ resource "vsphere_virtual_machine" "vm" {
     client_device = true
   }
 
+  extra_config = {
+    "guestinfo.userdata"          = base64encode(templatefile("${path.module}/templates/userdata.yaml", local.templatevars))
+    "guestinfo.userdata.encoding" = "base64"
+  }  
   clone {
     template_uuid = data.vsphere_virtual_machine.template.id
 
@@ -109,12 +114,12 @@ resource "vsphere_virtual_machine" "vm" {
   provisioner "remote-exec" {
     connection {
       type     = "ssh"
-      user     = "${var.vm_user}"
-      password = "${var.vm_pass}"
+      user     = "${var.svc_username}"
+      password = "${var.svc_password}"
       host     = "${var.ipv4_address}"
     }
     inline = [
-      "sleep 120",
+      "sleep 20",
       "shutdown -r now",  # Reinicia a máquina
       "echo 'Continuando após o reboot'",
     ]
