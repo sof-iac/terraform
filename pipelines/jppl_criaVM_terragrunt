@@ -3,6 +3,7 @@ pipeline {
     environment {
       def vsphere_network = ''
       VAULT_PATH = 'secrets/secrets/servicos/ansible/ansible'
+      user_svc_passwd = ''
     }
     parameters {
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
@@ -384,8 +385,24 @@ pipeline {
       stage('Terragrunt Plan') {
           steps {
             script {           
-              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {                 
-                sh 'terragrunt plan -var "user_svc_passwd=${user_svc_passwd}"' 
+              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
+                // define the secrets and the env variables
+                def secrets = [
+                    [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
+                        [envVar: 'user_svc_passwd', vaultKey: 'username']]]
+                ]
+
+                // optional configuration
+                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
+                                      vaultCredentialId: 'token_vault',
+                                      engineVersion: 2]
+
+                // inside this block your credentials will be available as env variables
+                withVault([configuration: configuration, vaultSecrets: secrets]) {
+                    sh 'echo $user_svc_passwd'
+                    sh """ terragrunt plan -var 'user_svc_passwd=${user_svc_passwd}' """ 
+                }                            
+                
               }
             }          
           }
