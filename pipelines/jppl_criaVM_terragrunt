@@ -44,7 +44,7 @@ pipeline {
     }
 
     stages {
-      stage('Retornando Private Key do vault') {
+      stage('Retornando Private Key do Vcenter') {
         steps {
             script {
                 // define the secrets and the env variables
@@ -65,6 +65,27 @@ pipeline {
             }
         }
       }
+      stage('Retornando Private Key do ansible') {
+        steps {
+            script {
+                // define the secrets and the env variables
+                def secrets = [
+                    [path: 'secrets/servicos/ansible/ansible', engineVersion: 2, secretValues: [
+                        [envVar: 'ansible_pk', vaultKey: 'private_key']]]
+                ]
+
+                // optional configuration
+                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
+                                      vaultCredentialId: 'token_vault',
+                                      engineVersion: 2]
+
+                // inside this block your credentials will be available as env variables
+                withVault([configuration: configuration, vaultSecrets: secrets]) {
+                    sh 'echo $ansible_pk'
+                }
+            }
+        }
+      }      
       stage('Inicilamente escolha um Blade') {
           steps {
               script {
