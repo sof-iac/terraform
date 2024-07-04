@@ -44,7 +44,6 @@ pipeline {
     }
 
     stages {
-    stages {
       stage('Retornando Private Key do vault') {
           steps {
               script {
