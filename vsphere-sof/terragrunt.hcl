@@ -1,6 +1,6 @@
 inputs = {
   vault_token = "hvs.CAESIEhTzySs_Mc68sZniBZykJsi22HHjAwk2LQeUVDrBhuKGh4KHGh2cy54cHV6ZTcwNjJZV3loQjR0RkxVME8welU"
-  user_svc_passwd = "${env.user_svc_passwd}"
+  user_svc_passwd = "${user_svc_passwd}"
 }
 
 generate "provider" {
