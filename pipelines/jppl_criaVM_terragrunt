@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
       def vsphere_network = ''
-      VAULT_PATH = 'secrets/servicos/ansible/ansible'
+      VAULT_PATH = 'secrets/secrets/servicos/ansible/ansible'
     }
     parameters {
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
