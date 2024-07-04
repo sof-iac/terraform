@@ -1,6 +1,5 @@
 inputs = {
   vault_token = "hvs.CAESIEhTzySs_Mc68sZniBZykJsi22HHjAwk2LQeUVDrBhuKGh4KHGh2cy54cHV6ZTcwNjJZV3loQjR0RkxVME8welU"
-  user_svc_passwd = "${user_svc_passwd}"
 }
 
 generate "provider" {
@@ -18,7 +17,7 @@ data "vault_generic_secret" "vsphere_credentials" {
 
 provider "vsphere" {
   user           = "user_svc_vcenter"
-  password       = var.user_svc_passwd
+  password       = data.vault_generic_secret.vsphere_credentials.data["username"]
   vsphere_server = "pvcn01.sof.intra"
 
   # if you have a self-signed cert
