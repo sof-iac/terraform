@@ -109,21 +109,6 @@ resource "vsphere_virtual_machine" "vm" {
       ipv4_gateway = var.ipv4_gateway
       dns_server_list = ["172.27.3.5", "172.27.3.6"]
     }
-  }
-  # Tenta rebootar a maquina
-  provisioner "remote-exec" {
-    connection {
-      type     = "ssh"
-      user     = "${var.svc_username}"
-      password = "${var.svc_password}"
-      host     = "${var.ipv4_address}"
-    }
-    inline = [
-      "sleep 20",
-      "shutdown -r now",  # Reinicia a máquina
-      "echo 'Continuando após o reboot'",
-    ]
-  }
   # Copia a chave privada para a VM a ser criada
   provisioner "file" {
     source      = "/home/ansible/.ssh/id_ed25519"
