@@ -420,12 +420,28 @@ pipeline {
         }
         stage('Terragrunt Apply') {
           steps {
-            script {               
-              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {                 
-                sh """ terragrunt apply -auto-approve -var 'user_svc_passwd=${user_svc_passwd}' """
+            script {           
+              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
+                // define the secrets and the env variables
+                def secrets = [
+                    [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
+                        [envVar: 'user_svc_passwd', vaultKey: 'username']]]
+                ]
+
+                // optional configuration
+                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
+                                      vaultCredentialId: 'token_vault',
+                                      engineVersion: 2]
+
+                // inside this block your credentials will be available as env variables
+                withVault([configuration: configuration, vaultSecrets: secrets]) {
+                    sh 'echo $user_svc_passwd'
+                    sh """ terragrunt apply -auto-approve -var 'user_svc_passwd=${user_svc_passwd}' """
+                }                            
+                
               }
             }          
-          }
+          }                     
         }        
     }
 }
