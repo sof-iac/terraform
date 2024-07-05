@@ -131,6 +131,7 @@ pipeline {
                   "variable \"ipv4_netmask\" { \n type = string \n default = \"${ipv4_netmask}\" \n}\n" +
                   "variable \"svc_username\" { \n type = string \n default = \"${svc_username}\" \n}\n" +
                   "variable \"svc_password\" { \n type = string \n default = \"${svc_password}\" \n}\n" +
+                  "variable \"user_svc_passwd\" { \n type = string \n default = \"${user_svc_passwd}\" \n}\n" +
                   "variable \"privatekeypath\" { \n type = string \n default = \"${privatekeypath}\" \n}\n" +
                   "variable \"public_key\" { \n type = string \n default = \"${public_key}\" \n}\n" 
 
@@ -243,6 +244,10 @@ pipeline {
                         description = "Senha do servico"
                         default     = "${svc_password}"
                       }
+                      variable "user_svc_passwd" {
+                        description = "Senha do servico"
+                        default     = "${user_svc_passwd}"
+                      }                         
                       variable "privatekeypath" {
                         description = "Caminho da chave privada"
                         default     = "${privatekeypath}"
@@ -371,6 +376,10 @@ pipeline {
                         description = "Senha do servico"
                         default     = "${svc_password}"
                       }
+                      variable "user_svc_passwd" {
+                        description = "Senha do servico"
+                        default     = "${user_svc_passwd}"
+                      }                      
                       variable "privatekeypath" {
                         description = "Caminho da chave privada"
                         default     = "${privatekeypath}"
