@@ -18,7 +18,7 @@ data "vault_generic_secret" "vsphere_credentials" {
 
 provider "vsphere" {
   user           = "user_svc_vcenter"
-  password       =  "${user_svc_passwd}"
+  password       =  var.user_svc_passwd
   vsphere_server = "pvcn01.sof.intra"
 
   # if you have a self-signed cert
