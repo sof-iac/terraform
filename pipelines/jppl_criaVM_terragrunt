@@ -49,6 +49,7 @@ pipeline {
       stage('Retornando Private Key do Vcenter') {
         steps {
             script {
+              dir("${Datacenter}") {
                 // define the secrets and the env variables
                 def secrets = [
                     [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
@@ -62,9 +63,10 @@ pipeline {
 
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh 'echo $user_svc_passwd > env.user_svc_passwd'
+                    sh 'echo $user_svc_passwd > secrets.txt'
                 }
             }
+          }
         }
       }
       stage('Retornando Private Key do ansible') {
