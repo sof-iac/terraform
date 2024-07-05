@@ -1,6 +1,6 @@
 inputs = {
   vault_token = "hvs.CAESIEhTzySs_Mc68sZniBZykJsi22HHjAwk2LQeUVDrBhuKGh4KHGh2cy54cHV6ZTcwNjJZV3loQjR0RkxVME8welU"
-  user_svc_passwd = file("${path.module}/secrets.txt")
+  user_svc_passwd = file("secrets.txt")
 }
 
 generate "provider" {
