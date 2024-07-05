@@ -16,7 +16,6 @@ locals {
     vm_pass         = var.vm_pass,
     svc_username    = var.svc_username,
     svc_password    = var.svc_password,
-    user_svc_passwd = var.user_svc_passwd,
     distro          = var.distro,
     public_key      = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra"
   }
