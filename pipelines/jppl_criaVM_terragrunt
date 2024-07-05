@@ -3,8 +3,6 @@ pipeline {
     environment {
       def vsphere_network = ''
       VAULT_PATH = 'secrets/secrets/servicos/ansible/ansible'
-      
-      user_svc_passwd = ''
     }
     parameters {
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
@@ -30,6 +28,7 @@ pipeline {
       text(name: 'annotation', defaultValue: "${env.BUILD_USER_ID}, ${new Date().format('dd/MM/yyyy')}", description: 'Notas informativas sobre a VM')
       string(name: 'vm_user', defaultValue: 'root', description: 'Nome de usuário para a máquina virtual')
       password(name: 'vm_pass', description: 'Senha para a máquina virtual')
+      password(name: 'user_svc_passwd', description: 'Senha para o Vcenter')
       string(name: 'vsphere_resource_pool', defaultValue: 'Blade_Atreus/Resources', description: 'vsphere_resource_pool')
       string(name: 'vm_guest_id', defaultValue: 'ubuntu64Guest', description: 'Guest Id do SO em uso')
       choice(name: 'template', choices: ['templateubuntu2204','templateubuntu2204_ansible'], description: 'Nome do Template')
