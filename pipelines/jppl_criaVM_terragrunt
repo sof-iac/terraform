@@ -3,6 +3,8 @@ pipeline {
     environment {
       def vsphere_network = ''
       VAULT_PATH = 'secrets/secrets/servicos/ansible/ansible'
+      AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID_LAB')
+      AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY_LAB')     
     }
     parameters {
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
@@ -393,22 +395,6 @@ pipeline {
                   }
                 }
       }
-
-     stage('Credentials_MiniO') {
-         steps {
-                // Usando withCredentials para definir as variáveis de ambiente para o MinIO
-                withCredentials([
-                    string(credentialsId: 'minio-access-key-id', variable: 'MINIO_ACCESS_KEY'),
-                    string(credentialsId: 'minio-secret-access-key', variable: 'MINIO_SECRET_KEY')
-                ]) {
-                    script {
-                        // Define variáveis de ambiente globalmente para as próximas etapas
-                        env.AWS_ACCESS_KEY_ID = "${MINIO_ACCESS_KEY}"
-                        env.AWS_SECRET_ACCESS_KEY = "${MINIO_SECRET_KEY}"
-                    }
-                }
-            }
-        }
 
       stage('Terragrunt Plan') {
           steps {
