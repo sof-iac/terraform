@@ -393,6 +393,23 @@ pipeline {
                   }
                 }
       }
+
+     stage('Credentials_MiniO') {
+         steps {
+                // Usando withCredentials para definir as variáveis de ambiente para o MinIO
+                withCredentials([
+                    string(credentialsId: 'minio-access-key-id', variable: 'MINIO_ACCESS_KEY'),
+                    string(credentialsId: 'minio-secret-access-key', variable: 'MINIO_SECRET_KEY')
+                ]) {
+                    script {
+                        // Define variáveis de ambiente globalmente para as próximas etapas
+                        env.AWS_ACCESS_KEY_ID = "${MINIO_ACCESS_KEY}"
+                        env.AWS_SECRET_ACCESS_KEY = "${MINIO_SECRET_KEY}"
+                    }
+                }
+            }
+        
+
       stage('Terragrunt Plan') {
           steps {
             script {           
