@@ -32,7 +32,7 @@ remote_state {
     endpoints = {
       s3 = "https://sof-s3.sof.intra"   # Minio endpoint
     }
-    key            = "${path_relative_to_include()}/terraform.tfstate"
+    key            = "terraform_lab.tfstate"
     access_key     = "sof-tf-lab"
     secret_key     = "0CtpstM00a3G6PuNXE4PnuEUZ1xDPdjIvqBwM8hM"
     kms_key_id     = "847b4b54-7fae-412e-aba3-50a3d8527002"
