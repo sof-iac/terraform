@@ -5,6 +5,8 @@ locals {
 # Inputs
 inputs = {
   user_svc_passwd = file("secrets.txt")
+  AWS_ACCESS_KEY_ID = "sof-tf-lab"
+  AWS_SECRET_ACCESS_KEY = "0CtpstM00a3G6PuNXE4PnuEUZ1xDPdjIvqBwM8hM"
 }
 
 # Gera o arquivo provider.tf com a conexão com o vCenter
@@ -31,8 +33,8 @@ remote_state {
     key                         = "terraform_lab.tfstate"
     region                      = "us-east-1" # Região fictícia para evitar validações do AWS
     endpoint                    = "https://sof-s3.sof.intra"
-    AWS_ACCESS_KEY_ID           = "sof-tf-lab"
-    AWS_SECRET_ACCESS_KEY       = "0CtpstM00a3G6PuNXE4PnuEUZ1xDPdjIvqBwM8hM"
+    access_key                  = "sof-tf-lab"
+    secret_key                  = "0CtpstM00a3G6PuNXE4PnuEUZ1xDPdjIvqBwM8hM"
     kms_key_id                  = "847b4b54-7fae-412e-aba3-50a3d8527002"
     skip_credentials_validation = true
     skip_requesting_account_id  = true
