@@ -41,7 +41,7 @@ remote_state {
     skip_requesting_account_id = true
     skip_metadata_api_check = true
     skip_region_validation = true
-    use_path_style = true             # Enable path-style S3 URLs (https://<HOST>/<BUCKET> https://developer.hashicorp.com/terraform/language/settings/backends/s3#use_path_style
+    use_path_style = true             # Enable path-style S3 URLs
     
     dynamodb = https://dynamodb.sof.intra
     dynamodb_table = "sof-ts-prod"    
