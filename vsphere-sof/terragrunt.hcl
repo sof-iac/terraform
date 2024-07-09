@@ -34,7 +34,7 @@ remote_state {
     }
     key            = "${path_relative_to_include()}/terraform.tfstate"
     access_key     = "sof-tf-lab"
-    secret_key=    ="0CtpstM00a3G6PuNXE4PnuEUZ1xDPdjIvqBwM8hM"
+    secret_key     = "0CtpstM00a3G6PuNXE4PnuEUZ1xDPdjIvqBwM8hM"
     kms_key_id     = "847b4b54-7fae-412e-aba3-50a3d8527002"
     region         = "main"
     skip_credentials_validation = true  # Skip AWS related checks and validations
