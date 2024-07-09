@@ -39,7 +39,7 @@ remote_state {
     skip_metadata_api_check     = true
     skip_region_validation      = true
     use_path_style              = true
-    dynamodb = "https://dynamodb.sof.intra
+    dynamodb                    = "https://dynamodb.sof.intra"
     dynamodb_table              = "sof-ts-prod"  # Nome da tabela DynamoDB para bloqueio
   }
 }
