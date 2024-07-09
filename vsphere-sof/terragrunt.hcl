@@ -1,3 +1,9 @@
+locals {
+  # Parse the file path we're in to read the env name: e.g., env 
+  # will be "dev" in the dev folder, "stage" in the stage folder, etc.
+  # parsed = regex(".*\/envs\/(?P<env>.*?)\/.*", get_terragrunt_dir())
+  env    = "lab" #local.parsed.env
+}# Configure S3 as a backend
 # Le o arquivo gerado no step anterior que busca a secret do vault
 inputs = {
   user_svc_passwd = file("secrets.txt")
@@ -20,13 +26,29 @@ EOF
 
 # Armazena o estado
 remote_state {
-  backend = "local"
+  backend = "s3"
+  config = {
+    bucket         = "tf-${local.env}"
+    endpoints = {
+      s3 = "https://sof-s3.sof.intra"   # Minio endpoint
+    }
+    key            = "${path_relative_to_include()}/terraform.tfstate"
+    access_key     = "sof-tf-lab"
+    secret_key=    ="0CtpstM00a3G6PuNXE4PnuEUZ1xDPdjIvqBwM8hM"
+    kms_key_id     = "847b4b54-7fae-412e-aba3-50a3d8527002"
+    region         = "main"
+    skip_credentials_validation = true  # Skip AWS related checks and validations
+    skip_requesting_account_id = true
+    skip_metadata_api_check = true
+    skip_region_validation = true
+    use_path_style = true             # Enable path-style S3 URLs (https://<HOST>/<BUCKET> https://developer.hashicorp.com/terraform/language/settings/backends/s3#use_path_style
+    
+    dynamodb = https://dynamodb.sof.intra
+    dynamodb_table = "sof-ts-prod"    
+  }
   generate = {
     path      = "backend.tf"
-    if_exists = "overwrite"
-  }
-  config = {
-    path = "/data/terraform.tfstate"
+    if_exists = "overwrite_terragrunt"
   }
 }
 
