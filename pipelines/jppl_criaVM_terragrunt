@@ -3,6 +3,8 @@ pipeline {
     environment {
       def vsphere_network = ''
       VAULT_PATH = 'secrets/secrets/servicos/ansible/ansible'
+      AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID_LAB')
+      AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY_LAB')
     }
     parameters {
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')

@@ -7,6 +7,8 @@ locals {
 # Le o arquivo gerado no step anterior que busca a secret do vault
 inputs = {
   user_svc_passwd = file("secrets.txt")
+  AWS_ACCESS_KEY_ID = "sof-tf-lab"
+  AWS_SECRET_ACCESS_KEY = "0CtpstM00a3G6PuNXE4PnuEUZ1xDPdjIvqBwM8hM"
 }
 # gera o arquivo provider.tf com a conexao com o vcenter
 generate "provider" {
