@@ -43,7 +43,7 @@ remote_state {
     skip_region_validation = true
     use_path_style = true             # Enable path-style S3 URLs
     
-    dynamodb = https://dynamodb.sof.intra
+    dynamodb = "https://dynamodb.sof.intra"
     dynamodb_table = "sof-ts-prod"    
   }
   generate = {
