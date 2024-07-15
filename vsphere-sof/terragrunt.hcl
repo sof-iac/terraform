@@ -46,7 +46,7 @@ remote_state {
     use_path_style = true             # Enable path-style S3 URLs
     
     dynamodb = "https://dynamodb.sof.intra"
-    dynamodb_table = "sof-ts-prod"    
+    dynamodb_table = "sof-ts-lab"    
   }
   generate = {
     path      = "backend.tf"
