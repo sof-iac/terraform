@@ -35,8 +35,8 @@ remote_state {
       s3 = "https://sof-s3.sof.intra"   # Minio endpoint
     }
     key            = "terraform_lab.tfstate"
-    access_key     = "sof-tf-lab"
-    secret_key     = "0CtpstM00a3G6PuNXE4PnuEUZ1xDPdjIvqBwM8hM"
+    access_key     = "FQX1kbkvHXA3QItNcB38"
+    secret_key     = "1IEqpzPvUz8LR9kOtJo72oEtyYo4ot28tWHcmfXx"
     kms_key_id     = "847b4b54-7fae-412e-aba3-50a3d8527002"
     region         = "main"
     skip_credentials_validation = true  # Skip AWS related checks and validations
