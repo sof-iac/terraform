@@ -6,17 +6,9 @@ generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
-provider "vault" {
-  address = "https://vault.app.sof.intra"
-}
-
-data "vault_generic_secret" "vsphere_credentials" {
-  path = "secrets/servicos/user_svc_vcenter"
-}
-
 provider "vsphere" {
   user           = "user_svc_vcenter"
-  password       = data.vault_generic_secret.vsphere_credentials.data["username"]
+  password       =  var.user_svc_passwd
   vsphere_server = "pvcn01.sof.intra"
 
   # if you have a self-signed cert
@@ -24,7 +16,6 @@ provider "vsphere" {
 }
 EOF
 }
-
 
 remote_state {
   backend = "local"
