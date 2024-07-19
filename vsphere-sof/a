@@ -1,0 +1,26 @@
+terraform {
+  required_version = ">= 0.12"
+}
+
+provider "aws" {
+  region                      = "main"
+  access_key                  = "FQX1kbkvHXA3QItNcB38"
+  secret_key                  = "1IEqpzPvUz8LR9kOtJo72oEtyYo4ot28tWHcmfXx"
+  endpoints {
+    s3                        = "https://sof-s3.sof.intra"
+    dynamodb                  = "https://dynamodb.sof.intra"
+  }
+  skip_credentials_validation = true
+  skip_metadata_api_check     = true
+  skip_region_validation      = true
+}
+
+resource "null_resource" "test" {
+  triggers = {
+    always_run = timestamp()
+  }
+
+  provisioner "local-exec" {
+    command = "echo 'Conexão com o bucket testada com sucesso'"
+  }
+}

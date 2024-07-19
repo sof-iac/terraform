@@ -1,23 +1,24 @@
-locals {
-  # Parse the file path we're in to read the env name: e.g., env 
-  # will be "dev" in the dev folder, "stage" in the stage folder, etc.
-  # parsed = regex(".*\/envs\/(?P<env>.*?)\/.*", get_terragrunt_dir())
-  env    = "lab" #local.parsed.env
-}# Configure S3 as a backend
-# Le o arquivo gerado no step anterior que busca a secret do vault
 inputs = {
-  user_svc_passwd = file("secrets.txt")
-  AWS_ACCESS_KEY_ID = "sof-tf-lab"
-  AWS_SECRET_ACCESS_KEY = "0CtpstM00a3G6PuNXE4PnuEUZ1xDPdjIvqBwM8hM"
+  vault_token = "hvs.CAESIEhTzySs_Mc68sZniBZykJsi22HHjAwk2LQeUVDrBhuKGh4KHGh2cy54cHV6ZTcwNjJZV3loQjR0RkxVME8welU"
+  user_svc_pass = "${env.user_svc_pass}"
 }
-# gera o arquivo provider.tf com a conexao com o vcenter
+
 generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
+provider "vault" {
+  address = "https://vault.app.sof.intra"
+  token   = var.vault_token
+}
+
+data "vault_generic_secret" "vsphere_credentials" {
+  path = "secrets/servicos/user_svc_vcenter"
+}
+
 provider "vsphere" {
   user           = "user_svc_vcenter"
-  password       =  var.user_svc_passwd
+  password       = data.vault_generic_secret.vsphere_credentials.data["username"]
   vsphere_server = "pvcn01.sof.intra"
 
   # if you have a self-signed cert
@@ -26,31 +27,15 @@ provider "vsphere" {
 EOF
 }
 
-# Armazena o estado
+
 remote_state {
-  backend = "s3"
-  config = {
-    bucket         = "tf-${local.env}"
-    endpoints = {
-      s3 = "https://sof-s3.sof.intra"   # Minio endpoint
-    }
-    key            = "terraform_lab.tfstate"
-    access_key     = "FQX1kbkvHXA3QItNcB38"
-    secret_key     = "1IEqpzPvUz8LR9kOtJo72oEtyYo4ot28tWHcmfXx"
-    #kms_key_id     = "847b4b54-7fae-412e-aba3-50a3d8527002"
-    region         = "main"
-    #skip_credentials_validation = true  # Skip AWS related checks and validations
-    #skip_requesting_account_id = true
-    #skip_metadata_api_check = true
-    #skip_region_validation = true
-    #use_path_style = true             # Enable path-style S3 URLs
-    
-    dynamodb = "https://dynamodb.sof.intra"
-    dynamodb_table = "sof-ts-lab"    
-  }
+  backend = "local"
   generate = {
     path      = "backend.tf"
-    if_exists = "overwrite_terragrunt"
+    if_exists = "overwrite"
+  }
+  config = {
+    path = "/data/terraform.tfstate"
   }
 }
 
