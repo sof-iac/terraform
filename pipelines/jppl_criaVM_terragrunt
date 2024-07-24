@@ -414,7 +414,7 @@ pipeline {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh 'echo $user_svc_passwd'
                     sh 'terraform init -reconfigure'
-                    sh """ terragrunt plan -var 'user_svc_passwd=${user_svc_passwd}' """ 
+                    sh """ terraform init -reconfigure; terragrunt plan -var 'user_svc_passwd=${user_svc_passwd}' """ 
                 }                            
                 
               }
