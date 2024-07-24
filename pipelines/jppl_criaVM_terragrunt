@@ -438,7 +438,7 @@ pipeline {
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh 'echo $user_svc_passwd'
-                    sh """ terragrunt apply -auto-approve -var 'user_svc_passwd=${user_svc_passwd}' """
+                    sh """ terragrunt apply -auto-approve -lock=false -var 'user_svc_passwd=${user_svc_passwd}' """
                 }                            
                 
               }
