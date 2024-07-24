@@ -47,6 +47,29 @@ pipeline {
     }
 
     stages {
+      stage('Retornando certificado do minio') {
+        steps {
+            script {
+              dir("${Datacenter}") {
+                // define the secrets and the env variables
+                def secrets = [
+                    [path: 'secrets/certificados/minio.sof.intra', engineVersion: 2, secretValues: [
+                        [envVar: 'minio.pem', vaultKey: 'minio.pem']]]
+                ]
+
+                // optional configuration
+                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
+                                      vaultCredentialId: 'token_vault',
+                                      engineVersion: 2]
+
+                // inside this block your credentials will be available as env variables
+                withVault([configuration: configuration, vaultSecrets: secrets]) {
+                    sh 'echo $minio.pem > minio.pem'
+                }
+            }
+          }
+        }
+      }      
       stage('Retornando Private Key do Vcenter') {
         steps {
             script {
