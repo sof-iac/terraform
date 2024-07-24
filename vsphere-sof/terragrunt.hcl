@@ -3,7 +3,9 @@ locals {
   # will be "dev" in the dev folder, "stage" in the stage folder, 
   # etc.
   # parsed = regex(".*\/envs\/(?P<env>.*?)\/.*", get_terragrunt_dir())
-  env    = "lab" #local.parsed.env
+  env    = "lab" #local.parsed.enn
+}
+inputs = {
   user_svc_passwd = file("secrets.txt")
 }
 
