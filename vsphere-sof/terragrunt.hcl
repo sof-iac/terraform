@@ -31,8 +31,10 @@ generate "backend" {
   if_exists = "overwrite_terragrunt"
   contents = <<EOF
   terraform {
+    use_path_style = true
     backend "s3" {
       bucket    = "tf-${local.env}"
+      use_path_style = true
       endpoints = {
         s3 = "https://sof-s3.sof.intra"   # Minio endpoint
         dynamodb = "https://dynamodb.sof.intra"
