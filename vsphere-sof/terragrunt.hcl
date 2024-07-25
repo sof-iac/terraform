@@ -47,7 +47,7 @@ generate "backend" {
       skip_requesting_account_id = true
       skip_metadata_api_check = true
       skip_region_validation = true
-      use_path_style = true             # Enable path-style S3 URLs
+      # use_path_style = true             # Enable path-style S3 URLs
 
       dynamodb_table = "sof-ts-lab"
       }
