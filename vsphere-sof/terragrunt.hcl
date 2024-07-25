@@ -36,8 +36,8 @@ generate "backend" {
     backend "s3" {
       bucket    = "tf-${local.env}"
       endpoints = {
-        s3 = "http://sof-s3.sof.intra"   # Minio endpoint
-        dynamodb = "http://dynamodb.sof.intra"
+        s3 = "http://minio.minio-tenant.svc.cluster.local"   # Minio endpoint
+        dynamodb = "http://dynamodb.dynamodb.svc.cluster.local:8000"
       }
       key            = "${path_relative_to_include()}/terraform_lab.tfstate"
       access_key     = "FQX1kbkvHXA3QItNcB38"
