@@ -31,7 +31,6 @@ generate "backend" {
   if_exists = "overwrite_terragrunt"
   contents = <<EOF
   terraform {
-    use_path_style = true
     backend "s3" {
       bucket    = "tf-${local.env}"
       use_path_style = true
