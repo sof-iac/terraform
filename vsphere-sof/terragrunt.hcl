@@ -8,6 +8,8 @@ locals {
 inputs = {
   user_svc_passwd = file("secrets.txt")
   minio_pem = file("minio.pem")
+  AWS_ACCESS_KEY_ID = "sof-tf-lab"
+  AWS_SECRET_ACCESS_KEY = "0CtpstM00a3G6PuNXE4PnuEUZ1xDPdjIvqBwM8hM"
 }
 
 generate "provider" {
@@ -49,7 +51,7 @@ generate "backend" {
       skip_region_validation = true
       use_path_style = true             # Enable path-style S3 URLs
 
-      dynamodb_table = "sof-ts-lab"
+      dynamodb_table = "sof-tf-state-lab"
       }
     }
   EOF
