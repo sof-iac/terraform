@@ -109,7 +109,7 @@ pipeline {
 
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh 'echo $ansible_pk'
+                    sh 'echo $ansible_pk > id_ed25519'
                 }
             }
         }
