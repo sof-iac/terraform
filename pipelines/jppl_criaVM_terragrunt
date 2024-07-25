@@ -436,7 +436,7 @@ pipeline {
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh 'echo $user_svc_passwd'
-                    sh """ terragrunt init; terragrunt plan -var 'user_svc_passwd=${user_svc_passwd}' """ 
+                    sh """ terraform init -reconfigure; terragrunt plan -var 'user_svc_passwd=${user_svc_passwd}' """ 
                 }                            
                 
               }
