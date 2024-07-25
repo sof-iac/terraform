@@ -40,8 +40,8 @@ generate "backend" {
         dynamodb = "http://dynamodb.dynamodb.svc.cluster.local:8000"
       }
       key            = "${path_relative_to_include()}/terraform_lab.tfstate"
-      access_key     = "FQX1kbkvHXA3QItNcB38"
-      secret_key     = "1IEqpzPvUz8LR9kOtJo72oEtyYo4ot28tWHcmfXx"
+      access_key     = "sof-tf-lab"
+      secret_key     = "0CtpstM00a3G6PuNXE4PnuEUZ1xDPdjIvqBwM8hM"
       #kms_key_id     = "847b4b54-7fae-412e-aba3-50a3d8527002"
       # custom_ca_bundle = var.minio_pem
       region         = "us-east-1"
