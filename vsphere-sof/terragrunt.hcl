@@ -40,6 +40,8 @@ generate "backend" {
         dynamodb = "https://dynamodb.sof.intra"
       }
       key            = "${path_relative_to_include()}/terraform_lab.tfstate"
+      AWS_ACCESS_KEY_ID = "sof-tf-lab"
+      AWS_SECRET_ACCESS_KEY = "0CtpstM00a3G6PuNXE4PnuEUZ1xDPdjIvqBwM8hM"
       access_key     = "FQX1kbkvHXA3QItNcB38"
       secret_key     = "1IEqpzPvUz8LR9kOtJo72oEtyYo4ot28tWHcmfXx"
       #kms_key_id     = "847b4b54-7fae-412e-aba3-50a3d8527002"
