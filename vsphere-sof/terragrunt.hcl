@@ -44,7 +44,7 @@ generate "backend" {
       custom_ca_bundle = var.minio_pem
       region         = "us-east-1"
       skip_credentials_validation = true  # Skip AWS related checks and validations
-      skip_requesting_account_id = true
+      # skip_requesting_account_id = true
       skip_metadata_api_check = true
       skip_region_validation = true
       # use_path_style = true             # Enable path-style S3 URLs
