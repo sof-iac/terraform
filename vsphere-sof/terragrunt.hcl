@@ -36,7 +36,6 @@ generate "backend" {
       endpoints = {
         s3 = "https://sof-s3.sof.intra"   # Minio endpoint
         dynamodb = "https://dynamodb.sof.intra"
-        custom_ca_bundle = var.minio_pem
       }
       key            = "${path_relative_to_include()}/terraform_lab.tfstate"
       access_key     = "FQX1kbkvHXA3QItNcB38"
