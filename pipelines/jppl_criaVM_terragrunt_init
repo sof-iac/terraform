@@ -254,7 +254,7 @@ pipeline {
                     {
                        sh """ terragrunt ${init}  """
                     }
-                    sh """ terragrunt plan -var 'user_svc_passwd=${user_svc_passwd}' """ 
+                    sh """ terragrunt plan -lock=${lock} -var 'user_svc_passwd=${user_svc_passwd}' """ 
                 }                            
                 
               }
