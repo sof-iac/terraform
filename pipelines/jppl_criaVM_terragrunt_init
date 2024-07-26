@@ -49,7 +49,7 @@ pipeline {
       stage('Retornando certificado do minio') {
         steps {
             script {
-              dir("${Datacenter}") {
+              dir("${Datacenter}/${Site}/envs/${Ambiente}") {
                 // define the secrets and the env variables
                 def secrets = [
                     [path: 'secrets/certificados/minio.sof.intra', engineVersion: 2, secretValues: [
@@ -72,7 +72,7 @@ pipeline {
       stage('Retornando Private Key do Vcenter') {
         steps {
             script {
-              dir("${Datacenter}") {
+              dir("${Datacenter}/${Site}/envs/${Ambiente}") {
                 // define the secrets and the env variables
                 def secrets = [
                     [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
@@ -95,6 +95,7 @@ pipeline {
       stage('Retornando Private Key do ansible') {
         steps {
             script {
+              dir("${Datacenter}/${Site}/envs/${Ambiente}") {
                 // define the secrets and the env variables
                 def secrets = [
                     [path: 'secrets/servicos/ansible/ansible', engineVersion: 2, secretValues: [
@@ -110,6 +111,7 @@ pipeline {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh 'echo $ansible_pk > id_ed25519'
                 }
+              }
             }
         }
       }      
