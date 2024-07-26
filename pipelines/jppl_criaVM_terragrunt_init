@@ -5,11 +5,13 @@ pipeline {
       VAULT_PATH = 'secrets/secrets/servicos/ansible/ansible'
     }
     parameters {
+      // Nome do projeto no gitea
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
       choice(name: 'Datacenter', choices: ['vsphere-sof','aws'], description: 'Datacenter') 
       choice(name: 'Site', choices: [ 'sof', 'blocok'], description: 'Site')
       choice(name: 'Ambiente', choices: [ 'lab', 'prod', 'teste'], description: 'Ambiente')
       string(name: 'Diretorio', defaultValue: 'meu_projeto', description: 'Nome do diretorio do projeto Terraform a executar')
+      choice(name: 'init', choices: [ 'nao', 'init', '-reconfigure','-migrate-state'], description: 'Alterações no Tfsate')
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
       text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
       choice(name: 'distro', choices: ['ubuntu', 'centos', 'rocklinux', 'orcl'], description: 'Distribuição Linux')      
@@ -21,7 +23,6 @@ pipeline {
       hidden(name: 'vsphere_network', defaultValue: '', description: 'vsphere_network')      
       hidden(name: 'name_prefix', description: 'Prefixo do nome da máquina virtual')
       choice(name: 'cpus', choices: [ '1','2','3','4','5','6','7','8','10','12'], description: 'Número de CPUs para a máquina virtual')
-      choice(name: 'init', choices: [ 'nao', 'init', '-reconfigure','-migrate-state'], description: 'Alterações no Tfsate')
       choice(name: 'memory', choices: ['1024','2048','4096','8192','16384','24576'], description: 'Quantidade de memória em Gb')
       choice(name: 'disksize', choices: [ '0', '4','8','12','16','20','25','40','50','80','100','150','200','250'], description: 'Tamanho do disco adicional - Se houver')
       choice(name: 'disco_adicional', choices: [ '0', '1'], description: 'Possui disco de dados adicional ?')
@@ -32,7 +33,7 @@ pipeline {
       password(name: 'user_svc_passwd', description: 'Senha para o Vcenter')
       string(name: 'vsphere_resource_pool', defaultValue: 'Blade_Atreus/Resources', description: 'vsphere_resource_pool')
       string(name: 'vm_guest_id', defaultValue: 'ubuntu64Guest', description: 'Guest Id do SO em uso')
-      choice(name: 'template', choices: ['templateubuntu2204','templateubuntu2204_ansible'], description: 'Nome do Template')
+      choice(name: 'template', choices: ['templateubuntu2204_ansible'], description: 'Nome do Template')
       string(name: 'host_name', defaultValue: 'ubuntu01', description: 'Nome do host para a maquina virtual')
       choice(name: 'vm_count', choices: [ '1', '2', '3', '4', '2', '3', '4'], description: 'Número de maquinas virtuais a serem criadas')
       string(name: 'dns_server_list', defaultValue: '172.27.3.5,172.27.3.6', description: 'List of DNS servers')
@@ -46,12 +47,12 @@ pipeline {
     }
 
     stages {
-      stage('Retornando certificado do minio') {
+      stage('Retornando as chaves privadas e certificados') {
         steps {
             script {
               dir("${Datacenter}/${Site}/envs/${Ambiente}") {
                 // define the secrets and the env variables
-                def secrets = [
+                def cert_minio = [
                     [path: 'secrets/certificados/minio.sof.intra', engineVersion: 2, secretValues: [
                         [envVar: 'minio.pem', vaultKey: 'minio.pem']]]
                 ]
@@ -60,6 +61,11 @@ pipeline {
                     [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
                         [envVar: 'user_svc_passwd', vaultKey: 'username']]]
                 ]
+                // Retorna a chave privada do ansible
+                def pk_ansible = [
+                    [path: 'secrets/servicos/ansible/ansible', engineVersion: 2, secretValues: [
+                        [envVar: 'ansible_pk', vaultKey: 'private_key']]]
+                ]                
 
                 // optional configuration
                 def configuration = [vaultUrl: 'https://vault.app.sof.intra',
@@ -67,63 +73,21 @@ pipeline {
                                       engineVersion: 2]
 
                 // inside this block your credentials will be available as env variables
-                withVault([configuration: configuration, vaultSecrets: secrets]) {
+                withVault([configuration: configuration, vaultSecrets: cert_minio]) {
                     sh 'echo $minio.pem > minio.pem'
                 }
 
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
                     sh 'echo $user_svc_passwd > secrets.txt'
                 }
-            }
-          }
-        }
-      }      
-      stage('Retornando Private Key do Vcenter') {
-        steps {
-            script {
-              dir("${Datacenter}/${Site}/envs/${Ambiente}") {
-                // define the secrets and the env variables
-                def secrets = [
-                    [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
-                        [envVar: 'user_svc_passwd', vaultKey: 'username']]]
-                ]
 
-                // optional configuration
-                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
-                                      vaultCredentialId: 'token_vault',
-                                      engineVersion: 2]
-
-                // inside this block your credentials will be available as env variables
-                withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh 'echo $user_svc_passwd > secrets.txt'
-                }
-            }
-          }
-        }
-      }
-      stage('Retornando Private Key do ansible') {
-        steps {
-            script {
-              dir("${Datacenter}/${Site}/envs/${Ambiente}") {
-                // define the secrets and the env variables
-                def secrets = [
-                    [path: 'secrets/servicos/ansible/ansible', engineVersion: 2, secretValues: [
-                        [envVar: 'ansible_pk', vaultKey: 'private_key']]]
-                ]
-
-                // optional configuration
-                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
-                                      vaultCredentialId: 'token_vault',
-                                      engineVersion: 2]
-
-                // inside this block your credentials will be available as env variables
-                withVault([configuration: configuration, vaultSecrets: secrets]) {
+                withVault([configuration: configuration, vaultSecrets: pk_ansible]) {
                     sh 'echo $ansible_pk > id_ed25519'
                 }
-              }
             }
+          }
         }
-      }      
+      }            
       stage('Inicilamente escolha um Blade') {
           steps {
               script {
@@ -140,7 +104,7 @@ pipeline {
                     }
                   // Salva a escolha do usuário em um arquivo
                   dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {
-                  writeFile file: 'var2s.tf', text: """
+                  writeFile file: 'vars.tf', text: """
                       variable "distro" {
                         description = "Distribuicao Linux"
                         default     = "${distro}"
