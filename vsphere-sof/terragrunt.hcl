@@ -51,7 +51,7 @@ generate "backend" {
       skip_region_validation = true
       use_path_style = true             # Enable path-style S3 URLs
 
-      dynamodb_table = "softflab"
+      dynamodb_table = "sof-tf-state-lab"
       }
     }
   EOF
