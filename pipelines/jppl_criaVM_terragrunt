@@ -12,6 +12,7 @@ pipeline {
       choice(name: 'Ambiente', choices: [ 'lab', 'prod', 'teste'], description: 'Ambiente')
       string(name: 'Diretorio', defaultValue: 'meu_projeto', description: 'Nome do diretorio do projeto Terraform a executar')
       choice(name: 'init', choices: [ 'nao', 'init', 'init -reconfigure','init -migrate-state'], description: 'Alterações no Tfsate')
+      choice(name: 'lock', choices: ['true','false'], description: 'Lock do dynamodb')
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
       text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
       choice(name: 'distro', choices: ['ubuntu', 'centos', 'rocklinux', 'orcl'], description: 'Distribuição Linux')      
@@ -278,7 +279,7 @@ pipeline {
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh 'echo $user_svc_passwd'
-                    sh """ terragrunt apply -auto-approve -var 'user_svc_passwd=${user_svc_passwd}' """
+                    sh """ terragrunt apply -auto-approve -lock=${lock} -var 'user_svc_passwd=${user_svc_passwd}' """
                 }                            
                 
               }
