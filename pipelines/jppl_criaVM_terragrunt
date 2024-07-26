@@ -3,15 +3,15 @@ pipeline {
     environment {
       def vsphere_network = ''
       VAULT_PATH = 'secrets/secrets/servicos/ansible/ansible'
-      AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID_LAB')
-      AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY_LAB')
     }
     parameters {
+      // Nome do projeto no gitea
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
       choice(name: 'Datacenter', choices: ['vsphere-sof','aws'], description: 'Datacenter') 
       choice(name: 'Site', choices: [ 'sof', 'blocok'], description: 'Site')
       choice(name: 'Ambiente', choices: [ 'lab', 'prod', 'teste'], description: 'Ambiente')
       string(name: 'Diretorio', defaultValue: 'meu_projeto', description: 'Nome do diretorio do projeto Terraform a executar')
+      choice(name: 'init', choices: [ 'nao', 'init', '-reconfigure','-migrate-state'], description: 'Alterações no Tfsate')
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
       text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
       choice(name: 'distro', choices: ['ubuntu', 'centos', 'rocklinux', 'orcl'], description: 'Distribuição Linux')      
@@ -19,6 +19,7 @@ pipeline {
       string(name: 'vm_domain', defaultValue: 'sof.intra', description: 'Dominio')
       string(name: 'vsphere_datacenter', defaultValue: 'SOF', description: 'Datacenter')
       string(name: 'vsphere_datastore', defaultValue: 'Storage_Purestorage', description: 'DataStore')
+      hidden(name: 'vsphere_senha', defaultValue: '', description: 'Senha do Vcenter')
       hidden(name: 'vsphere_cluster', defaultValue: '', description: 'Cluster do Vcenter')
       hidden(name: 'vsphere_network', defaultValue: '', description: 'vsphere_network')      
       hidden(name: 'name_prefix', description: 'Prefixo do nome da máquina virtual')
@@ -33,7 +34,7 @@ pipeline {
       password(name: 'user_svc_passwd', description: 'Senha para o Vcenter')
       string(name: 'vsphere_resource_pool', defaultValue: 'Blade_Atreus/Resources', description: 'vsphere_resource_pool')
       string(name: 'vm_guest_id', defaultValue: 'ubuntu64Guest', description: 'Guest Id do SO em uso')
-      choice(name: 'template', choices: ['templateubuntu2204','templateubuntu2204_ansible'], description: 'Nome do Template')
+      choice(name: 'template', choices: ['templateubuntu2204_ansible'], description: 'Nome do Template')
       string(name: 'host_name', defaultValue: 'ubuntu01', description: 'Nome do host para a maquina virtual')
       choice(name: 'vm_count', choices: [ '1', '2', '3', '4', '2', '3', '4'], description: 'Número de maquinas virtuais a serem criadas')
       string(name: 'dns_server_list', defaultValue: '172.27.3.5,172.27.3.6', description: 'List of DNS servers')
@@ -47,38 +48,25 @@ pipeline {
     }
 
     stages {
-      stage('Retornando certificado do minio') {
+      stage('Retornando as chaves privadas e certificados') {
         steps {
             script {
-              dir("${Datacenter}") {
+              dir("${Datacenter}/${Site}/envs/${Ambiente}") {
                 // define the secrets and the env variables
-                def secrets = [
+                def cert_minio = [
                     [path: 'secrets/certificados/minio.sof.intra', engineVersion: 2, secretValues: [
                         [envVar: 'minio.pem', vaultKey: 'minio.pem']]]
                 ]
-
-                // optional configuration
-                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
-                                      vaultCredentialId: 'token_vault',
-                                      engineVersion: 2]
-
-                // inside this block your credentials will be available as env variables
-                withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh 'echo $minio.pem > minio.pem'
-                }
-            }
-          }
-        }
-      }      
-      stage('Retornando Private Key do Vcenter') {
-        steps {
-            script {
-              dir("${Datacenter}") {
-                // define the secrets and the env variables
-                def secrets = [
+                // Retorna a chave de conexao com o vcenter
+                def secrets_vcenter = [
                     [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
                         [envVar: 'user_svc_passwd', vaultKey: 'username']]]
                 ]
+                // Retorna a chave privada do ansible
+                def pk_ansible = [
+                    [path: 'secrets/servicos/ansible/ansible', engineVersion: 2, secretValues: [
+                        [envVar: 'ansible_pk', vaultKey: 'private_key']]]
+                ]                
 
                 // optional configuration
                 def configuration = [vaultUrl: 'https://vault.app.sof.intra',
@@ -86,34 +74,21 @@ pipeline {
                                       engineVersion: 2]
 
                 // inside this block your credentials will be available as env variables
-                withVault([configuration: configuration, vaultSecrets: secrets]) {
+                withVault([configuration: configuration, vaultSecrets: cert_minio]) {
+                    sh 'echo $minio.pem > minio.pem'
+                }
+
+                withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
                     sh 'echo $user_svc_passwd > secrets.txt'
+                }
+
+                withVault([configuration: configuration, vaultSecrets: pk_ansible]) {
+                    sh 'echo $ansible_pk > id_ed25519'
                 }
             }
           }
         }
-      }
-      stage('Retornando Private Key do ansible') {
-        steps {
-            script {
-                // define the secrets and the env variables
-                def secrets = [
-                    [path: 'secrets/servicos/ansible/ansible', engineVersion: 2, secretValues: [
-                        [envVar: 'ansible_pk', vaultKey: 'private_key']]]
-                ]
-
-                // optional configuration
-                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
-                                      vaultCredentialId: 'token_vault',
-                                      engineVersion: 2]
-
-                // inside this block your credentials will be available as env variables
-                withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh 'echo $ansible_pk > id_ed25519'
-                }
-            }
-        }
-      }      
+      }            
       stage('Inicilamente escolha um Blade') {
           steps {
               script {
@@ -129,38 +104,8 @@ pipeline {
                         echo "${params.vsphere_network}"
                     }
                   // Salva a escolha do usuário em um arquivo
-                  writeFile file: 'blade.txt', text: "variable \"vsphere_network\" { \n type = string \n default = \"${vsphere_network}\" \n} \n" +
-                  "variable \"distro\" { \n type = string \n default = \"${distro}\" \n}\n" +
-                  "variable \"name\" { \n type = string \n default = \"${name}\" \n}\n" +
-                  "variable \"vm_domain\" { \n type = string \n default = \"${vm_domain}\" \n}\n" +
-                  "variable \"vsphere_datacenter\" { \n type = string \n default = \"${vsphere_datacenter}\" \n}\n" +
-                  "variable \"vsphere_cluster\" { \n type = string \n default = \"${vsphere_cluster}\" \n}\n" +
-                  "variable \"vsphere_datastore\" { \n type = string \n default = \"${vsphere_datastore}\" \n}\n" +
-                  "variable \"name_prefix\" { \n type = string \n default = \"${name_prefix}\" \n}\n" +
-                  "variable \"cpus\" { \n type = string \n default = \"${cpus}\" \n}\n" +
-                  "variable \"memory\" { \n type = string \n default = \"${memory}\" \n}\n" +
-                  "variable \"annotation\" { \n type = string \n default = \"${annotation}\" \n}\n" +
-                  "variable \"disksize\" { \n type = string \n default = \"${disksize}\" \n}\n" +
-                  "variable \"disco_adicional\" { \n type = string \n default = \"${disco_adicional}\" \n}\n" +
-                  "variable \"domain\" { \n type = string \n default = \"${domain}\" \n}\n" +
-                  "variable \"vm_user\" { \n type = string \n default = \"${vm_user}\" \n}\n" +
-                  "variable \"vm_pass\" { \n type = string \n default = \"${vm_pass}\" \n}\n" +
-                  "variable \"vsphere_resource_pool\" { \n type = string \n default = \"${vsphere_resource_pool}\" \n}\n" +
-                  "variable \"vm_guest_id\" { \n type = string \n default = \"${vm_guest_id}\" \n}\n" +
-                  "variable \"template\" { \n type = string \n default = \"${template}\" \n}\n" +
-                  "variable \"name\" { \n type = string \n default = \"${name}\" \n}\n" +
-                  "variable \"vm_count\" { \n type = string \n default = \"${vm_count}\" \n}\n" +
-                  "variable \"dns_server_list\" { \n type = string \n default = [${ipAddresses}] \n}\n" +
-                  "variable \"ipv4_address\" { \n type = string \n default = \"${ipv4_address}\" \n}\n" +
-                  "variable \"ipv4_gateway\" { \n type = string \n default = \"${ipv4_gateway}\" \n}\n" +
-                  "variable \"ipv4_netmask\" { \n type = string \n default = \"${ipv4_netmask}\" \n}\n" +
-                  "variable \"svc_username\" { \n type = string \n default = \"${svc_username}\" \n}\n" +
-                  "variable \"svc_password\" { \n type = string \n default = \"${svc_password}\" \n}\n" +
-                  "variable \"user_svc_passwd\" { \n type = string \n default = \"${user_svc_passwd}\" \n}\n" +
-                  "variable \"privatekeypath\" { \n type = string \n default = \"${privatekeypath}\" \n}\n" +
-                  "variable \"public_key\" { \n type = string \n default = \"${public_key}\" \n}\n" 
-
-                  writeFile file: 'var2s.tf', text: """
+                  dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {
+                  writeFile file: 'vars.tf', text: """
                       variable "distro" {
                         description = "Distribuicao Linux"
                         default     = "${distro}"
@@ -282,142 +227,10 @@ pipeline {
                         default     = "${public_key}"
                       }
                     """
+                  }
               }
           }
       }         
-      stage('Criando o arquivo vars.tf') {
-            steps {
-                script {
-                  def ipAddresses = params.dns_server_list.split(',').collect { "\"$it\"" }.join(',')
-                  echo "Processed IP addresses: ${ipAddresses}"
-                  dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") { 
-                    // Escreve o conteúdo na vars.tf
-                    writeFile file: 'vars.tf', text: """
-                      variable "distro" {
-                        description = "Distribuicao Linux"
-                        default     = "${distro}"
-                      }
-                      variable "name" {
-                        description = "Nome da maquina"
-                        default     = "${name}"
-                      }
-                      variable "vm_domain" {
-                        description = "Nome do Dominio"
-                        default     = "${vm_domain}"
-                      }
-                      variable "vsphere_datacenter" {
-                        description = "Nome do Datacenter"
-                        default     = "${vsphere_datacenter}"
-                      }
-                      variable "vsphere_cluster" {
-                        description = "Nome do Cluster"
-                        default     = "${vsphere_cluster}"
-                      }
-                      variable "vsphere_datastore" {
-                        description = "Nome do datastore"
-                        default     = "${vsphere_datastore}"
-                      }
-                      variable "vsphere_network" {
-                        description = "Nome da rede"
-                        default     = "${vsphere_network}"
-                      }
-                      variable "name_prefix" {
-                        description = "Prefixo do nome da maquina virtual"
-                        default     = "${name_prefix}"
-                      }
-                      variable "cpus" {
-                        description = "Numero de CPUs para a maquina virtual"
-                        default     = "${cpus}"
-                      }
-                      variable "memory" {
-                        description = "Quantidade de memoria para a maquina virtual"
-                        default     = "${memory}"
-                      }
-                      variable "annotation" {
-                        description = "Notas informativas sobre a finalidade da VM"
-                        default     = "${annotation}"
-                      }                  
-                      variable "disksize" {
-                        description = "Tamanho do disco adicional"
-                        default     = "${disksize}"
-                      }
-                      variable "disco_adicional" {
-                        description = "Determina se possui disco adicional"
-                        default     = "${disco_adicional}"
-                      }                                    
-                      variable "domain" {
-                        description = "Domínio para a maquina virtual"
-                        default     = "${domain}"
-                      }
-                      variable "vm_user" {
-                        description = "Nome de usuario para a máquina virtual"
-                        default     = "${vm_user}"
-                      }
-                      variable "vm_pass" {
-                        description = "Senha para a maquina virtual"
-                        default     = "${vm_pass}"
-                      }
-                      variable "vsphere_resource_pool" {
-                        description = "Nome do reseource pool"
-                        default     = "${vsphere_resource_pool}"
-                      }
-                      variable "vm_guest_id" {
-                        description = "Guest Id do SO em uso"
-                        default     = "${vm_guest_id}"
-                      }
-                      variable "template" {
-                        description = "Nome do template"
-                        default     = "${template}"
-                      }
-                      variable "host_name" {
-                        description = "Nome do host para a maquina virtual"
-                        default     = "${name}"
-                      }
-                      variable "vm_count" {
-                        description = "Numero de maquinas virtuais a serem criadas"
-                        default     = "${vm_count}"
-                      }
-                      variable "dns_server_list" {
-                        description = "Lista de servidores DNS"
-                        default     = [${ipAddresses}]
-                      }
-                      variable "ipv4_address" {
-                        description = "Endereço IP para a maquina virtual"
-                        default     = "${ipv4_address}"
-                      }
-                      variable "ipv4_gateway" {
-                        description = "Gateway"
-                        default     = "${ipv4_gateway}"
-                      }
-                      variable "ipv4_netmask" {
-                        description = "Mascara de rede"
-                        default     = "${ipv4_netmask}"
-                      }
-                      variable "svc_username" {
-                        description = "Usuario do servico"
-                        default     = "${svc_username}"
-                      }
-                      variable "svc_password" {
-                        description = "Senha do servico"
-                        default     = "${svc_password}"
-                      }
-                      variable "user_svc_passwd" {
-                        description = "Senha do servico"
-                        default     = "${user_svc_passwd}"
-                      }                      
-                      variable "privatekeypath" {
-                        description = "Caminho da chave privada"
-                        default     = "${privatekeypath}"
-                      }
-                      variable "public_key" {
-                        description = "Chave publica"
-                        default     = "${public_key}"
-                      }
-                    """                  
-                    }                    
-                  }
-                }
-      }
       stage('Terragrunt Plan') {
           steps {
             script {           
@@ -436,7 +249,11 @@ pipeline {
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh 'echo $user_svc_passwd'
-                    sh """terragrunt plan -var 'user_svc_passwd=${user_svc_passwd}' """ 
+                    if("${init}" != 'nao')
+                    {
+                       sh """ terragrunt ${init}  """
+                    }
+                    sh """ terragrunt plan -var 'user_svc_passwd=${user_svc_passwd}' """ 
                 }                            
                 
               }
@@ -467,6 +284,6 @@ pipeline {
               }
             }          
           }                     
-        }        
+        }               
     }
 }
