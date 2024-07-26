@@ -19,6 +19,7 @@ pipeline {
       string(name: 'vm_domain', defaultValue: 'sof.intra', description: 'Dominio')
       string(name: 'vsphere_datacenter', defaultValue: 'SOF', description: 'Datacenter')
       string(name: 'vsphere_datastore', defaultValue: 'Storage_Purestorage', description: 'DataStore')
+      hidden(name: 'vsphere_senha', defaultValue: '', description: 'Senha do Vcenter')
       hidden(name: 'vsphere_cluster', defaultValue: '', description: 'Cluster do Vcenter')
       hidden(name: 'vsphere_network', defaultValue: '', description: 'vsphere_network')      
       hidden(name: 'name_prefix', description: 'Prefixo do nome da máquina virtual')
@@ -79,6 +80,7 @@ pipeline {
 
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
                     sh 'echo $user_svc_passwd > secrets.txt'
+                    sh '$user_svc_passwd > $vsphere_senha'
                 }
 
                 withVault([configuration: configuration, vaultSecrets: pk_ansible]) {
