@@ -3,13 +3,13 @@ locals {
   # will be "dev" in the dev folder, "stage" in the stage folder, 
   # etc.
   # parsed = regex(".*\/envs\/(?P<env>.*?)\/.*", get_terragrunt_dir())
-  env    = "lab" #local.parsed.enn
+  env    = "prod" #local.parsed.enn
 }
 inputs = {
   user_svc_passwd = file("secrets.txt")
   minio_pem = file("minio.pem")
-  AWS_ACCESS_KEY_ID = "sof-tf-lab"
-  AWS_SECRET_ACCESS_KEY = "0CtpstM00a3G6PuNXE4PnuEUZ1xDPdjIvqBwM8hM"
+  AWS_ACCESS_KEY_ID = "softfprod"
+  AWS_SECRET_ACCESS_KEY = "aaLj9DvFB2jW8bsrfcrg7jve1AyPXTYj1Bq3LcPf"
 }
 
 generate "provider" {
@@ -39,9 +39,9 @@ generate "backend" {
         s3 = "http://minio.minio-tenant.svc.cluster.local"   # Minio endpoint
         dynamodb = "http://dynamodb.dynamodb.svc.cluster.local:8000"
       }
-      key            = "${path_relative_to_include()}/terraform_lab.tfstate"
-      access_key     = "softflab"
-      secret_key     = "px8YVerl7uFw1Iz1VyszAlh97bfepiXjHJD9XYvr"
+      key            = "${path_relative_to_include()}/terraform_prod.tfstate"
+      access_key     = "softfprod"
+      secret_key     = "aaLj9DvFB2jW8bsrfcrg7jve1AyPXTYj1Bq3LcPf"
       #kms_key_id     = "847b4b54-7fae-412e-aba3-50a3d8527002"
       # custom_ca_bundle = var.minio_pem
       region         = "us-east-1"
@@ -51,7 +51,7 @@ generate "backend" {
       skip_region_validation = true
       use_path_style = true             # Enable path-style S3 URLs
 
-      dynamodb_table = "sof-tf-state-lab"
+      dynamodb_table = "sof-tfstate-prod"
       }
     }
   EOF
