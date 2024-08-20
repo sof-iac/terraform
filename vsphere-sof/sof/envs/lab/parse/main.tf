@@ -7,6 +7,7 @@ locals {
     vm_domain       = var.vm_domain,
     vsphere_cluster = var.vsphere_cluster,
     vsphere_network = var.vsphere_network,
+    vsphere_resource_pool = var.vsphere_resource_pool    
     ipv4_address    = var.ipv4_address,
     ipv4_gateway    = var.ipv4_gateway,
     disco_adicional = var.disco_adicional,
@@ -31,7 +32,7 @@ data "vsphere_datastore_cluster" "datastore_cluster" {
 }
 
 data "vsphere_resource_pool" "pool" {
-  name          = "Blade_Atreus/Resources" 
+  name          = var.vsphere_resource_pool
   datacenter_id = "${data.vsphere_datacenter.dc.id}"
 }
 
