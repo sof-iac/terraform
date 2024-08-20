@@ -1,24 +1,25 @@
 locals {
   templatevars = {
-    name            = var.name,
-    host_name       = var.host_name,
-    cpus            = var.cpus,
-    memory          = var.memory,
-    vm_domain       = var.vm_domain,
-    vsphere_cluster = var.vsphere_cluster,
-    vsphere_network = var.vsphere_network,
-    ipv4_address    = var.ipv4_address,
-    ipv4_gateway    = var.ipv4_gateway,
-    disco_adicional = var.disco_adicional,
-    disksize        = var.disksize,
-    annotation      = var.annotation,
-    vm_user         = var.vm_user,
-    vm_pass         = var.vm_pass,
-    svc_username    = var.svc_username,
-    svc_password    = var.svc_password,
-    user_svc_passwd = var.user_svc_passwd,
-    distro          = var.distro,
-    public_key      = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra"
+    name                = var.name,
+    host_name           = var.host_name,
+    cpus                = var.cpus,
+    memory              = var.memory,
+    vm_domain           = var.vm_domain,
+    vsphere_cluster     = var.vsphere_cluster,
+    vsphere_network     = var.vsphere_network,
+    ipv4_address        = var.ipv4_address,
+    vsphere_resource_pool = var.vsphere_resource_pool
+    ipv4_gateway        = var.ipv4_gateway,
+    disco_adicional     = var.disco_adicional,
+    disksize            = var.disksize,
+    annotation          = var.annotation,
+    vm_user             = var.vm_user,
+    vm_pass             = var.vm_pass,
+    svc_username        = var.svc_username,
+    svc_password        = var.svc_password,
+    user_svc_passwd     = var.user_svc_passwd,
+    distro              = var.distro,
+    public_key          = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra"
   }
 }
 
@@ -31,7 +32,7 @@ data "vsphere_datastore_cluster" "datastore_cluster" {
 }
 
 data "vsphere_resource_pool" "pool" {
-  name          = "Blade_Atreus/Resources" 
+  name          = var.vsphere_resource_pool
   datacenter_id = "${data.vsphere_datacenter.dc.id}"
 }
 
