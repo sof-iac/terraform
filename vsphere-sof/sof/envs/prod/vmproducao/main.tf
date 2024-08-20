@@ -123,17 +123,6 @@ resource "vsphere_virtual_machine" "vm" {
       "echo 'Continuando após o reboot'",
     ]
   }
-  # Copia a chave privada para a VM a ser criada
-  provisioner "file" {
-    source      = "/home/ansible/.ssh/id_ed25519"
-    destination = "/tmp/"
-    connection {
-      type     = "ssh"
-      user     = "${var.vm_user}"
-      password = "${var.vm_pass}"
-      host     = "${var.ipv4_address}"
-    }
-  }
   # Copia a chave publica para a VM a ser criada
   provisioner "file" {
     source      = "/home/ansible/.ssh/id_ed25519.pub"

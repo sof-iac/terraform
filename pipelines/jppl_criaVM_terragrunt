@@ -64,10 +64,10 @@ pipeline {
                     [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
                         [envVar: 'user_svc_passwd', vaultKey: 'username']]]
                 ]
-                // Retorna a chave privada do ansible
+                // Retorna a chave publica do ansible
                 def pk_ansible = [
                     [path: 'secrets/servicos/ansible/ansible', engineVersion: 2, secretValues: [
-                        [envVar: 'ansible_pk', vaultKey: 'private_key']]]
+                        [envVar: 'ansible_pub', vaultKey: 'public_key']]]
                 ]                
 
                 // optional configuration
@@ -85,7 +85,7 @@ pipeline {
                 }
 
                 withVault([configuration: configuration, vaultSecrets: pk_ansible]) {
-                    sh 'echo $ansible_pk > id_ed25519'
+                    sh 'echo $ansible_pub > id_ed25519.pub'
                 }
             }
           }
@@ -226,10 +226,6 @@ pipeline {
                         description = "Senha do servico"
                         default     = "${user_svc_passwd}"
                       }                         
-                      variable "privatekeypath" {
-                        description = "Caminho da chave privada"
-                        default     = "${privatekeypath}"
-                      }
                       variable "public_key" {
                         description = "Chave publica"
                         default     = "${public_key}"
