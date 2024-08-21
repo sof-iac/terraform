@@ -71,6 +71,7 @@ resource "vsphere_virtual_machine" "vm" {
     for_each = "${data.vsphere_virtual_machine.template.disks}"
       content {
         label = "${disk.value["label"]}"
+        type  = "thin"
         size = disk.value["size"]
         unit_number = disk.value["unit_number"]
         thin_provisioned  = disk.value["thin_provisioned"]
@@ -81,6 +82,7 @@ resource "vsphere_virtual_machine" "vm" {
     for_each = var.disco_adicional ? [1] : []
     content {
       label            = "data_disk"
+      type             = "thin"
       size             = var.disksize
       unit_number      = length(data.vsphere_virtual_machine.template.disks) + 1
       thin_provisioned = true
