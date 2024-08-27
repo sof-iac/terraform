@@ -65,8 +65,6 @@ resource "vsphere_virtual_machine" "vm" {
   network_interface {
     network_id       = data.vsphere_network.network.id
     adapter_type     = data.vsphere_virtual_machine.template.network_interface_types[0]
-    # Ensure this is set to true  
-    connected = true 
   }
 
   dynamic "disk" {
