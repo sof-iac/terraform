@@ -62,11 +62,11 @@ resource "vsphere_virtual_machine" "vm" {
   annotation        = var.annotation
   scsi_type = data.vsphere_virtual_machine.template.scsi_type
 
-/*  network_interface {
+  network_interface {
     network_id       = data.vsphere_network.network.id
-    adapter_type     = data.vsphere_virtual_machine.template.network_interface_types[0]
+    adapter_type = "vmxnet3"
   }
-*/
+
   dynamic "disk" {
     for_each = "${data.vsphere_virtual_machine.template.disks}"
       content {
