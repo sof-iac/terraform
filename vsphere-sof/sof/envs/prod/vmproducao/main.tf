@@ -19,6 +19,7 @@ locals {
     svc_password        = var.svc_password,
     user_svc_passwd     = var.user_svc_passwd,
     distro              = var.distro,
+    sufixo              = var.sufixo,
     public_key          = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra"
   }
 }
@@ -49,7 +50,7 @@ data "vsphere_virtual_machine" "template" {
 resource "vsphere_virtual_machine" "vm" {
   count             = var.vm_count
   #name              = "${var.host_name}-${count.index + 1}"  # Adiciona um sufixo baseado no índice
-  name = upper(var.host_name)"_"formatdate("YYYYMMDD-HHMMSS", timestamp())
+  name = upper(var.host_name"_"var.sufixo)
   resource_pool_id  = "${data.vsphere_resource_pool.pool.id}"
   datastore_cluster_id     = "${data.vsphere_datastore_cluster.datastore_cluster.id}"
   #resource_pool_id  = data.vsphere_compute_cluster.cluster.id
