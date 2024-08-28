@@ -49,7 +49,7 @@ data "vsphere_virtual_machine" "template" {
 resource "vsphere_virtual_machine" "vm" {
   count             = var.vm_count
   #name              = "${var.host_name}-${count.index + 1}"  # Adiciona um sufixo baseado no índice
-  name              = upper(format("%s%02d", var.host_name, (time() % 100)))
+  name = upper(var.host_name) + "_" + formatdate("YYYYMMDD-HHMMSS", time())
   resource_pool_id  = "${data.vsphere_resource_pool.pool.id}"
   datastore_cluster_id     = "${data.vsphere_datastore_cluster.datastore_cluster.id}"
   #resource_pool_id  = data.vsphere_compute_cluster.cluster.id
