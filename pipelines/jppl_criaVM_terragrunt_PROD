@@ -233,8 +233,8 @@ pipeline {
                         description = "Chave publica"
                         default     = "${public_key}"
                       }
-                      variable "sufixo" {
-                        description = "sufixo"
+                      variable "randomID" {
+                        description = "randomID"
                         default     = "${randomID}"
                       }                                            
                     """
