@@ -46,7 +46,7 @@ data "vsphere_virtual_machine" "template" {
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
-resource "vsphere_virtual_machine" "vm" {
+resource "vsphere_virtual_machine" "vm2" {
   count             = var.vm_count
   name              = var.host_name
   # name -> ideal para varias maquinas partindo do principio que o prefixo ainda nao exista ou a partir de uma sequencia
