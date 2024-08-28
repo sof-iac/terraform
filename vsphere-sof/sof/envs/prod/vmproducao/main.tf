@@ -47,7 +47,7 @@ data "vsphere_virtual_machine" "template" {
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
-resource "vsphere_virtual_machine" var.randomID {
+resource "vsphere_virtual_machine" "${var.randomID}" {
   count             = var.vm_count
   #name              = "${var.host_name}-${count.index + 1}"  # Adiciona um sufixo baseado no índice
   name = upper(format("%s_%s", var.host_name, var.randomID))
