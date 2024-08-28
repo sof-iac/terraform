@@ -46,11 +46,10 @@ data "vsphere_virtual_machine" "template" {
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
-resource "vsphere_virtual_machine" "vm1" {
-  # count             = var.vm_count
-  name              = var.host_name
-  # name -> ideal para varias maquinas partindo do principio que o prefixo ainda nao exista ou a partir de uma sequencia
-  #name              = upper(format("%s%02d", var.name_prefix, count.index + 1))
+resource "vsphere_virtual_machine" "vm" {
+  count             = var.vm_count
+  #name              = "${var.host_name}-${count.index + 1}"  # Adiciona um sufixo baseado no índice
+  name              = upper(format("%s%02d", var.host_name, count.index + 1))
   resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
   datastore_cluster_id     = "${data.vsphere_datastore_cluster.datastore_cluster.id}"
   #resource_pool_id  = data.vsphere_compute_cluster.cluster.id
