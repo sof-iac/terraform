@@ -3,7 +3,7 @@ include {
 }
 
 terraform {
-  source = "../../../../modules/vsphere/linux_vm_teste"
+  source = "../../../../../modules/vsphere/linux_vm_teste"
 }
 
 inputs = {
