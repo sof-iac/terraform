@@ -22,6 +22,7 @@ module "vsphere_linux_vm" {
   ipv4submask = each.value.mask
   vmgateway   = each.value.gateway 
   gateway     = each.value.gateway
+  disk_size   = each.value.disk_size
   
   # data_disk  = each.value.data-disk
   io_share_level = ["normal", "normal", "normal", "normal", "normal"] #essa linha precisa ser mantida por conta de um bug no módulo
