@@ -1,6 +1,6 @@
 module "vsphere_linux_vm" {
 
-  source    = "vmware_modules/vm/linux"
+  source    = "vsphere_linux_vm"
 
   for_each = var.vm
 
