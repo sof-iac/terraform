@@ -36,7 +36,7 @@ pipeline {
       string(name: 'vm_user', defaultValue: 'root', description: 'Nome de usuário para a máquina virtual')
       password(name: 'vm_pass', description: 'Senha para a máquina virtual')
       password(name: 'user_svc_passwd', description: 'Senha para o Vcenter')
-      choice(name: 'vm_guest_id', choices: ['oracle8_64Guest','ubuntu64Guest'], description: 'Guest Id do SO em uso')
+      choice(name: 'vm_guest_id', choices: ['ubuntu64Guest','oracle8_64Guest'], description: 'Guest Id do SO em uso')
       choice(name: 'template', choices: ['templateubuntu2204_ansible','templaterockylinux93k8s','templateoraclelinux810'], description: 'Nome do Template')
       string(name: 'host_name', defaultValue: 'ubuntu01', description: 'Nome do host para a maquina virtual')
       choice(name: 'vm_count', choices: [ '1', '2', '3', '4', '2', '3', '4'], description: 'Número de maquinas virtuais a serem criadas')
