@@ -9,6 +9,7 @@ module "vsphere_linux_vm" {
   vmtemp    = each.value.template
   instances = each.value.instances
   template  = each.value.template
+  mask      = each.value.mask
   
   dc                = each.value.datacenter
   datastore_cluster = each.value.datastore_cluster
