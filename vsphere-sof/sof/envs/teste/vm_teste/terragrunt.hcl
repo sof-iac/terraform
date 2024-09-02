@@ -3,7 +3,8 @@ include {
 }
 
 terraform {
-  source = "../../../../../modules/vsphere/linux_vm"
+  #source = "../../../../../modules/vsphere/linux_vm"
+  source = "../../../../modules/vmware_modules/vm/linux"  # Caminho relativo ao terragrunt.hcl
 }
 
 inputs = {
