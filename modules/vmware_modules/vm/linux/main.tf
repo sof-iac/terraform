@@ -1,7 +1,7 @@
 module "vsphere_linux_vm" {
 
   #source = "./vm_mod"
-  source    = "./../../../terraform_vsphere_vm"
+  source    = "./../../terraform_vsphere_vm"
 
   for_each = var.vm
 
