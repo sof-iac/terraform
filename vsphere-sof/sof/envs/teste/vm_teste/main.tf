@@ -1,6 +1,6 @@
 module "vsphere-linux-vm" {
 
-  source    = "../../../../../../modules/vsphere/linux_vm"
+  source    = "../../../../../../../modules/vsphere/linux_vm"
 
   for_each = var.vm
 
