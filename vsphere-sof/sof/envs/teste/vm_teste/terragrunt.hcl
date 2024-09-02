@@ -14,6 +14,7 @@ inputs = {
         instances         = 1
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Storage_Purestorage"
+        datastore         = "Storage_Purestorage"
         resource_pool     = "Blade_Atreus/Resources"
         vsphere_cluster   = "Blade_Atreus"
         network           = {"PG_Atlas_Teste" = ["192.168.30.172"]}
@@ -28,6 +29,7 @@ inputs = {
         instances         = 1
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Storage_Purestorage"
+        datastore         = "Storage_Purestorage"
         resource_pool     = "Blade_Atreus/Resources"
         vsphere_cluster   = "Blade_Atreus"
         network           = {"PG_Atlas_Teste" = ["192.168.30.173"]}
