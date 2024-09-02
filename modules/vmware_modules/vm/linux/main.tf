@@ -1,6 +1,6 @@
 module "vsphere_linux_vm" {
 
-  source = "vm_mod"
+  source = "./vm_mod"
 
   for_each = var.vm
 
