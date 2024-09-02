@@ -6,20 +6,22 @@ module "vsphere_linux_vm" {
   for_each = var.vm
 
   vmname    = each.key
-  vmtemp    = each.value.template
+  #vmtemp    = each.value.template
   instances = each.value.instances
   template  = each.value.template
   mask      = each.value.mask
   vsphere_cluster = each.value.vsphere_cluster
   
-  dc                = each.value.datacenter
+  #dc                = each.value.datacenter
   datacenter        = each.value.datacenter
   datastore_cluster = each.value.datastore_cluster
+  datastore         = each.value.datastore
   #vmrp              = each.value.resource_pool
   resource_pool     = each.value.resource_pool
   
   network     = each.value.network
-  ipv4submask = each.value.mask
+  #ipv4submask = each.value.mask
+  mask        = each.value.mask
   #vmgateway   = each.value.gateway 
   gateway     = each.value.gateway
   disk_size   = each.value.disk_size
