@@ -26,7 +26,7 @@ module "vsphere_linux_vm" {
   disk_size   = each.value.disk_size
   
   # data_disk  = each.value.data-disk
-  io_share_level = ["normal", "normal", "normal", "normal", "normal"] #essa linha precisa ser mantida por conta de um bug no módulo
+  #io_share_level = ["normal", "normal", "normal", "normal", "normal"] #essa linha precisa ser mantida por conta de um bug no módulo
   cpu_number     = each.value.cpu
   ram_size       = each.value.memory
 }
