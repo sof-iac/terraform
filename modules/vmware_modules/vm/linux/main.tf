@@ -10,6 +10,7 @@ module "vsphere_linux_vm" {
   instances = each.value.instances
   template  = each.value.template
   mask      = each.value.mask
+  vsphere_cluster = each.value.vsphere_cluster
   
   dc                = each.value.datacenter
   datastore_cluster = each.value.datastore_cluster

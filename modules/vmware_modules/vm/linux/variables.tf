@@ -5,6 +5,7 @@ variable vm {
       instances         = number
       datacenter        = string
       datastore_cluster = string
+      vsphere_cluster   = string
       resource_pool     = string
       network           = map(list(string))
       mask              = list(string)
