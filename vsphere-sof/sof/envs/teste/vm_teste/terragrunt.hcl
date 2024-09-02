@@ -21,9 +21,7 @@ inputs = {
         gateway           = "192.168.30.1"
         cpu               = 2
         memory            = 8192
-    }  
-  },
-  {
+    },  
     "orcl01" = {
         template          = "templateoraclelinux810"
         instances         = 1
@@ -36,7 +34,7 @@ inputs = {
         gateway           = "192.168.30.1"
         cpu               = 2
         memory            = 8192
-    }     
-  }
+    }
+  }     
 }
 
