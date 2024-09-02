@@ -266,6 +266,7 @@ pipeline {
                     }
                     sh 'pwd'
                     sh 'ls -la '
+                    sh 'apt install -y mlocate '
                     sh 'locate vsphere_vm'
                     sh """ terragrunt plan -lock=${lock} -var 'user_svc_passwd=${user_svc_passwd}' """ 
                 }                            
