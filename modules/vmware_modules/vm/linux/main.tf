@@ -20,8 +20,8 @@ module "vsphere_linux_vm" {
   
   network     = each.value.network
   #ip_address  = each.value.ip_address
-  #ipv4submask = each.value.mask
-  mask        = each.value.mask
+  ipv4submask = each.value.mask
+  #mask        = each.value.mask
   vmgateway   = each.value.gateway 
   #gateway     = each.value.gateway
   #disk_size   = each.value.disk_size
