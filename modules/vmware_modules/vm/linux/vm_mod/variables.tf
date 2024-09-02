@@ -53,6 +53,12 @@ variable "ip_address" {
   type        = string  
 }  
 
+variable "ipv4_netmask" {  
+  description = "Subnet mask for the virtual machine's network interface"  
+  type        = list(string)  
+  default     = ["24"]  # Exemplo de máscara de sub-rede em CIDR (255.255.255.0)  
+}
+
 variable "disk_size" {  
   description = "Size of the disk in GB"  
   type        = number  
