@@ -10,8 +10,8 @@ module "vsphere_linux_vm" {
   instances = each.value.instances
   
   dc                = each.value.datacenter
-  datastore_cluster = each.value.datastore-cluster
-  vmrp              = each.value.resource-pool
+  datastore_cluster = each.value.datastore_cluster
+  vmrp              = each.value.resource_pool
   
   network     = each.value.network
   ipv4submask = each.value.mask

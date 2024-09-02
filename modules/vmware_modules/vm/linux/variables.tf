@@ -4,8 +4,8 @@ variable vm {
       template          = string
       instances         = number
       datacenter        = string
-      datastore-cluster = string
-      resource-pool     = string
+      datastore_cluster = string
+      resource_pool     = string
       network           = map(list(string))
       mask              = list(string)
       gateway           = string
