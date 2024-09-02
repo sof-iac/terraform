@@ -45,7 +45,7 @@ variable "ram_size" {
 
 variable "network" {  
   description = "Network configuration for the VM"  
-  type        = map(list(string))  # Alterado para corresponder à estrutura fornecida  
+  type        = string # Alterado para corresponder à estrutura fornecida  
 }  
 
 variable "ip_address" {  

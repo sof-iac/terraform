@@ -7,7 +7,7 @@ variable vm {
       datastore_cluster = string
       vsphere_cluster   = string
       resource_pool     = string
-      network           = map(list(string))
+      network           = string
       ip_address        = string
       mask              = list(string)
       gateway           = string
