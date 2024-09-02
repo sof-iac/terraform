@@ -13,12 +13,15 @@ module "vsphere_linux_vm" {
   vsphere_cluster = each.value.vsphere_cluster
   
   dc                = each.value.datacenter
+  datacenter        = each.value.datacenter
   datastore_cluster = each.value.datastore_cluster
   vmrp              = each.value.resource_pool
+  resource_pool     = each.value.resource_pool
   
   network     = each.value.network
   ipv4submask = each.value.mask
   vmgateway   = each.value.gateway 
+  gateway     = each.value.gateway
   
   # data_disk  = each.value.data-disk
   io_share_level = ["normal", "normal", "normal", "normal", "normal"] #essa linha precisa ser mantida por conta de um bug no módulo
