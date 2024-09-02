@@ -9,6 +9,8 @@ resource "vsphere_virtual_machine" "vm" {
   network_interface {  
     network_id   = var.network  
     adapter_type = "vmxnet3"  
+    ipv4_address = var.ip_address  # Endereço IP estático  
+    ipv4_netmask = var.mask        # Máscara de sub-rede 
   }  
 
   disk {  

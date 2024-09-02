@@ -48,6 +48,11 @@ variable "network" {
   type        = map(list(string))  # Alterado para corresponder à estrutura fornecida  
 }  
 
+variable "ip_address" {  
+  description = "Static IP address for the VM"  
+  type        = string  
+}  
+
 variable "disk_size" {  
   description = "Size of the disk in GB"  
   type        = number  

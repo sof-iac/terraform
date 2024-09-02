@@ -17,7 +17,8 @@ inputs = {
         datastore         = "Storage_Purestorage"
         resource_pool     = "Blade_Atreus/Resources"
         vsphere_cluster   = "Blade_Atreus"
-        network           = {"PG_Atlas_Teste" = ["192.168.30.172"]}
+        network           = "PG_Atlas_Teste" 
+        ip_address        = "192.168.30.172"  # Adicionando o IP
         mask              = ["24"]
         gateway           = "192.168.30.1"
         cpu               = 2
@@ -32,7 +33,8 @@ inputs = {
         datastore         = "Storage_Purestorage"
         resource_pool     = "Blade_Atreus/Resources"
         vsphere_cluster   = "Blade_Atreus"
-        network           = {"PG_Atlas_Teste" = ["192.168.30.173"]}
+        network           = "PG_Atlas_Teste"
+        ip_address        = "192.168.30.173"  # Adicionando o IP
         mask              = ["24"]
         gateway           = "192.168.30.1"
         cpu               = 2
