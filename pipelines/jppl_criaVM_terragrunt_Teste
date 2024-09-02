@@ -265,7 +265,8 @@ pipeline {
                        sh """ terragrunt ${init}  """
                     }
                     sh 'pwd'
-                    sh 'ls -la vsphere_vm'
+                    sh 'ls -la '
+                    sh 'locate vsphere_vm'
                     sh """ terragrunt plan -lock=${lock} -var 'user_svc_passwd=${user_svc_passwd}' """ 
                 }                            
                 
