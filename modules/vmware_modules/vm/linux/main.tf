@@ -14,7 +14,7 @@ module "vsphere_linux_vm" {
   dc                = each.value.datacenter
   #datacenter        = each.value.datacenter
   datastore_cluster = each.value.datastore_cluster
-  datastore         = each.value.datastore
+  #datastore         = each.value.datastore
   vmrp              = each.value.resource_pool
   #resource_pool     = each.value.resource_pool
   
