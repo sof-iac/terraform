@@ -24,7 +24,7 @@ inputs = {
         memory            = 8192
         # Adicionando discos adicionais  
         data_disk = {  
-          "disk1" = {  
+          "disk_A1" = {  
             size_gb                = 4  
             unit_number            = 0  
             thin_provisioned       = true  
@@ -38,7 +38,7 @@ inputs = {
             attach                 = null  
             path                   = null  
           },  
-          "disk2" = {  
+          "disk_A2" = {  
             size_gb                = 8  
             unit_number            = 1  
             thin_provisioned       = true  
