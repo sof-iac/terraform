@@ -22,7 +22,37 @@ inputs = {
         gateway           = "192.168.30.1"
         cpu               = 2
         memory            = 8192
-        disk_size         = 8
+        # Adicionando discos adicionais  
+        data_disk = {  
+          "disk1" = {  
+            size_gb                = 4  
+            unit_number            = 0  
+            thin_provisioned       = true  
+            eagerly_scrub          = false  
+            datastore_id           = "Storage_Purestorage"  
+            storage_policy_id      = null  
+            io_reservation         = null  
+            io_share_level         = "normal"  
+            disk_mode              = null  
+            disk_sharing           = null  
+            attach                 = null  
+            path                   = null  
+          },  
+          "disk2" = {  
+            size_gb                = 8  
+            unit_number            = 1  
+            thin_provisioned       = true  
+            eagerly_scrub          = false  
+            datastore_id           = "Storage_Purestorage"  
+            storage_policy_id      = null  
+            io_reservation         = null  
+            io_share_level         = "normal"  
+            disk_mode              = null  
+            disk_sharing           = null  
+            attach                 = null  
+            path                   = null  
+          }  
+        }
     },  
     "orcl01" = {
         template          = "templateoraclelinux810"

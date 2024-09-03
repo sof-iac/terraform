@@ -9,7 +9,7 @@ variable vm {
       network           = map(list(string))
       mask              = list(string)
       gateway           = string
-      data-disk         = map(map(any))
+      data_disk         = map(map(any))
       cpu               = number
       memory            = number
     })
