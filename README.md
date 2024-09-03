@@ -77,6 +77,7 @@ blocok
         ├── main.tf
         ├── variables.tf
         └── outputs.tf
+sof
 ├── envs
     ├── dev
     │   ├── main.tf
