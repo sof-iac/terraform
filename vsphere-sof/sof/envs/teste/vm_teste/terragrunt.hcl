@@ -26,7 +26,7 @@ inputs = {
         data_disk = {  
           "disk_A1" = {  
             size_gb                = 4  
-            unit_number            = 0  
+            unit_number            = 3  
             thin_provisioned       = true  
             eagerly_scrub          = false  
             #datastore_id           = "Storage_Purestorage"  
@@ -40,7 +40,7 @@ inputs = {
           },  
           "disk_A2" = {  
             size_gb                = 8  
-            unit_number            = 1  
+            unit_number            = 4  
             thin_provisioned       = true  
             eagerly_scrub          = false  
             #datastore_id           = "Storage_Purestorage"  
