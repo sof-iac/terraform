@@ -67,7 +67,7 @@ inputs = {
         gateway           = "192.168.30.1"
         cpu               = 2
         memory            = 8192
-        disk_size         = 8
+        data_disk         = {}
     }
   }     
 }
