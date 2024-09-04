@@ -1,7 +1,3 @@
-variable "vm_user" {  
-  description = "Username for the VM"  
-  type        = string  
-}  
 locals {
   templatevars = {
     vm_user       = var.vm_user,
