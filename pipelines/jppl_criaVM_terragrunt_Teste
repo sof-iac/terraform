@@ -124,7 +124,7 @@ pipeline {
                     }
                     sh 'pwd'
                     sh 'ls -la '
-                    sh """ terragrunt plan -lock=${lock} -var 'user_svc_passwd=${user_svc_passwd}' -var 'vm_user=${vm_user}' -var 'vm_pass=${vm_pass}' """ 
+                    sh """ terragrunt plan -lock=${lock} -var 'user_svc_passwd=${user_svc_passwd}' -var 'vm_user=${vm_user}' -var 'vm_pass=${vm_pass}' -var 'svc_username=${svc_username}' """ 
                 }                            
                 
               }
