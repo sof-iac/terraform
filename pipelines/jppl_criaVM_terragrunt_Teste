@@ -86,11 +86,7 @@ pipeline {
                       variable "svc_password" {
                         description = "Senha do ansible"
                         default     = "${svc_password}"
-                      }                         
-                      variable "public_key" {
-                        description = "Chave publica"
-                        default     = "${public_key}"
-                      }                                                
+                      }                                                                        
                       variable "user_svc_passwd" {
                         description = "Senha do DC"
                         default     = "${user_svc_passwd}"
