@@ -20,7 +20,7 @@ pipeline {
       string(name: 'svc_username', defaultValue: 'ansible', description: 'Usuario ansible')
       password(name: 'svc_password', description: 'Senha do ansible')
       password(name: 'user_svc_passwd', description: 'Senha para o Vcenter')
-
+      string(name: 'public_key', defaultValue: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra', description: 'Chave publica do ansible')
     }
 
     stages {
