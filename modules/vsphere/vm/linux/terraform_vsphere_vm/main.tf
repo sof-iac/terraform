@@ -8,6 +8,15 @@ locals {
     extra_config        = var.extra_config_data
   }
 }
+variable "extra_config" {
+  description = "Extra configuration data for this virtual machine. Can be used to supply advanced parameters not normally in configuration, such as instance metadata.'disk.enableUUID', 'True'."
+  type        = map(any)
+  default = {  
+    "guestinfo.userdata"          = base64encode(templatefile("${path.module}/templates/userdata.yaml", local.templatevars))  
+    "guestinfo.userdata.encoding" = "base64"  
+  } 
+}
+
 data "vsphere_datacenter" "dc" {
   name = var.dc
 }

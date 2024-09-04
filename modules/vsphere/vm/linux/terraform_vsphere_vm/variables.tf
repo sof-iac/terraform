@@ -236,15 +236,6 @@ variable "custom_attributes" {
   default     = null
 }
 
-variable "extra_config" {
-  description = "Extra configuration data for this virtual machine. Can be used to supply advanced parameters not normally in configuration, such as instance metadata.'disk.enableUUID', 'True'."
-  type        = map(any)
-  default = {  
-    "guestinfo.userdata"          = base64encode(templatefile("${path.module}/templates/userdata.yaml", local.templatevars))  
-    "guestinfo.userdata.encoding" = "base64"  
-  } 
-}
-
 variable "annotation" {
   description = "A user-provided description of the virtual machine. The default is no annotation."
   default     = null
