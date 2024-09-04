@@ -1,6 +1,7 @@
 # Definindo locais se necessário  
 locals {  
   vm_user          = "root"         # Ou uma string real ou faça referência direta  
+  vm_pass          = "${vm_pass}"
 }
 
 include {
@@ -28,7 +29,7 @@ inputs = {
         cpu               = 2
         memory            = 8192
         vm_user           = local.vm_user  # Passando a variável
-        vm_pass           = "${vm_pass}"
+        vm_pass           = local.vm_pass
         # Adicionando discos adicionais  
         data_disk = {  
           "disk_A1" = {  
@@ -75,7 +76,7 @@ inputs = {
         cpu               = 2
         memory            = 8192
         vm_user           = local.vm_user  # Passando a variável
-        vm_pass           = "${vm_pass}"
+        vm_pass           = local.vm_pass
         data_disk         = {}
     }
   }     
