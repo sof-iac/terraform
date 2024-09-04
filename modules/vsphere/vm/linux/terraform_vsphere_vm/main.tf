@@ -290,4 +290,22 @@ resource "vsphere_virtual_machine" "vm" {
 
   shutdown_wait_timeout = var.shutdown_wait_timeout
   force_power_off       = var.force_power_off
+# Quando este recurso é criado, executa o seguinte script localmente para configurar o DNS
+  provisioner "remote-exec" {
+    connection {
+      type     = "ssh"
+      user     = var.vm_user
+      password = var.vm_pass
+      host     = split("/", var.network[keys(var.network)[network_interface.key]][count.index])[0]
+    }    
+    inline = [
+      "echo 'options edns0 trust-ad' > /etc/resolv.conf",
+      "echo 'nameserver 172.27.3.5' >> /etc/resolv.conf",
+      "echo 'nameserver 172.27.3.6' >> /etc/resolv.conf",
+      "echo 'nameserver 172.27.3.7' >> /etc/resolv.conf",
+      "echo 'search sof.intra blocok.sof.remoto' >> /etc/resolv.conf",
+      "echo '192.168.250.163         PREP02' >> /etc/hosts",
+      "echo '192.168.250.125         PREP01' >> /etc/hosts"
+    ]
+  }
 }
