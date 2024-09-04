@@ -8,18 +8,15 @@ pipeline {
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
       choice(name: 'Datacenter', choices: ['vsphere-sof','aws'], description: 'Datacenter') 
       choice(name: 'Site', choices: [ 'sof', 'blocok'], description: 'Site')
-      choice(name: 'Ambiente', choices: ['lab','prod','teste'], description: 'Ambiente')
-      string(name: 'Diretorio', defaultValue: 'vm_lab', description: 'Nome do diretorio do projeto Terraform a executar')
+      choice(name: 'Ambiente', choices: ['teste','lab','prod'], description: 'Ambiente')
+      string(name: 'Diretorio', defaultValue: 'vm_teste', description: 'Nome do diretorio do projeto Terraform a executar')
       choice(name: 'init', choices: [ 'nao', 'init', 'init -reconfigure','init -migrate-state'], description: 'Alterações no Tfsate')
       choice(name: 'lock', choices: ['true','false'], description: 'Lock do dynamodb')
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
-      text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')   
-      password(name: 'user_svc_passwd', description: 'Senha para o Vcenter')  
+      text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
       choice(name: 'distro', choices: ['ubuntu', 'centos', 'orcl','rocklinux'], description: 'Distribuição Linux')      
-      string(name: 'vm_user', defaultValue: 'root', description: 'Nome de usuário para a máquina virtual')
-      password(name: 'vm_pass', description: 'Senha para a máquina virtual')
-      string(name: 'svc_username', defaultValue: 'ansible', description: 'Usuario ansible')
-      password(name: 'svc_password', description: 'Senha do ansible')
+      password(name: 'user_svc_passwd', description: 'Senha para o Vcenter')
+
     }
 
     stages {
@@ -63,7 +60,22 @@ pipeline {
             }
           }
         }
-      }                         
+      }            
+      stage('Criando o vars.tf') {
+          steps {
+              script {
+                  // Salva a escolha do usuário em um arquivo
+                  dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {
+                  writeFile file: 'vars.tf', text: """                                
+                      variable "user_svc_passwd" {
+                        description = "Senha do servico"
+                        default     = "${user_svc_passwd}"
+                      }                                                                   
+                    """
+                  }
+              }
+          }
+      }         
       stage('Terragrunt Plan') {
           steps {
             script {           
@@ -88,7 +100,7 @@ pipeline {
                     }
                     sh 'pwd'
                     sh 'ls -la '
-                    sh """ terragrunt plan -lock=${lock} """ 
+                    sh """ terragrunt plan -lock=${lock} -var 'user_svc_passwd=${user_svc_passwd}' """ 
                 }                            
                 
               }
@@ -113,7 +125,7 @@ pipeline {
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh 'echo $user_svc_passwd'
-                    sh """ terragrunt apply -auto-approve -lock=${lock}  """
+                    sh """ terragrunt apply -auto-approve -lock=${lock} -var 'user_svc_passwd=${user_svc_passwd}' """
                 }                            
                 
               }

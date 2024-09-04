@@ -61,7 +61,7 @@ pipeline {
           }
         }
       }            
-      stage('Inicilamente escolha um Blade') {
+      stage('Criando o vars.tf') {
           steps {
               script {
                   // Salva a escolha do usuário em um arquivo
