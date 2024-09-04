@@ -182,6 +182,11 @@ variable "vm_user" {
   type        = string  
 }  
 
+variable "vm_pass" {  
+  description = "Password for the VM"  
+  type        = string  
+}
+
 variable "cpu_share_count" {
   description = "The number of CPU shares allocated to the virtual machine when the cpu_share_level is custom."
   type        = number
