@@ -30,4 +30,5 @@ module "vsphere_linux_vm" {
   io_share_level = ["normal", "normal", "normal", "normal", "normal"] #essa linha precisa ser mantida por conta de um bug no módulo
   cpu_number     = each.value.cpu
   ram_size       = each.value.memory
+  vm_user        = each.value.vm_user
 }
