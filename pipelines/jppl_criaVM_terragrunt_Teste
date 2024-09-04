@@ -24,7 +24,7 @@ pipeline {
     }
 
     stages {
-      stage('Retornando as chaves privadas e certificados') {
+      stage('Retornando as chaves publica e certificados') {
         steps {
             script {
               dir("${Datacenter}/${Site}/envs/${Ambiente}") {
@@ -122,8 +122,6 @@ pipeline {
                     {
                        sh """ terragrunt ${init}  """
                     }
-                    sh 'pwd'
-                    sh 'ls -la '
                     sh """ terragrunt plan -lock=${lock} -var 'user_svc_passwd=${user_svc_passwd}' -var 'vm_user=${vm_user}' -var 'vm_pass=${vm_pass}' -var 'svc_username=${svc_username}' """ 
                 }                            
                 
@@ -149,7 +147,7 @@ pipeline {
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh 'echo $user_svc_passwd'
-                    sh """ terragrunt apply -auto-approve -lock=${lock} -var 'user_svc_passwd=${user_svc_passwd}' """
+                    sh """ terragrunt apply -auto-approve -lock=${lock} -var 'user_svc_passwd=${user_svc_passwd}' -var 'vm_user=${vm_user}' -var 'vm_pass=${vm_pass}' -var 'svc_username=${svc_username}' """ 
                 }                            
                 
               }
