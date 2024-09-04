@@ -1,8 +1,6 @@
 pipeline {
     agent any
     environment {
-      def vsphere_network = ''
-      def vsp_resource_pool = ''
       VAULT_PATH = 'secrets/secrets/servicos/ansible/ansible'
     }
     parameters {
@@ -17,37 +15,8 @@ pipeline {
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
       text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
       choice(name: 'distro', choices: ['ubuntu', 'centos', 'orcl','rocklinux'], description: 'Distribuição Linux')      
-      string(name: 'name', defaultValue: 'ubuntu01', description: 'Nome da maquina')
-      string(name: 'vm_domain', defaultValue: 'sof.intra', description: 'Dominio')
-      string(name: 'vsphere_datacenter', defaultValue: 'SOF', description: 'Datacenter')
-      string(name: 'vsphere_datastore', defaultValue: 'Storage_Purestorage', description: 'DataStore')
-      hidden(name: 'vsphere_senha', defaultValue: '', description: 'Senha do Vcenter')
-      hidden(name: 'vsphere_cluster', defaultValue: '', description: 'Cluster do Vcenter')
-      hidden(name: 'vsphere_network', defaultValue: '', description: 'vsphere_network')      
-      hidden(name: 'name_prefix', description: 'Prefixo do nome da máquina virtual')
-      hidden(name: 'vsphere_resource_pool', defaultValue: '', description: 'vsphere_resource_pool')
-      hidden(name: 'RANDOM_ID', defaultValue: '', description: 'RANDOM_ID')
-      choice(name: 'cpus', choices: [ '1','2','3','4','5','6','7','8','10','12'], description: 'Número de CPUs para a máquina virtual')
-      choice(name: 'memory', choices: ['1024','2048','4096','8192','16384','24576'], description: 'Quantidade de memória em Gb')
-      choice(name: 'disksize', choices: [ '0', '4','8','12','16','20','25','40','50','80','100','150','200','250'], description: 'Tamanho do disco adicional - Se houver')
-      choice(name: 'disco_adicional', choices: [ '0', '1'], description: 'Possui disco de dados adicional ?')
-      string(name: 'domain', defaultValue: 'sof.intra', description: 'Domínio para a máquina virtual')
-      text(name: 'annotation', defaultValue: "${env.BUILD_USER_ID}, ${new Date().format('dd/MM/yyyy')}", description: 'Notas informativas sobre a VM')
-      string(name: 'vm_user', defaultValue: 'root', description: 'Nome de usuário para a máquina virtual')
-      password(name: 'vm_pass', description: 'Senha para a máquina virtual')
       password(name: 'user_svc_passwd', description: 'Senha para o Vcenter')
-      choice(name: 'vm_guest_id', choices: ['ubuntu64Guest','oracle8_64Guest'], description: 'Guest Id do SO em uso')
-      choice(name: 'template', choices: ['templateubuntu2204_ansible','templaterockylinux93k8s','templateoraclelinux810'], description: 'Nome do Template')
-      string(name: 'host_name', defaultValue: 'ubuntu01', description: 'Nome do host para a maquina virtual')
-      choice(name: 'vm_count', choices: [ '1', '2', '3', '4', '2', '3', '4'], description: 'Número de maquinas virtuais a serem criadas')
-      string(name: 'dns_server_list', defaultValue: '172.27.3.5,172.27.3.6', description: 'List of DNS servers')
-      string(name: 'ipv4_address', defaultValue: '192.168.30.172', description: 'Endereço IP para a máquina virtual')
-      string(name: 'ipv4_gateway', defaultValue: '192.168.30.1', description: 'Gateway')
-      string(name: 'ipv4_netmask', defaultValue: '24', description: 'Mascara de rede')
-      string(name: 'svc_username', defaultValue: 'ansible', description: 'Usuario ansible')
-      password(name: 'svc_password', description: 'Senha do ansible')
-      string(name: 'privatekeypath', defaultValue: './id_ed25519')
-      string(name: 'public_key', defaultValue: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra', description: 'Chave publica do ansible')
+
     }
 
     stages {
