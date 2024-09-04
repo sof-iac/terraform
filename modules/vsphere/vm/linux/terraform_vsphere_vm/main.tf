@@ -1,12 +1,4 @@
-locals {
-  templatevars = {
-    vm_user       = var.vm_user,
-    vm_pass       = var.vm_pass,
-    svc_username  = var.svc_username,
-    svc_password  = var.svc_password,
-    public_key    = var.public_key
-  }
-}
+
 
 data "vsphere_datacenter" "dc" {
   name = var.dc
