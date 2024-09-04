@@ -8,7 +8,6 @@ terraform {
 }
 
 inputs = {
-  vm_user   = var.vm_user 
   vm = {
     "testetf" = {
         template          = "templateubuntu2204_ansible"
