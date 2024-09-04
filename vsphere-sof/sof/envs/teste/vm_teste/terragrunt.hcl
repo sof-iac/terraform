@@ -1,3 +1,8 @@
+# Definindo locais se necessário  
+locals {  
+  vm_user          = "root"         # Ou uma string real ou faça referência direta  
+}
+
 include {
   path = find_in_parent_folders()
 }
