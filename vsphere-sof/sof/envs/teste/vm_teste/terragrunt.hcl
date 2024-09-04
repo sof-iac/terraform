@@ -1,7 +1,6 @@
 # Definindo locais se necessário  
 locals {  
   vm_user = "root"         # Ou uma string real ou faça referência direta  
-  vm_pass = var.vm_pass
 }
 
 include {
@@ -14,6 +13,7 @@ terraform {
 }
 
 inputs = {
+  vm_pass = var.vm_pass
   vm = {
     "testetf" = {
         template          = "templateubuntu2204_ansible"
