@@ -13,7 +13,6 @@ variable vm {
       data_disk         = map(map(any))
       cpu               = number
       memory            = number
-      vm_pass           = string
     })
   )
 }
