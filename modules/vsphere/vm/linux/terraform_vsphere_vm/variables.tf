@@ -493,3 +493,9 @@ variable "force_power_off" {
   type        = bool
   default     = null
 }
+
+variable "user_svc_passwd" {  
+  description = "Senha do serviço do usuário"  
+  type        = string  
+  default     = ""  # Você pode definir um valor padrão ou deixar vazio  
+}
