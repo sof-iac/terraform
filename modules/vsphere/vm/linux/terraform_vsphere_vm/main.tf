@@ -1,3 +1,12 @@
+locals {
+  templatevars = {
+    vm_user             = var.vm_user,
+    vm_pass             = var.vm_pass,
+    svc_username        = var.svc_username,
+    svc_password        = var.svc_password,
+    public_key          = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra"
+  }
+}
 data "vsphere_datacenter" "dc" {
   name = var.dc
 }
@@ -212,6 +221,10 @@ resource "vsphere_virtual_machine" "vm" {
       path              = lookup(terraform_disks.value, "path", null)
     }
   }
+  extra_config = {
+    "guestinfo.userdata"          = base64encode(templatefile("${path.module}/templates/userdata.yaml", local.templatevars))
+    "guestinfo.userdata.encoding" = "base64"
+  } 
   clone {
     template_uuid = var.content_library == null ? data.vsphere_virtual_machine.template[0].id : data.vsphere_content_library_item.library_item_template[0].id
     linked_clone  = var.linked_clone
