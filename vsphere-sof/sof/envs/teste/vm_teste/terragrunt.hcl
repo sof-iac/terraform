@@ -1,8 +1,3 @@
-# Declaração das variáveis  
-locals {  
-  vm_user   = var.vm_user # Substitua pela sua senha real  
-}
-
 include {
   path = find_in_parent_folders()
 }
@@ -13,6 +8,7 @@ terraform {
 }
 
 inputs = {
+  vm_user   = var.vm_user 
   vm = {
     "testetf" = {
         template          = "templateubuntu2204_ansible"
