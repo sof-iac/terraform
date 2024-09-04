@@ -1,6 +1,6 @@
 # Declaração das variáveis  
 locals {  
-  vm_user   = "${vm_user}" # Substitua pela sua senha real  
+  vm_user   = var.vm_user # Substitua pela sua senha real  
 }
 
 include {
