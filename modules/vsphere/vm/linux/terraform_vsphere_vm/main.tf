@@ -5,6 +5,7 @@ locals {
     svc_username        = var.svc_username,
     svc_password        = var.svc_password,
     public_key          = var.public_key
+    extra_config        = var.extra_config_data
   }
 }
 data "vsphere_datacenter" "dc" {
@@ -220,10 +221,6 @@ resource "vsphere_virtual_machine" "vm" {
       attach            = lookup(terraform_disks.value, "attach", null)
       path              = lookup(terraform_disks.value, "path", null)
     }
-  }
-  extra_config = {
-    "guestinfo.userdata"          = base64encode(templatefile("${path.module}/templates/userdata.yaml", local.templatevars))
-    "guestinfo.userdata.encoding" = "base64"
   } 
   clone {
     template_uuid = var.content_library == null ? data.vsphere_virtual_machine.template[0].id : data.vsphere_content_library_item.library_item_template[0].id
