@@ -1,7 +1,7 @@
 # Definindo locais se necessário  
 locals {  
-  vm_user          = "root"         # Ou uma string real ou faça referência direta  
-  vm_pass          = "${vm_pass}"
+  vm_user = "root"         # Ou uma string real ou faça referência direta  
+  vm_pass = var.vm_pass
 }
 
 include {
