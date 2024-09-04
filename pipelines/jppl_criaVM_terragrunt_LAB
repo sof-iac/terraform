@@ -63,26 +63,7 @@ pipeline {
             }
           }
         }
-      }     
-      stage('Declara as variaveis locais') {
-          steps {
-              script {
-                  // Salva as variaveis em um arquivo
-                  dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {
-                  writeFile file: 'vars.tf', text: """
-                      variable "user_svc_passwd" {
-                        description = "Senha do servico"
-                        default     = "${user_svc_passwd}"
-                      }                         
-                      variable "public_key" {
-                        description = "Chave publica"
-                        default     = "${public_key}"
-                      }                                         
-                    """
-                  }
-              }
-          }
-      }                      
+      }                         
       stage('Terragrunt Plan') {
           steps {
             script {           

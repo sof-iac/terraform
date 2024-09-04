@@ -83,7 +83,7 @@ pipeline {
                     }
                     sh 'pwd'
                     sh 'ls -la '
-                    sh """ terragrunt plan -lock=${lock} -var 'user_svc_passwd=${user_svc_passwd}' """ 
+                    sh """ terragrunt plan -lock=${lock} """ 
                 }                            
                 
               }
@@ -108,7 +108,7 @@ pipeline {
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh 'echo $user_svc_passwd'
-                    sh """ terragrunt apply -auto-approve -lock=${lock} -var 'user_svc_passwd=${user_svc_passwd}' """
+                    sh """ terragrunt apply -auto-approve -lock=${lock}  """
                 }                            
                 
               }
