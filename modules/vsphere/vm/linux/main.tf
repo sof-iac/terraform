@@ -31,8 +31,8 @@ module "vsphere_linux_vm" {
   cpu_number     = each.value.cpu
   ram_size       = each.value.memory
   vm_user        = var.vm_user
-  vm_pass        = each.value.vm_pass
+  vm_pass        = var.vm_pass
   svc_username   = var.svc_username
-  svc_password   = each.value.svc_password
-  public_key     = each.value.public_key
+  svc_password   = var.svc_password
+  public_key     = var.public_key
 }
