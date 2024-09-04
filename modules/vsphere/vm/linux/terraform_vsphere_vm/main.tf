@@ -5,16 +5,7 @@ locals {
     svc_username        = var.svc_username,
     svc_password        = var.svc_password,
     public_key          = var.public_key
-    extra_config        = var.extra_config_data
   }
-}
-variable "extra_config" {
-  description = "Extra configuration data for this virtual machine. Can be used to supply advanced parameters not normally in configuration, such as instance metadata.'disk.enableUUID', 'True'."
-  type        = map(any)
-  default = {  
-    "guestinfo.userdata"          = base64encode(templatefile("${path.module}/templates/userdata.yaml", local.templatevars))  
-    "guestinfo.userdata.encoding" = "base64"  
-  } 
 }
 
 data "vsphere_datacenter" "dc" {
@@ -106,7 +97,11 @@ resource "vsphere_virtual_machine" "vm" {
   tags                    = var.tag_ids != null ? var.tag_ids : data.vsphere_tag.tag[*].id
   custom_attributes       = var.custom_attributes
   annotation              = var.annotation
-  extra_config            = var.extra_config
+  #extra_config            = var.extra_config
+  extra_config = {
+    "guestinfo.userdata"          = base64encode(templatefile("${path.module}/templates/userdata.yaml", local.templatevars))
+    "guestinfo.userdata.encoding" = "base64"
+  } 
   firmware                = var.content_library == null && var.firmware == null ? data.vsphere_virtual_machine.template[0].firmware : var.firmware
   efi_secure_boot_enabled = var.content_library == null && var.efi_secure_boot == null ? data.vsphere_virtual_machine.template[0].efi_secure_boot_enabled : var.efi_secure_boot
   enable_disk_uuid        = var.content_library == null && var.enable_disk_uuid == null ? data.vsphere_virtual_machine.template[0].enable_disk_uuid : var.enable_disk_uuid
