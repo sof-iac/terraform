@@ -1,3 +1,8 @@
+# Declaração das variáveis  
+locals {  
+  vm_user   = "${vm_user}" # Substitua pela sua senha real  
+}
+
 include {
   path = find_in_parent_folders()
 }
@@ -22,6 +27,7 @@ inputs = {
         gateway           = "192.168.30.1"
         cpu               = 2
         memory            = 8192
+        vm_user           = local.vm_user  # Passando a variável
         # Adicionando discos adicionais  
         data_disk = {  
           "disk_A1" = {  
