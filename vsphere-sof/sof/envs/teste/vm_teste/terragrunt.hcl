@@ -73,6 +73,7 @@ inputs = {
         gateway           = "192.168.30.1"
         cpu               = 2
         memory            = 8192
+        vm_user           = local.vm_user  # Passando a variável
         data_disk         = {}
     }
   }     
