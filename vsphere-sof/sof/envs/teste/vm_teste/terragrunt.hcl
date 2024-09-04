@@ -1,11 +1,3 @@
-variable "vm_pass" {
-  type = string
-}
-# Definindo locais se necessário  
-locals {  
-  vm_user = "root"         # Ou uma string real ou faça referência direta  
-}
-
 include {
   path = find_in_parent_folders()
 }
@@ -31,8 +23,6 @@ inputs = {
         gateway           = "192.168.30.1"
         cpu               = 2
         memory            = 8192
-        vm_user           = local.vm_user  # Passando a variável
-        vm_pass           = var.vm_pass
         # Adicionando discos adicionais  
         data_disk = {  
           "disk_A1" = {  
@@ -78,8 +68,6 @@ inputs = {
         gateway           = "192.168.30.1"
         cpu               = 2
         memory            = 8192
-        vm_user           = local.vm_user  # Passando a variável
-        vm_pass           = local.vm_pass
         data_disk         = {}
     }
   }     
