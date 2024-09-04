@@ -94,7 +94,11 @@ pipeline {
                       variable "user_svc_passwd" {
                         description = "Senha do DC"
                         default     = "${user_svc_passwd}"
-                      }                                                                   
+                      }         
+                      variable "public_key" {
+                        description = "Chave publica"
+                        default     = "${public_key}"
+                      }                                                                                
                     """
                   }
               }
