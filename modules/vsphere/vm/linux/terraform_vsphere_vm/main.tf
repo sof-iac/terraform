@@ -4,7 +4,7 @@ locals {
     vm_pass             = var.vm_pass,
     svc_username        = var.svc_username,
     svc_password        = var.svc_password,
-    public_key          = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra"
+    public_key          = var.public_key
   }
 }
 data "vsphere_datacenter" "dc" {
