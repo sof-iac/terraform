@@ -28,7 +28,7 @@ inputs = {
         cpu               = 2
         memory            = 8192
         vm_user           = local.vm_user  # Passando a variável
-        vm_pass           = var.vm_pass
+        vm_pass           = "${vm_pass}"
         # Adicionando discos adicionais  
         data_disk = {  
           "disk_A1" = {  
@@ -75,7 +75,7 @@ inputs = {
         cpu               = 2
         memory            = 8192
         vm_user           = local.vm_user  # Passando a variável
-        vm_pass           = var.vm_pass
+        vm_pass           = "${vm_pass}"
         data_disk         = {}
     }
   }     
