@@ -296,7 +296,10 @@ resource "vsphere_virtual_machine" "vm" {
       type     = "ssh"
       user     = var.vm_user
       password = var.vm_pass
+      for_each = keys(var.network)
+      content {
       host     = split("/", var.network[keys(var.network)[network_interface.key]][count.index])[0]
+      }
     }    
     inline = [
       "echo 'options edns0 trust-ad' > /etc/resolv.conf",
