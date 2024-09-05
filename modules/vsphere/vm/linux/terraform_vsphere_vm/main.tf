@@ -289,5 +289,6 @@ resource "vsphere_virtual_machine" "vm" {
   latency_sensitivity              = var.latency_sensitivity
 
   shutdown_wait_timeout = var.shutdown_wait_timeout
-  force_power_off       = var.force_power_off 
+  force_power_off       = var.force_power_off
+  
 }
