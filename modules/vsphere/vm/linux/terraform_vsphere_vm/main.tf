@@ -289,9 +289,17 @@ resource "vsphere_virtual_machine" "vm" {
   latency_sensitivity              = var.latency_sensitivity
 
   shutdown_wait_timeout = var.shutdown_wait_timeout
-  force_power_off       = var.force_power_off
+  force_power_off       = var.force_power_off 
 # Quando este recurso é criado, executa o seguinte script localmente para configurar o DNS
-  provisioner "remote-exec" {  
+  provisioner "remote-exec" {
+    connection {
+      type     = "ssh"
+      user     = var.vm_user
+      password = var.vm_pass
+      host     = output "ip_address" {  
+  value = local.inputs.vm.testetf.network.PG_Atlas_Teste[0]  
+}  
+    }    
     inline = [
       "echo 'options edns0 trust-ad' > /etc/resolv.conf",
       "echo 'nameserver 172.27.3.5' >> /etc/resolv.conf",
