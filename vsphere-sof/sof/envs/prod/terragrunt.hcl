@@ -19,7 +19,7 @@ generate "provider" {
   contents  = <<EOF
 provider "vsphere" {
   user           = var.username_vcenter
-  password       =  var.passwd_vcenter
+  password       = var.passwd_vcenter
   vsphere_server = "pvcn01.sof.intra"
 
   # if you have a self-signed cert
