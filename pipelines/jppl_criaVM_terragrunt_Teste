@@ -19,7 +19,8 @@ pipeline {
       password(name: 'vm_pass', description: 'Senha para a máquina virtual')
       string(name: 'svc_username', defaultValue: 'ansible', description: 'Usuario ansible')
       password(name: 'svc_password', description: 'Senha do ansible')
-      password(name: 'user_svc_passwd', description: 'Senha para o Vcenter')
+      hidden(name: 'user_svc_vcenter', description: 'Usuario para o Vcenter')
+      hidden(name: 'user_svc_passwd', description: 'Senha para o Vcenter')
       string(name: 'public_key', defaultValue: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra', description: 'Chave publica do ansible')
     }
 
@@ -82,11 +83,15 @@ pipeline {
                       variable "svc_username" {
                         description = "Usuario do ansible"
                         default     = "${svc_username}"
-                      }
+                      }                    
                       variable "svc_password" {
                         description = "Senha do ansible"
                         default     = "${svc_password}"
-                      }                                                                        
+                      }            
+                      variable "user_svc_vcenter" {
+                        description = "Usuario do DC"
+                        default     = "${user_svc_vcenter}"
+                      }                                                                                     
                       variable "user_svc_passwd" {
                         description = "Senha do DC"
                         default     = "${user_svc_passwd}"
