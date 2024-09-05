@@ -1,5 +1,6 @@
 inputs = {
   user_svc_passwd = file("secrets.txt")
+  user_name = "user_svc_vcenter"
 }
 
 generate "provider" {
@@ -7,7 +8,7 @@ generate "provider" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 provider "vsphere" {
-  user           = "user_svc_vcenter"
+  user           = var.user_name
   password       =  var.user_svc_passwd
   vsphere_server = "pvcn01.sof.intra"
 
