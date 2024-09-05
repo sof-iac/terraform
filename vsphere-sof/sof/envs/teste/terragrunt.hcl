@@ -1,5 +1,5 @@
 inputs = {
-  username_vcenter = "username_vcenter"
+  username_vcenter = "user_svc_vcenter"
   passwd_vcenter = file("secrets.txt")
 }
 
