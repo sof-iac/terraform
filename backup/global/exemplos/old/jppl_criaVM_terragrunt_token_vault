@@ -49,8 +49,8 @@ pipeline {
             script {
                 // define the secrets and the env variables
                 def secrets = [
-                    [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
-                        [envVar: 'user_svc_vcenter', vaultKey: 'username']]]
+                    [path: 'secrets/servicos/username_vcenter', engineVersion: 2, secretValues: [
+                        [envVar: 'username_vcenter', vaultKey: 'username']]]
                 ]
 
                 // optional configuration
@@ -60,7 +60,7 @@ pipeline {
 
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh 'echo $user_svc_vcenter'
+                    sh 'echo $username_vcenter'
                 }
             }
         }

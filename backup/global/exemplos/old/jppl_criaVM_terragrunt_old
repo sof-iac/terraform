@@ -30,7 +30,7 @@ pipeline {
       text(name: 'annotation', defaultValue: "${env.BUILD_USER_ID}, ${new Date().format('dd/MM/yyyy')}", description: 'Notas informativas sobre a VM')
       string(name: 'vm_user', defaultValue: 'root', description: 'Nome de usuário para a máquina virtual')
       password(name: 'vm_pass', description: 'Senha para a máquina virtual')
-      password(name: 'user_svc_passwd', description: 'Senha para o Vcenter')
+      password(name: 'passwd_vcenter', description: 'Senha para o Vcenter')
       string(name: 'vsphere_resource_pool', defaultValue: 'Blade_Atreus/Resources', description: 'vsphere_resource_pool')
       string(name: 'vm_guest_id', defaultValue: 'ubuntu64Guest', description: 'Guest Id do SO em uso')
       choice(name: 'template', choices: ['templateubuntu2204','templateubuntu2204_ansible'], description: 'Nome do Template')
@@ -76,8 +76,8 @@ pipeline {
               dir("${Datacenter}") {
                 // define the secrets and the env variables
                 def secrets = [
-                    [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
-                        [envVar: 'user_svc_passwd', vaultKey: 'username']]]
+                    [path: 'secrets/servicos/username_vcenter', engineVersion: 2, secretValues: [
+                        [envVar: 'passwd_vcenter', vaultKey: 'username']]]
                 ]
 
                 // optional configuration
@@ -87,7 +87,7 @@ pipeline {
 
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh 'echo $user_svc_passwd > secrets.txt'
+                    sh 'echo $passwd_vcenter > secrets.txt'
                 }
             }
           }
@@ -156,7 +156,7 @@ pipeline {
                   "variable \"ipv4_netmask\" { \n type = string \n default = \"${ipv4_netmask}\" \n}\n" +
                   "variable \"svc_username\" { \n type = string \n default = \"${svc_username}\" \n}\n" +
                   "variable \"svc_password\" { \n type = string \n default = \"${svc_password}\" \n}\n" +
-                  "variable \"user_svc_passwd\" { \n type = string \n default = \"${user_svc_passwd}\" \n}\n" +
+                  "variable \"passwd_vcenter\" { \n type = string \n default = \"${passwd_vcenter}\" \n}\n" +
                   "variable \"privatekeypath\" { \n type = string \n default = \"${privatekeypath}\" \n}\n" +
                   "variable \"public_key\" { \n type = string \n default = \"${public_key}\" \n}\n" 
 
@@ -269,9 +269,9 @@ pipeline {
                         description = "Senha do servico"
                         default     = "${svc_password}"
                       }
-                      variable "user_svc_passwd" {
+                      variable "passwd_vcenter" {
                         description = "Senha do servico"
-                        default     = "${user_svc_passwd}"
+                        default     = "${passwd_vcenter}"
                       }                         
                       variable "privatekeypath" {
                         description = "Caminho da chave privada"
@@ -401,9 +401,9 @@ pipeline {
                         description = "Senha do servico"
                         default     = "${svc_password}"
                       }
-                      variable "user_svc_passwd" {
+                      variable "passwd_vcenter" {
                         description = "Senha do servico"
-                        default     = "${user_svc_passwd}"
+                        default     = "${passwd_vcenter}"
                       }                      
                       variable "privatekeypath" {
                         description = "Caminho da chave privada"
@@ -424,8 +424,8 @@ pipeline {
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
                 // define the secrets and the env variables
                 def secrets = [
-                    [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
-                        [envVar: 'user_svc_passwd', vaultKey: 'username']]]
+                    [path: 'secrets/servicos/username_vcenter', engineVersion: 2, secretValues: [
+                        [envVar: 'passwd_vcenter', vaultKey: 'username']]]
                 ]
 
                 // optional configuration
@@ -435,8 +435,8 @@ pipeline {
 
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh 'echo $user_svc_passwd'
-                    sh """terragrunt plan -var 'user_svc_passwd=${user_svc_passwd}' """ 
+                    sh 'echo $passwd_vcenter'
+                    sh """terragrunt plan -var 'passwd_vcenter=${passwd_vcenter}' """ 
                 }                            
                 
               }
@@ -449,8 +449,8 @@ pipeline {
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
                 // define the secrets and the env variables
                 def secrets = [
-                    [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
-                        [envVar: 'user_svc_passwd', vaultKey: 'username']]]
+                    [path: 'secrets/servicos/username_vcenter', engineVersion: 2, secretValues: [
+                        [envVar: 'passwd_vcenter', vaultKey: 'username']]]
                 ]
 
                 // optional configuration
@@ -460,8 +460,8 @@ pipeline {
 
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh 'echo $user_svc_passwd'
-                    sh """ terragrunt apply -auto-approve -lock=false -var 'user_svc_passwd=${user_svc_passwd}' """
+                    sh 'echo $passwd_vcenter'
+                    sh """ terragrunt apply -auto-approve -lock=false -var 'passwd_vcenter=${passwd_vcenter}' """
                 }                            
                 
               }

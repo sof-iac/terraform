@@ -6,7 +6,7 @@ locals {
   env    = "prod" #local.parsed.enn
 }
 inputs = {
-  user_svc_passwd = file("secrets.txt")
+  passwd_vcenter = file("secrets.txt")
   minio_pem = file("minio.pem")
   AWS_ACCESS_KEY_ID = "softfprod"
   AWS_SECRET_ACCESS_KEY = "aaLj9DvFB2jW8bsrfcrg7jve1AyPXTYj1Bq3LcPf"
@@ -17,8 +17,8 @@ generate "provider" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 provider "vsphere" {
-  user           = "user_svc_vcenter"
-  password       =  var.user_svc_passwd
+  user           = "username_vcenter"
+  password       =  var.passwd_vcenter
   vsphere_server = "pvcn01.sof.intra"
 
   # if you have a self-signed cert

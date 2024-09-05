@@ -21,7 +21,7 @@ node {
   withVault([configuration: vaultConfig]) {
     // read the secret from the vault
     def secrets = [
-      [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
+      [path: 'secrets/servicos/username_vcenter', engineVersion: 2, secretValues: [
         [envVar: 'VAULT_TOKEN', vaultKey: 'username']
       ]]
     ]

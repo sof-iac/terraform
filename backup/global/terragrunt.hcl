@@ -12,11 +12,11 @@ provider "vault" {
 }
 
 data "vault_generic_secret" "vsphere_credentials" {
-  path = "secrets/servicos/user_svc_vcenter"
+  path = "secrets/servicos/username_vcenter"
 }
 
 provider "vsphere" {
-  user           = "user_svc_vcenter"
+  user           = "username_vcenter"
   password       = data.vault_generic_secret.vsphere_credentials.data["username"]
   vsphere_server = "pvcn01.sof.intra"
 

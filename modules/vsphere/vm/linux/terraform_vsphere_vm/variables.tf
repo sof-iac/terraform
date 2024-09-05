@@ -516,7 +516,7 @@ variable "force_power_off" {
   default     = null
 }
 
-variable "user_svc_passwd" {  
+variable "passwd_vcenter" {  
   description = "Senha do serviço do usuário"  
   type        = string  
   default     = ""  # Você pode definir um valor padrão ou deixar vazio  

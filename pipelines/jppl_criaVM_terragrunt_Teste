@@ -19,8 +19,8 @@ pipeline {
       password(name: 'vm_pass', description: 'Senha para a máquina virtual')
       string(name: 'svc_username', defaultValue: 'ansible', description: 'Usuario ansible')
       password(name: 'svc_password', description: 'Senha do ansible')
-      hidden(name: 'user_svc_vcenter', description: 'Usuario para o Vcenter')
-      hidden(name: 'user_svc_passwd', description: 'Senha para o Vcenter')
+      hidden(name: 'username_vcenter', description: 'Usuario para o Vcenter')
+      hidden(name: 'passwd_vcenter', description: 'Senha para o Vcenter')
       string(name: 'public_key', defaultValue: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra', description: 'Chave publica do ansible')
     }
 
@@ -37,7 +37,7 @@ pipeline {
                 // Retorna a chave de conexao com o vcenter
                 def secrets_vcenter = [
                     [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
-                        [envVar: 'user_svc_passwd', vaultKey: 'username']]]
+                        [envVar: 'passwd_vcenter', vaultKey: 'username']]]
                 ]
                 // Retorna a chave publica do ansible
                 def pk_ansible = [
@@ -56,7 +56,7 @@ pipeline {
                 }
 
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
-                    sh 'echo $user_svc_passwd > secrets.txt'
+                    sh 'echo $passwd_vcenter > secrets.txt'
                 }
 
                 withVault([configuration: configuration, vaultSecrets: pk_ansible]) {
@@ -88,13 +88,13 @@ pipeline {
                         description = "Senha do ansible"
                         default     = "${svc_password}"
                       }            
-                      variable "user_svc_vcenter" {
+                      variable "username_vcenter" {
                         description = "Usuario do DC"
-                        default     = "${user_svc_vcenter}"
+                        default     = "${username_vcenter}"
                       }                                                                                     
-                      variable "user_svc_passwd" {
+                      variable "passwd_vcenter" {
                         description = "Senha do DC"
-                        default     = "${user_svc_passwd}"
+                        default     = "${passwd_vcenter}"
                       }         
                       variable "public_key" {
                         description = "Chave publica"
@@ -112,7 +112,7 @@ pipeline {
                 // define the secrets and the env variables
                 def secrets = [
                     [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
-                        [envVar: 'user_svc_passwd', vaultKey: 'username']]]
+                        [envVar: 'passwd_vcenter', vaultKey: 'username']]]
                 ]
 
                 // optional configuration
@@ -122,12 +122,11 @@ pipeline {
 
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh 'echo $user_svc_passwd'
                     if("${init}" != 'nao')
                     {
                        sh """ terragrunt ${init}  """
                     }
-                    sh """ terragrunt plan -lock=${lock} -var 'user_svc_passwd=${user_svc_passwd}' -var 'vm_user=${vm_user}' -var 'vm_pass=${vm_pass}' -var 'svc_username=${svc_username}' """ 
+                    sh """ terragrunt plan -lock=${lock} -var 'passwd_vcenter=${passwd_vcenter}' -var 'vm_user=${vm_user}' -var 'vm_pass=${vm_pass}' -var 'svc_username=${svc_username}' """ 
                 }                            
                 
               }
@@ -141,7 +140,7 @@ pipeline {
                 // define the secrets and the env variables
                 def secrets = [
                     [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
-                        [envVar: 'user_svc_passwd', vaultKey: 'username']]]
+                        [envVar: 'passwd_vcenter', vaultKey: 'username']]]
                 ]
 
                 // optional configuration
@@ -151,8 +150,7 @@ pipeline {
 
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh 'echo $user_svc_passwd'
-                    sh """ terragrunt apply -auto-approve -lock=${lock} -var 'user_svc_passwd=${user_svc_passwd}' -var 'vm_user=${vm_user}' -var 'vm_pass=${vm_pass}' -var 'svc_username=${svc_username}' """ 
+                    sh """ terragrunt apply -auto-approve -lock=${lock} -var 'passwd_vcenter=${passwd_vcenter}' -var 'vm_user=${vm_user}' -var 'vm_pass=${vm_pass}' -var 'svc_username=${svc_username}' """ 
                 }                            
                 
               }
