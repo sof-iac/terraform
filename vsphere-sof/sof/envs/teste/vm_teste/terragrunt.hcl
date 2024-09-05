@@ -68,7 +68,7 @@ inputs = {
         mask              = ["24"]
         gateway           = "192.168.30.1"
         cpu               = 2
-        memory            = 8192
+        memory            = 4096
         data_disk         = {}
     }
   }     
