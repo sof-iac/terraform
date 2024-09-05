@@ -18,7 +18,7 @@ generate "provider" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 provider "vsphere" {
-  user           = "username_vcenter"
+  user           = var.username_vcenter
   password       =  var.passwd_vcenter
   vsphere_server = "pvcn01.sof.intra"
 
