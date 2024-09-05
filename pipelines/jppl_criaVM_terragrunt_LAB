@@ -14,13 +14,18 @@ pipeline {
       choice(name: 'lock', choices: ['true','false'], description: 'Lock do dynamodb')
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
       text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
-      choice(name: 'distro', choices: ['ubuntu', 'centos', 'orcl','rocklinux'], description: 'Distribuição Linux')      
-      password(name: 'passwd_vcenter', description: 'Senha para o Vcenter')
-
+      choice(name: 'distro', choices: ['ubuntu', 'centos', 'orcl','rocklinux'], description: 'Distribuição Linux')  
+      string(name: 'vm_user', defaultValue: 'root', description: 'Nome de usuário para a máquina virtual')
+      password(name: 'vm_pass', description: 'Senha para a máquina virtual')
+      string(name: 'svc_username', defaultValue: 'ansible', description: 'Usuario ansible')
+      password(name: 'svc_password', description: 'Senha do ansible')
+      hidden(name: 'username_vcenter', description: 'Usuario para o Vcenter')
+      hidden(name: 'passwd_vcenter', description: 'Senha para o Vcenter')
+      string(name: 'public_key', defaultValue: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra', description: 'Chave publica do ansible')
     }
 
     stages {
-      stage('Retornando as chaves privadas e certificados') {
+      stage('Retornando as chaves publica e certificados') {
         steps {
             script {
               dir("${Datacenter}/${Site}/envs/${Ambiente}") {
@@ -31,7 +36,7 @@ pipeline {
                 ]
                 // Retorna a chave de conexao com o vcenter
                 def secrets_vcenter = [
-                    [path: 'secrets/servicos/username_vcenter', engineVersion: 2, secretValues: [
+                    [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
                         [envVar: 'passwd_vcenter', vaultKey: 'username']]]
                 ]
                 // Retorna a chave publica do ansible
@@ -66,11 +71,35 @@ pipeline {
               script {
                   // Salva a escolha do usuário em um arquivo
                   dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {
-                  writeFile file: 'vars.tf', text: """                                
+                  writeFile file: 'vars.tf', text: """  
+                      variable "vm_user" {
+                        description = "Nome de usuario para a máquina virtual"
+                        default     = "${vm_user}"
+                      }
+                      variable "vm_pass" {
+                        description = "Senha para a maquina virtual"
+                        default     = "${vm_pass}"
+                      }                  
+                      variable "svc_username" {
+                        description = "Usuario do ansible"
+                        default     = "${svc_username}"
+                      }                    
+                      variable "svc_password" {
+                        description = "Senha do ansible"
+                        default     = "${svc_password}"
+                      }            
+                      variable "username_vcenter" {
+                        description = "Usuario do DC"
+                        default     = "${username_vcenter}"
+                      }                                                                                     
                       variable "passwd_vcenter" {
-                        description = "Senha do servico"
+                        description = "Senha do DC"
                         default     = "${passwd_vcenter}"
-                      }                                                                   
+                      }         
+                      variable "public_key" {
+                        description = "Chave publica"
+                        default     = "${public_key}"
+                      }                                                                                                    
                     """
                   }
               }
@@ -82,7 +111,7 @@ pipeline {
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
                 // define the secrets and the env variables
                 def secrets = [
-                    [path: 'secrets/servicos/username_vcenter', engineVersion: 2, secretValues: [
+                    [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
                         [envVar: 'passwd_vcenter', vaultKey: 'username']]]
                 ]
 
@@ -93,14 +122,11 @@ pipeline {
 
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh 'echo $passwd_vcenter'
                     if("${init}" != 'nao')
                     {
                        sh """ terragrunt ${init}  """
                     }
-                    sh 'pwd'
-                    sh 'ls -la '
-                    sh """ terragrunt plan -lock=${lock} -var 'passwd_vcenter=${passwd_vcenter}' """ 
+                    sh """ terragrunt plan -lock=${lock} -var 'passwd_vcenter=${passwd_vcenter}' -var 'vm_user=${vm_user}' -var 'vm_pass=${vm_pass}' -var 'svc_username=${svc_username}' """ 
                 }                            
                 
               }
@@ -113,7 +139,7 @@ pipeline {
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
                 // define the secrets and the env variables
                 def secrets = [
-                    [path: 'secrets/servicos/username_vcenter', engineVersion: 2, secretValues: [
+                    [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
                         [envVar: 'passwd_vcenter', vaultKey: 'username']]]
                 ]
 
@@ -124,8 +150,7 @@ pipeline {
 
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh 'echo $passwd_vcenter'
-                    sh """ terragrunt apply -auto-approve -lock=${lock} -var 'passwd_vcenter=${passwd_vcenter}' """
+                    sh """ terragrunt apply -auto-approve -lock=${lock} -var 'passwd_vcenter=${passwd_vcenter}' -var 'vm_user=${vm_user}' -var 'vm_pass=${vm_pass}' -var 'svc_username=${svc_username}' """ 
                 }                            
                 
               }
