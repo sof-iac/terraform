@@ -3,14 +3,13 @@ locals {
   # will be "dev" in the dev folder, "stage" in the stage folder, 
   # etc.
   # parsed = regex(".*\/envs\/(?P<env>.*?)\/.*", get_terragrunt_dir())
-  env    = "test" #local.parsed.enn
+  env    = "lab" #local.parsed.enn
 }
 inputs = {
-  username_vcenter = "user_svc_vcenter"
   passwd_vcenter = file("secrets.txt")
   minio_pem = file("minio.pem")
-  AWS_ACCESS_KEY_ID = "softftest"
-  AWS_SECRET_ACCESS_KEY = "JyruHhEbqQQROEEPIeY6K0sPsB85XinCiL5WypxQ"
+  AWS_ACCESS_KEY_ID = "sof-tf-lab"
+  AWS_SECRET_ACCESS_KEY = "0CtpstM00a3G6PuNXE4PnuEUZ1xDPdjIvqBwM8hM"
 }
 
 generate "provider" {
@@ -18,8 +17,8 @@ generate "provider" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 provider "vsphere" {
-  user           = var.username_vcenter
-  password       = var.passwd_vcenter
+  user           = "username_vcenter"
+  password       =  var.passwd_vcenter
   vsphere_server = "pvcn01.sof.intra"
 
   # if you have a self-signed cert
@@ -41,8 +40,8 @@ generate "backend" {
         dynamodb = "http://dynamodb.dynamodb.svc.cluster.local:8000"
       }
       key            = "${path_relative_to_include()}/terraform_lab.tfstate"
-      access_key     = "softftest"
-      secret_key     = "JyruHhEbqQQROEEPIeY6K0sPsB85XinCiL5WypxQ"
+      access_key     = "softflab"
+      secret_key     = "px8YVerl7uFw1Iz1VyszAlh97bfepiXjHJD9XYvr"
       #kms_key_id     = "847b4b54-7fae-412e-aba3-50a3d8527002"
       # custom_ca_bundle = var.minio_pem
       region         = "us-east-1"
@@ -52,7 +51,7 @@ generate "backend" {
       skip_region_validation = true
       use_path_style = true             # Enable path-style S3 URLs
 
-      dynamodb_table = "sof-tfstate-test"
+      dynamodb_table = "sof-tfstate-lab"
       }
     }
   EOF
