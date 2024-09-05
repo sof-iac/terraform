@@ -264,6 +264,11 @@ variable "annotation" {
   default     = null
 }
 
+variable "extra_config" {
+  description = "Extra configuration data for this virtual machine. Can be used to supply advanced parameters not normally in configuration, such as instance metadata.'disk.enableUUID', 'True'."
+  type        = map(any)
+  default     = null
+}
 
 variable "linked_clone" {
   description = "Clone this virtual machine from a snapshot. Templates must have a single snapshot only in order to be eligible."
