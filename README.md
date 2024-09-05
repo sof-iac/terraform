@@ -5,8 +5,9 @@
 ```
 1 - modules
 2 - aws
-3 - blocok
-4 - sof
+3 - vsphere-sof
+  a - blocok
+  b - sof
 ```
 
 ## Boas práticas
@@ -43,10 +44,20 @@ Use um sistema de controle de versão como o Git para rastrear as alterações n
 
 ```
 modules
-    ubuntu
-    ├── main.tf
-    ├── variables.tf
-    ├── outputs.tf
+    ├── aws
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
+    ├── vpshere
+        vm
+        ├── main.tf
+        ├── variables.tf
+        ├── outputs.tf
+        vlan
+        ├── main.tf
+        ├── variables.tf
+        └── outputs.tf
+
 aws
 ├── env
     ├── dev
