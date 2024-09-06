@@ -17,7 +17,7 @@ inputs = {
         datastore         = "Storage_Purestorage"
         resource_pool     = "Blade_Kratos/Resources"
         vsphere_cluster   = "Blade_Kratos"
-        network           = {"PG_Atlas_Gerencia" = ["192.168.250.159"]}
+        network           = {"PG_Gaia_Gerencia" = ["192.168.250.159"]}
         mask              = ["24"]
         gateway           = "192.168.250.1"
         cpu               = 8
