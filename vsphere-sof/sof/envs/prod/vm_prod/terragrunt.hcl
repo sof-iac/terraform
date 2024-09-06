@@ -23,6 +23,7 @@ inputs = {
         cpu               = 8
         memory            = 8192
         network_type      = ["vmxnet3"]
+        annotation        = "Servidor que subsituira o PSBD18 - 06/09/2024 - Rogerio Vieira Silva"
         # Adicionando discos adicionais  
         data_disk = {  
           "disk_A1" = {  

@@ -14,6 +14,7 @@ variable vm {
       cpu               = number
       memory            = number
       network_type      = list(string)
+      annotation        = string
     })
   )
 }

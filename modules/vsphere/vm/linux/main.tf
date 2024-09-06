@@ -26,6 +26,7 @@ module "vsphere_linux_vm" {
   #gateway     = each.value.gateway
   #disk_size   = each.value.disk_size
   network_type   = each.value.network_type
+  annotation     = each.value.annotation
   data_disk      = each.value.data_disk 
   io_share_level = ["normal", "normal", "normal", "normal", "normal"] #essa linha precisa ser mantida por conta de um bug no módulo
   cpu_number     = each.value.cpu
