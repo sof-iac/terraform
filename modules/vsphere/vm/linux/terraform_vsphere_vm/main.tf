@@ -143,6 +143,7 @@ resource "vsphere_virtual_machine" "vm" {
     for_each = keys(var.network) #data.vsphere_network.network[*].id #other option
     content {
       network_id   = data.vsphere_network.network[network_interface.key].id
+      #adapter_type = "vmxnet3"
       adapter_type = var.network_type != null ? var.network_type[network_interface.key] : (var.content_library == null ? data.vsphere_virtual_machine.template[0].network_interface_types[0] : null)
     }
   }
