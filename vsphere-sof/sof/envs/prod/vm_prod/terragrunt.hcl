@@ -36,7 +36,7 @@ inputs = {
             disk_mode              = null  
             disk_sharing           = null  
             attach                 = null  
-            path                   = /data  
+            path                   = "/data"  
           }  
         }
       } 
