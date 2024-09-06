@@ -22,7 +22,7 @@ inputs = {
         gateway           = "192.168.250.1"
         cpu               = 8
         memory            = 8192
-        network_type      = "vmxnet3"
+        network_type      = ["vmxnet3"]
         # Adicionando discos adicionais  
         data_disk = {  
           "disk_A1" = {  
