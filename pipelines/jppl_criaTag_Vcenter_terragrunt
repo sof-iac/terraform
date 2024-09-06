@@ -121,7 +121,7 @@ pipeline {
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                           // export TF_LOG=DEBUG; 
-                    // sh """ terragrunt apply -auto-approve -lock=${lock} --var 'username_vcenter=${username_vcenter}' -var 'passwd_vcenter=${passwd_vcenter}' """ 
+                    sh """ terragrunt apply -auto-approve -lock=${lock} --var 'username_vcenter=${username_vcenter}' -var 'passwd_vcenter=${passwd_vcenter}' """ 
                 }                            
                 
               }
