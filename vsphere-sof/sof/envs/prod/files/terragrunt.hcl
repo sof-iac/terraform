@@ -13,7 +13,7 @@ generate "provider" {
   contents  = <<EOF
 provider "vsphere" {
   user           = "${local.username_vcenter}"
-  password       = "${local.passwd_vcenter}"
+  password       = <<EOF "${local.passwd_vcenter}" EOF
   vsphere_server = "pvcn01.sof.intra"
 
   # if you have a self-signed cert
