@@ -126,7 +126,7 @@ pipeline {
                     {
                        sh """ terragrunt ${init}  """
                     }
-                    sh """ terragrunt plan -lock=${lock} -var 'passwd_vcenter=${passwd_vcenter}' -var 'vm_user=${vm_user}' -var 'vm_pass=${vm_pass}' -var 'svc_username=${svc_username}' """ 
+                    sh """ terragrunt plan -lock=${lock} -var 'username_vcenter=${username_vcenter}' -var 'passwd_vcenter=${passwd_vcenter}' -var 'vm_user=${vm_user}' -var 'vm_pass=${vm_pass}' -var 'svc_username=${svc_username}' """ 
                 }                            
                 
               }
