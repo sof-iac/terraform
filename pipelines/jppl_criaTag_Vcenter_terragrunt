@@ -96,7 +96,7 @@ pipeline {
                     {
                        sh """ terragrunt ${init}  """
                     }
-                    sh """ terragrunt plan -lock=${lock} ' """ 
+                    sh """ terragrunt plan -lock=${lock} """ 
                 }                            
                 
               }
