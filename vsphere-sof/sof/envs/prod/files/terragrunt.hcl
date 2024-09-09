@@ -1,5 +1,5 @@
 locals {
-  env    = "prod" #local.parsed.enn
+  env    = "prod" #local.parsed.env
   secrets         = jsondecode(file("secrets.json"))  
   username_vcenter = local.secrets.username_vcenter  
   passwd_vcenter   = local.secrets.passwd_vcenter 

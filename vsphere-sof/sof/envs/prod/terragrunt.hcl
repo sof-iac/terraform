@@ -1,14 +1,11 @@
 locals {
-  env    = "prod" #local.parsed.enn
-  username_vcenter = "user_svc_jenkins"
-  passwd_vcenter = file("secrets.txt")
+  env    = "prod" #local.parsed.env
+  secrets         = jsondecode(file("secrets.json"))  
+  username_vcenter = local.secrets.username_vcenter  
+  passwd_vcenter   = local.secrets.passwd_vcenter 
 }
 inputs = {
-  username_vcenter = "user_svc_jenkins"
-  passwd_vcenter = file("secrets.txt")
   minio_pem = file("minio.pem")
-  AWS_ACCESS_KEY_ID = "softfprod"
-  AWS_SECRET_ACCESS_KEY = "aaLj9DvFB2jW8bsrfcrg7jve1AyPXTYj1Bq3LcPf"
 }
 
 generate "provider" {
@@ -16,8 +13,8 @@ generate "provider" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 provider "vsphere" {
-  user           = local.username_vcenter
-  password       = local.passwd_vcenter
+  user           = "${local.username_vcenter}"
+  password       = "${local.passwd_vcenter}"
   vsphere_server = "pvcn01.sof.intra"
 
   # if you have a self-signed cert

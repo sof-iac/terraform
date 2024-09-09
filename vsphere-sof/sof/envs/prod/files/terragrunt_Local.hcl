@@ -1,6 +1,11 @@
+locals {
+  env    = "prod" #local.parsed.env
+  secrets         = jsondecode(file("secrets.json"))  
+  username_vcenter = local.secrets.username_vcenter  
+  passwd_vcenter   = local.secrets.passwd_vcenter 
+}
 inputs = {
-  username_vcenter = "user_svc_vcenter"
-  passwd_vcenter = file("secrets.txt")
+  minio_pem = file("minio.pem")
 }
 
 generate "provider" {
@@ -8,8 +13,8 @@ generate "provider" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 provider "vsphere" {
-  user           = var.username_vcenter
-  password       = var.passwd_vcenter
+  user           = "${local.username_vcenter}"
+  password       = "${local.passwd_vcenter}"
   vsphere_server = "pvcn01.sof.intra"
 
   # if you have a self-signed cert
@@ -17,7 +22,6 @@ provider "vsphere" {
 }
 EOF
 }
-
 remote_state {
   backend = "local"
   generate = {
