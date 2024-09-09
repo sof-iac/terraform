@@ -15,7 +15,7 @@ variable vm {
       memory            = number
       network_type      = list(string)
       annotation        = string
-      tags              = map(list(string))
+      tags              = map(any)
     })
   )
 }

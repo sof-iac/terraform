@@ -1,13 +1,7 @@
 locals {
-  # Parse the file path we're in to read the env name: e.g., env 
-  # will be "dev" in the dev folder, "stage" in the stage folder, 
-  # etc.
-  # parsed = regex(".*\/envs\/(?P<env>.*?)\/.*", get_terragrunt_dir())
   env    = "prod" #local.parsed.enn
 }
 inputs = {
-  passwd_vcenter = file("secrets.txt")
-  username_vcenter = "user_svc_vcenter"
   minio_pem = file("minio.pem")
   AWS_ACCESS_KEY_ID = "softfprod"
   AWS_SECRET_ACCESS_KEY = "aaLj9DvFB2jW8bsrfcrg7jve1AyPXTYj1Bq3LcPf"
