@@ -1,4 +1,4 @@
-variable tag {
+variable category {
   type = map(object(
     {
       category_name        = string
