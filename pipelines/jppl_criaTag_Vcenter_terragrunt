@@ -41,7 +41,11 @@ pipeline {
                 }
 
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
-                    sh 'echo $passwd_vcenter > secrets.txt'
+                  sh "echo '{  
+                          "username_vcenter": "user_svc_jenkins",  
+                          "passwd_vcenter": "$passwd_vcenter"
+                        }' > secrets.json "                    
+                  // sh 'echo $passwd_vcenter > secrets.txt'
                 }
             }
           }
