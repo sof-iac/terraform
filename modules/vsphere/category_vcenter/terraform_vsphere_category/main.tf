@@ -6,5 +6,5 @@
     }
 
     output "vsphere_tag_category" {
-      value = vsphere_category.category.id
+      value = vsphere_tag_category.category.id
     }
