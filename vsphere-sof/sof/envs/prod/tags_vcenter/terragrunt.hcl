@@ -21,7 +21,7 @@ inputs = {
     "Tags_Env_Testes" = {
       category_name        = "Ambiente"
       tag_name             = "Teste"
-      tag_description      = "Ambiente dos recursos de Testes"
+      tag_description      = "Ambiente dos recursos de Teste"
       },
     "Tags_Env_Prod" = {
       category_name        = "Ambiente"
