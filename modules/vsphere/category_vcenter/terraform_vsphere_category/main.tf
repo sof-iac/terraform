@@ -1,4 +1,4 @@
-    resource "vsphere_tag_category" "category" {
+    resource "vsphere_category" "category" {
       name        = var.category_name
       description = var.category_description
       cardinality = "MANY"
