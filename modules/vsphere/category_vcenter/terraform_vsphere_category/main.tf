@@ -1,7 +1,7 @@
     resource "vsphere_tag_category" "category" {
       name        = var.category_name
       description = var.category_description
-      cardinality = "MANY"
+      cardinality = "MULTIPLE"
       associable_types = ["VirtualMachine"]
     }
 
