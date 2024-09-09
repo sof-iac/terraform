@@ -12,6 +12,10 @@ inputs = {
       category_name        = "Ambiente"
       category_description = "Ambiente que contem o recurso"
       },
+    "category_Origem" = {
+      category_name        = "Origem"
+      category_description = "Via codigo ou Manual"
+      }, 
     "category_guest_os" = {
       category_name        = "Guest_OS"
       category_description = "Qual o sistema operacional"
