@@ -18,7 +18,7 @@ inputs = {
       }, 
     "category_guest_os" = {
       category_name        = "Guest_OS"
-      category_description = "Qual o sisteam operacional"
+      category_description = "Qual o sistema operacional"
       }, 
     "category_aplicacao" = {
       category_name        = "Aplicacao"
