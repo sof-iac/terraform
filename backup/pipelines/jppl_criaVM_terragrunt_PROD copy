@@ -36,8 +36,8 @@ pipeline {
                 ]
                 // Retorna a chave de conexao com o vcenter
                 def secrets_vcenter = [
-                    [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
-                        [envVar: 'passwd_vcenter', vaultKey: 'password']]]
+                    [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
+                        [envVar: 'passwd_vcenter', vaultKey: 'username']]]
                 ]
                 // Retorna a chave publica do ansible
                 def pk_ansible = [
@@ -111,8 +111,8 @@ pipeline {
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
                 // define the secrets and the env variables
                 def secrets = [
-                    [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
-                        [envVar: 'passwd_vcenter', vaultKey: 'password']]]
+                    [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
+                        [envVar: 'passwd_vcenter', vaultKey: 'username']]]
                 ]
 
                 // optional configuration
@@ -139,8 +139,8 @@ pipeline {
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
                 // define the secrets and the env variables
                 def secrets = [
-                    [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
-                        [envVar: 'passwd_vcenter', vaultKey: 'password']]]
+                    [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
+                        [envVar: 'passwd_vcenter', vaultKey: 'username']]]
                 ]
 
                 // optional configuration
