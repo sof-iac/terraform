@@ -6,7 +6,7 @@ locals {
   env    = "test" #local.parsed.enn
 }
 inputs = {
-  username_vcenter = "user_svc_jenkins"
+  username_vcenter = "rogeriovs_admin"
   passwd_vcenter = file("secrets.txt")
   minio_pem = file("minio.pem")
   AWS_ACCESS_KEY_ID = "softftest"
