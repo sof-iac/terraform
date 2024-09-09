@@ -46,26 +46,7 @@ pipeline {
             }
           }
         }
-      }  
-      stage('Criando o vars.tf') {
-          steps {
-              script {
-                  // Salva a escolha do usuário em um arquivo
-                  dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {
-                  writeFile file: 'vars.tf', text: """             
-                      variable "username_vcenter" {
-                        description = "Usuario do DC"
-                        default     = "${username_vcenter}"
-                      }                                                                                     
-                      variable "passwd_vcenter" {
-                        description = "Senha do DC"
-                        default     = "${passwd_vcenter}"
-                      }                                                                                                             
-                    """
-                  }
-              }
-          }
-      }       
+      }         
       stage('Copia Terragrunt.hcl') {
           steps {
             script {           
