@@ -1,7 +1,7 @@
 locals {
   env    = "prod" #local.parsed.enn
   username_vcenter = "user_svc_jenkins"
-  passwd_vcenter = file("secrets.txt") #4p0t1-Jenkins#
+  passwd_vcenter = "W4p0t1Jenkinsw" 
 }
 inputs = {
   minio_pem = file("minio.pem")
