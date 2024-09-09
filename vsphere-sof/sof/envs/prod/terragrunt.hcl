@@ -2,6 +2,8 @@ locals {
   env    = "prod" #local.parsed.enn
 }
 inputs = {
+  username_vcenter = "user_svc_jenkins"
+  passwd_vcenter = files("secrets.txt")
   minio_pem = file("minio.pem")
   AWS_ACCESS_KEY_ID = "softfprod"
   AWS_SECRET_ACCESS_KEY = "aaLj9DvFB2jW8bsrfcrg7jve1AyPXTYj1Bq3LcPf"
