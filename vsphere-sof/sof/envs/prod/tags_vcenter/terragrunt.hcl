@@ -16,17 +16,17 @@ inputs = {
     "Tags_Env_Lab" = {
       category_name        = "Ambiente"
       tag_name             = "Lab"
-      tag_description      = "Ambiente dos rescurso de Laboratorio"
+      tag_description      = "Ambiente dos recursos de Laboratorio"
       },
     "Tags_Env_Testes" = {
       category_name        = "Ambiente"
       tag_name             = "Teste"
-      tag_description      = "Ambiente dos rescurso de Testes"
+      tag_description      = "Ambiente dos recursos de Testes"
       },
     "Tags_Env_Prod" = {
       category_name        = "Ambiente"
       tag_name             = "Prod"
-      tag_description      = "Ambiente dos rescurso de Producao"
+      tag_description      = "Ambiente dos recursos de Producao"
       },      
     "Tags_Aplicacao_Mariadb" = {
       category_name        = "Aplicacao"
