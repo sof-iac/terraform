@@ -28,6 +28,7 @@ module "vsphere_linux_vm" {
   network_type   = each.value.network_type
   annotation     = each.value.annotation
   data_disk      = each.value.data_disk 
+  tags           = each.value.tags
   io_share_level = ["normal", "normal", "normal", "normal", "normal"] #essa linha precisa ser mantida por conta de um bug no módulo
   cpu_number     = each.value.cpu
   ram_size       = each.value.memory
