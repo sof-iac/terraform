@@ -7,7 +7,7 @@ terraform {
 }
 
 inputs = {
-  category = {,
+  category = {
     "category_ambiente" = {
       category_name        = "Ambiente"
       category_description = "Ambiente que contem o recurso"
