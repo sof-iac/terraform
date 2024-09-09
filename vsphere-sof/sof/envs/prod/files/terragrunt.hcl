@@ -1,7 +1,7 @@
 locals {
   env    = "prod" #local.parsed.enn
   username_vcenter = "user_svc_jenkins"
-  passwd_vcenter = file("secrets.txt")
+  passwd_vcenter = file("secrets.txt") #4p0t1-Jenkins#
 }
 inputs = {
   minio_pem = file("minio.pem")
@@ -13,7 +13,7 @@ generate "provider" {
   contents  = <<EOF
 provider "vsphere" {
   user           = "${local.username_vcenter}"
-  password       = <<EOF "${local.passwd_vcenter}" EOF
+  password       = "${local.passwd_vcenter}"
   vsphere_server = "pvcn01.sof.intra"
 
   # if you have a self-signed cert
