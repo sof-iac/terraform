@@ -57,54 +57,25 @@ pipeline {
           }
       }                 
       stage('Terragrunt Plan') {
-          steps {
+        steps {
             script {           
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
-                // define the secrets and the env variables
-                def secrets = [
-                    [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
-                        [envVar: 'passwd_vcenter', vaultKey: 'password']]]
-                ]
-
-                // optional configuration
-                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
-                                      vaultCredentialId: 'token_vault',
-                                      engineVersion: 2]
-
-                // inside this block your credentials will be available as env variables
-                withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    if("${init}" != 'nao')
-                    {
-                       sh """ terragrunt ${init}  """
-                    }
-                    sh """ terragrunt plan -lock=${lock} """ 
+                // Executa o comando init do terragrunt
+                if("${init}" != 'nao')
+                {
+                    sh """ terragrunt ${init}  """
+                }
+                sh """ terragrunt plan -lock=${lock} """ 
                 }                            
-                
-              }
             }          
           }
-        }
-        stage('Terragrunt Apply') {
+      }
+      stage('Terragrunt Apply') {
           steps {
             script {           
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
-                // define the secrets and the env variables
-                def secrets = [
-                    [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
-                        [envVar: 'passwd_vcenter', vaultKey: 'password']]]
-                ]
-
-                // optional configuration
-                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
-                                      vaultCredentialId: 'token_vault',
-                                      engineVersion: 2]
-
-                // inside this block your credentials will be available as env variables
-                withVault([configuration: configuration, vaultSecrets: secrets]) {
-                          // export TF_LOG=DEBUG; 
-                    sh """ terragrunt apply -auto-approve -lock=${lock} """ 
-                }                            
-                
+                // export TF_LOG=DEBUG; 
+                sh """ terragrunt apply -auto-approve -lock=${lock} """                                            
               }
             }          
           }                     
