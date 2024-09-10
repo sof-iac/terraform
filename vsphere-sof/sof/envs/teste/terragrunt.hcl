@@ -1,16 +1,11 @@
 locals {
-  # Parse the file path we're in to read the env name: e.g., env 
-  # will be "dev" in the dev folder, "stage" in the stage folder, 
-  # etc.
-  # parsed = regex(".*\/envs\/(?P<env>.*?)\/.*", get_terragrunt_dir())
-  env    = "test" #local.parsed.enn
+  env    = "test" #local.parsed.env
+  secrets         = jsondecode(file("secrets.json"))  
+  username_vcenter = local.secrets.username_vcenter  
+  passwd_vcenter   = local.secrets.passwd_vcenter 
 }
 inputs = {
-  username_vcenter = "rogeriovs_admin"
-  passwd_vcenter = file("secrets.txt")
   minio_pem = file("minio.pem")
-  AWS_ACCESS_KEY_ID = "softftest"
-  AWS_SECRET_ACCESS_KEY = "JyruHhEbqQQROEEPIeY6K0sPsB85XinCiL5WypxQ"
 }
 
 generate "provider" {
@@ -18,8 +13,8 @@ generate "provider" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 provider "vsphere" {
-  user           = var.username_vcenter
-  password       = var.passwd_vcenter
+  user           = "${local.username_vcenter}"
+  password       = "${local.passwd_vcenter}"
   vsphere_server = "pvcn01.sof.intra"
 
   # if you have a self-signed cert
@@ -27,6 +22,7 @@ provider "vsphere" {
 }
 EOF
 }
+
 
 # Configure S3 as a backend
 generate "backend" {
