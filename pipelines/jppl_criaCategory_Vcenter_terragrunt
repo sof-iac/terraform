@@ -11,8 +11,7 @@ pipeline {
       choice(name: 'lock', choices: ['true','false'], description: 'Lock do dynamodb')
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
       text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
-      string(name: 'username_vcenter', description: 'Usuario para o Vcenter')
-      password(name: 'passwd_vcenter', description: 'Senha para o Vcenter')
+
     }
     stages {
       stage('Retornando as chaves publica e certificados') {
@@ -26,8 +25,8 @@ pipeline {
                 ]
                 // Retorna a chave de conexao com o vcenter
                 def secrets_vcenter = [
-                    [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
-                        [envVar: 'passwd_vcenter', vaultKey: 'username']]]
+                    [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
+                        [envVar: 'passwd_vcenter', vaultKey: 'password']]]
                 ]               
 
                 // optional configuration
@@ -41,31 +40,13 @@ pipeline {
                 }
 
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
-                    sh 'echo $passwd_vcenter > secrets.txt'
+                  sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"                   
+                  // sh 'echo $passwd_vcenter > secrets.txt'
                 }
             }
           }
         }
-      }  
-      stage('Criando o vars.tf') {
-          steps {
-              script {
-                  // Salva a escolha do usuário em um arquivo
-                  dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {
-                  writeFile file: 'vars.tf', text: """             
-                      variable "username_vcenter" {
-                        description = "Usuario do DC"
-                        default     = "${username_vcenter}"
-                      }                                                                                     
-                      variable "passwd_vcenter" {
-                        description = "Senha do DC"
-                        default     = "${passwd_vcenter}"
-                      }                                                                                                             
-                    """
-                  }
-              }
-          }
-      }       
+      }         
       stage('Copia Terragrunt.hcl') {
           steps {
             script {           
@@ -76,54 +57,25 @@ pipeline {
           }
       }                 
       stage('Terragrunt Plan') {
-          steps {
+        steps {
             script {           
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
-                // define the secrets and the env variables
-                def secrets = [
-                    [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
-                        [envVar: 'passwd_vcenter', vaultKey: 'username']]]
-                ]
-
-                // optional configuration
-                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
-                                      vaultCredentialId: 'token_vault',
-                                      engineVersion: 2]
-
-                // inside this block your credentials will be available as env variables
-                withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    if("${init}" != 'nao')
-                    {
-                       sh """ terragrunt ${init}  """
-                    }
-                    sh """ terragrunt plan -lock=${lock} -var 'username_vcenter=${username_vcenter}' -var 'passwd_vcenter=${passwd_vcenter}' """ 
+                // Executa o comando init do terragrunt
+                if("${init}" != 'nao')
+                {
+                    sh """ terragrunt ${init}  """
+                }
+                sh """ terragrunt plan -lock=${lock} """ 
                 }                            
-                
-              }
             }          
           }
-        }
-        stage('Terragrunt Apply') {
+      }
+      stage('Terragrunt Apply') {
           steps {
             script {           
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
-                // define the secrets and the env variables
-                def secrets = [
-                    [path: 'secrets/servicos/user_svc_vcenter', engineVersion: 2, secretValues: [
-                        [envVar: 'passwd_vcenter', vaultKey: 'username']]]
-                ]
-
-                // optional configuration
-                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
-                                      vaultCredentialId: 'token_vault',
-                                      engineVersion: 2]
-
-                // inside this block your credentials will be available as env variables
-                withVault([configuration: configuration, vaultSecrets: secrets]) {
-                          // export TF_LOG=DEBUG; 
-                    sh """ terragrunt apply -auto-approve -lock=${lock} --var 'username_vcenter=${username_vcenter}' -var 'passwd_vcenter=${passwd_vcenter}' """ 
-                }                            
-                
+                // export TF_LOG=DEBUG; 
+                sh """ terragrunt apply -auto-approve -lock=${lock} """                                            
               }
             }          
           }                     
