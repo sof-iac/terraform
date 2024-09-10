@@ -22,6 +22,11 @@ inputs = {
         gateway           = "192.168.30.1"
         cpu               = 2
         memory            = 8192
+        network_type      = ["vmxnet3"]
+        annotation        = "Servidor de LAb - 09/09/2024 - Rogerio Vieira Silva"
+        tags = {
+          "Origem"    = "Terraform"
+        }         
         # Adicionando discos adicionais  
         data_disk = {  
           "disk_A1" = {  
