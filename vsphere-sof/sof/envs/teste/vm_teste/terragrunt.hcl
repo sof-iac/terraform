@@ -27,6 +27,8 @@ inputs = {
         annotation        = "Servidor de Teste - 09/09/2024 - Rogerio Vieira Silva"
         tags = {
           "Origem"    = "Terraform"
+          "Ambiente"  = "Teste"
+          "Aplicacao" = "Postgres"
         }        
         # Adicionando discos adicionais  
         data_disk = {  
