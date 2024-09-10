@@ -1,0 +1,162 @@
+pipeline {
+    agent any
+    environment {
+      VAULT_PATH = 'secrets/secrets/servicos/ansible/ansible'
+    }
+    parameters {
+      // Nome do projeto no gitea
+      choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
+      choice(name: 'Datacenter', choices: ['vsphere-sof','aws'], description: 'Datacenter') 
+      choice(name: 'Site', choices: [ 'sof', 'blocok'], description: 'Site')
+      choice(name: 'Ambiente', choices: ['prod','teste','lab'], description: 'Ambiente')
+      string(name: 'Diretorio', defaultValue: 'vm_prod', description: 'Nome do diretorio do projeto Terraform a executar')
+      choice(name: 'init', choices: [ 'nao', 'init', 'init -reconfigure','init -migrate-state'], description: 'Alterações no Tfsate')
+      choice(name: 'lock', choices: ['true','false'], description: 'Lock do dynamodb')
+      password(name: 'GITEA_TOKEN', description: 'Token gitea')
+      text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
+      choice(name: 'distro', choices: ['ubuntu', 'centos', 'orcl','rocklinux'], description: 'Distribuição Linux')  
+      string(name: 'vm_user', defaultValue: 'root', description: 'Nome de usuário para a máquina virtual')
+      password(name: 'vm_pass', description: 'Senha para a máquina virtual')
+      string(name: 'svc_username', defaultValue: 'ansible', description: 'Usuario ansible')
+      password(name: 'svc_password', description: 'Senha do ansible')
+      string(name: 'username_vcenter', description: 'Usuario para o Vcenter')
+      password(name: 'passwd_vcenter', description: 'Senha para o Vcenter')
+      string(name: 'public_key', defaultValue: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvaUICPun0zJo21vhsvaZpYegvpzZjxxkMQxPOF5xeL user_svc_puppet.sof.intra', description: 'Chave publica do ansible')
+    }
+
+    stages {
+      stage('Retornando as chaves publica e certificados') {
+        steps {
+            script {
+              dir("${Datacenter}/${Site}/envs/${Ambiente}") {
+                // define the secrets and the env variables
+                def cert_minio = [
+                    [path: 'secrets/certificados/minio.sof.intra', engineVersion: 2, secretValues: [
+                        [envVar: 'minio.pem', vaultKey: 'minio.pem']]]
+                ]
+                // Retorna a chave de conexao com o vcenter
+                def secrets_vcenter = [
+                    [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
+                        [envVar: 'passwd_vcenter', vaultKey: 'password']]]
+                ]
+                // Retorna a chave publica do ansible
+                def pk_ansible = [
+                    [path: 'secrets/servicos/ansible/ansible', engineVersion: 2, secretValues: [
+                        [envVar: 'ansible_pub', vaultKey: 'public_key']]]
+                ]                
+
+                // optional configuration
+                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
+                                      vaultCredentialId: 'token_vault',
+                                      engineVersion: 2]
+
+                // inside this block your credentials will be available as env variables
+                withVault([configuration: configuration, vaultSecrets: cert_minio]) {
+                    sh 'echo $minio.pem > minio.pem'
+                }
+
+                withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
+                    sh 'echo $passwd_vcenter > secrets.txt'
+                }
+
+                withVault([configuration: configuration, vaultSecrets: pk_ansible]) {
+                    sh 'echo $ansible_pub > id_ed25519.pub'
+                }
+            }
+          }
+        }
+      }            
+      stage('Criando o vars.tf') {
+          steps {
+              script {
+                  // Salva a escolha do usuário em um arquivo
+                  dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {
+                  writeFile file: 'vars.tf', text: """  
+                      variable "vm_user" {
+                        description = "Nome de usuario para a máquina virtual"
+                        default     = "${vm_user}"
+                      }
+                      variable "vm_pass" {
+                        description = "Senha para a maquina virtual"
+                        default     = "${vm_pass}"
+                      }                  
+                      variable "svc_username" {
+                        description = "Usuario do ansible"
+                        default     = "${svc_username}"
+                      }                    
+                      variable "svc_password" {
+                        description = "Senha do ansible"
+                        default     = "${svc_password}"
+                      }            
+                      variable "username_vcenter" {
+                        description = "Usuario do DC"
+                        default     = "${username_vcenter}"
+                      }                                                                                     
+                      variable "passwd_vcenter" {
+                        description = "Senha do DC"
+                        default     = "${passwd_vcenter}"
+                      }         
+                      variable "public_key" {
+                        description = "Chave publica"
+                        default     = "${public_key}"
+                      }                                                                                                    
+                    """
+                  }
+              }
+          }
+      }         
+      stage('Terragrunt Plan') {
+          steps {
+            script {           
+              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
+                // define the secrets and the env variables
+                def secrets = [
+                    [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
+                        [envVar: 'passwd_vcenter', vaultKey: 'password']]]
+                ]
+
+                // optional configuration
+                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
+                                      vaultCredentialId: 'token_vault',
+                                      engineVersion: 2]
+
+                // inside this block your credentials will be available as env variables
+                withVault([configuration: configuration, vaultSecrets: secrets]) {
+                    if("${init}" != 'nao')
+                    {
+                       sh """ terragrunt ${init}  """
+                    }
+                    sh """ terragrunt plan -lock=${lock} -var 'username_vcenter=${username_vcenter}' -var 'passwd_vcenter=${passwd_vcenter}' -var 'vm_user=${vm_user}' -var 'vm_pass=${vm_pass}' -var 'svc_username=${svc_username}' """ 
+                }                            
+                
+              }
+            }          
+          }
+        }
+        stage('Terragrunt Apply') {
+          steps {
+            script {           
+              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
+                // define the secrets and the env variables
+                def secrets = [
+                    [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
+                        [envVar: 'passwd_vcenter', vaultKey: 'password']]]
+                ]
+
+                // optional configuration
+                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
+                                      vaultCredentialId: 'token_vault',
+                                      engineVersion: 2]
+
+                // inside this block your credentials will be available as env variables
+                withVault([configuration: configuration, vaultSecrets: secrets]) {
+                          // export TF_LOG=DEBUG; 
+                    sh """ terragrunt apply -auto-approve -lock=${lock} -var 'passwd_vcenter=${passwd_vcenter}' -var 'vm_user=${vm_user}' -var 'vm_pass=${vm_pass}' -var 'svc_username=${svc_username}' """ 
+                }                            
+                
+              }
+            }          
+          }                     
+        }               
+    }
+}

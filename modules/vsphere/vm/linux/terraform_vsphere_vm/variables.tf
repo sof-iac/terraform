@@ -177,29 +177,6 @@ variable "cpu_share_level" {
   default     = "normal"
 }
 
-variable "vm_user" {  
-  description = "Username for the VM"  
-  type        = string  
-}  
-
-variable "vm_pass" {  
-  description = "Password for the VM"  
-  type        = string  
-}
-
-variable "svc_username" {
-  description = "Usuario do servico"
-  type        = string 
-}
-variable "svc_password" {
-  description = "Senha do servico"
-  type        = string 
-}                        
-variable "public_key" {
-  description = "Chave publica"
-  type        = string 
-}
-
 variable "cpu_share_count" {
   description = "The number of CPU shares allocated to the virtual machine when the cpu_share_level is custom."
   type        = number
