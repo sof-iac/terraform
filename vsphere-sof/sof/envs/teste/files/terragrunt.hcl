@@ -1,7 +1,7 @@
 locals {
   env    = "test" #local.parsed.env
   secrets         = jsondecode(file("secrets.json"))  
-  username_vcenter = local.secrets.username_vcenter  
+  username_vcenter = "rogeriovs_admin"
   passwd_vcenter   = local.secrets.passwd_vcenter 
 }
 inputs = {
