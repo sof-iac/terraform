@@ -50,7 +50,16 @@ pipeline {
             }
           }
         }
-      }                    
+      }   
+      stage('Copia Terragrunt.hcl') {
+          steps {
+            script {           
+              dir("${Datacenter}/${Site}/envs/${Ambiente}/files") {    
+                sh 'cp terragrunt.hcl ../'   
+              }
+            }
+          }
+      }                        
       stage('Terragrunt Plan') {
         steps {
             script {           
