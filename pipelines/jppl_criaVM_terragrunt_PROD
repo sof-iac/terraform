@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    environment {
-      VAULT_PATH = 'secrets/secrets/servicos/ansible/ansible'
-    }
     parameters {
       // Nome do projeto no gitea
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
