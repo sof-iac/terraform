@@ -63,12 +63,14 @@ pipeline {
                    "TF_VAR_backend_secret_key=${credentials('secret_key_teste')}",
                    "TF_VAR_username_vcenter='user_svc_jenkins'}",
                    "TF_VAR_passwd_vcenter=${credentials('user_svc_jenkins')}"]) { 
-            script {   
-              def backendAccessKey = credentials('access_key_teste')
-              def backendSecretKey = credentials('secret_key_teste') 
-              sh "echo \"TF_VAR_backend_secret_key: ${backendAccessKey}\""  
-              sh "echo \"TF_VAR_backend_secret_key: ${backendSecretKey}\""  
-              
+                    // Imprime os valores das variáveis  
+                    sh '''  
+                    echo "TF_VAR_backend_access_key: $TF_VAR_backend_access_key"  
+                    echo "TF_VAR_backend_secret_key: $TF_VAR_backend_secret_key"  
+                    echo "TF_VAR_username_vcenter: $TF_VAR_username_vcenter"  
+                    echo "TF_VAR_passwd_vcenter: $TF_VAR_passwd_vcenter"  
+                    '''                     
+            script {                 
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
                 // Executa o comando init do terragrunt
                 if("${init}" != 'nao')
