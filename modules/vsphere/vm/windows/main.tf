@@ -7,7 +7,7 @@ module "vsphere_windows_vm" {
   dc                = each.value.datacenter
   datastore_cluster = each.value.datastore_cluster
   vmrp              = each.value.resource_pool
-  vmname            = each.key
+  vmname            = each.key.vmname
   vmtemp            = each.value.template
   instances         = each.value.instances 
   cpu_number        = each.value.cpu
@@ -20,7 +20,7 @@ module "vsphere_windows_vm" {
   ipv4submask       = each.value.mask
   vmgateway         = each.value.gateway 
   
-  template_storage_policy_id = each.value.template_storage_policy_id
+  #template_storage_policy_id = each.value.template_storage_policy_id
   annotation     = each.value.annotation
   tags           = each.value.tags
   # Parametros de disco

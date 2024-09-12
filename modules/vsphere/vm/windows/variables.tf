@@ -1,21 +1,34 @@
 variable vm {
   type = map(object(
     {
-      template          = string
-      instances         = number
       datacenter        = string
       datastore_cluster = string
-      vsphere_cluster   = string
       resource_pool     = string
-      network           = map(list(string))
-      mask              = list(string)
-      gateway           = string
-      data_disk         = map(map(any))
+      vmname            = string
+      template          = string
+      instances         = number
       cpu               = number
       memory            = number
-      network_type      = list(string)
+      local_adminpass   = password    
+      network           = map(list(string))
+      domain            = string  
+      dns_server_list   = list(string)
+      vsphere_cluster   = string      
+      mask              = list(string)
+      gateway           = string
       annotation        = string
       tags              = map(any)
+      data_disk         = map(map(any))
+      scsi_bus_sharing  = string
+      scsi_type         = string
+      scsi_controller   = number
+      enable_disk_uuid  = boolean
+      # Parametros da Organizacao
+      orgname           = string
+      workgroup         = string
+      is_windows_image  = boolean
+      firmware          = string
+
     })
   )
 }
