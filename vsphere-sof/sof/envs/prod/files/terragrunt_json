@@ -1,9 +1,11 @@
 locals {
-  env    = "prod"
-  username_vcenter = get_env("TF_VAR_username_vcenter")  
-  passwd_vcenter   = get_env("TF_VAR_passwd_vcenter")  
-  backend_access_key   = get_env("TF_VAR_backend_access_key")
-  backend_secret_key   = get_env("TF_VAR_backend_secret_key")     
+  env    = "prod" #local.parsed.env
+  secrets         = jsondecode(file("secrets.json"))  
+  username_vcenter = local.secrets.username_vcenter  
+  passwd_vcenter   = local.secrets.passwd_vcenter 
+}
+inputs = {
+  minio_pem = file("minio.pem")
 }
 
 generate "provider" {
@@ -30,12 +32,14 @@ generate "backend" {
     backend "s3" {
       bucket    = "tf-${local.env}"
       endpoints = {
-        s3 = "https://sof-s3.sof.intra"   # Minio endpoint
-        dynamodb = "https://dynamodb.sof.intra"
+        s3 = "http://minio.minio-tenant.svc.cluster.local"   # Minio endpoint
+        dynamodb = "http://dynamodb.dynamodb.svc.cluster.local:8000"
       }
       key            = "${path_relative_to_include()}/terraform_prod.tfstate"
-      access_key     = "${local.backend_access_key}"
-      secret_key     = "${local.backend_secret_key}"
+      access_key     = "softfprod"
+      secret_key     = "aaLj9DvFB2jW8bsrfcrg7jve1AyPXTYj1Bq3LcPf"
+      #kms_key_id     = "847b4b54-7fae-412e-aba3-50a3d8527002"
+      # custom_ca_bundle = var.minio_pem
       region         = "us-east-1"
       skip_credentials_validation = true  # Skip AWS related checks and validations
       skip_requesting_account_id = true
