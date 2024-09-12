@@ -66,7 +66,7 @@ pipeline {
             script {           
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
                 // Executa o comando init do terragrunt
-                sh "echo ${TF_VAR_backend_access_key}"
+                sh """ echo ${TF_VAR_backend_access_key}"""
                 if("${init}" != 'nao')
                 {
                     sh """ terragrunt ${init}  """
