@@ -67,7 +67,7 @@ pipeline {
                   [class: 'StringCredentialsImpl',   
                   credentialsId: 'secret_key_teste',   
                   variable: 'TF_VAR_secret_key_teste'],
-                  [$class: 'UsernamePasswordCredentialsImpl',   
+                  [class: 'UsernamePasswordCredentialsImpl',   
                   credentialsId: 'user_svc_jenkins',   
                   usernameVariable: 'JENKINS_USER',   
                   passwordVariable: 'JENKINS_PASS']
