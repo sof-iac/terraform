@@ -23,6 +23,7 @@ inputs = {
       cpu               = 4
       memory            = 4096
       local_adminpass   = "sof123"
+      network_type      = ["vmxnet3"]
       dns_server_list   = ["172.27.3.5", "172.27.3.6", "172.27.3.7"]
       network           = {"PG_Atlas_Teste" = ["192.168.30.50", "10.13.113.3"]}
       mask              = ["24"]
