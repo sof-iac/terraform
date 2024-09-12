@@ -59,6 +59,10 @@ pipeline {
       }                        
       stage('Terragrunt Plan') {
         steps {
+          withEnv(["TF_VAR_backend_access_key=${credentials('access_key_prod')}", 
+                   "TF_VAR_backend_secret_key=${credentials('secret_key_prod')}",
+                   "TF_VAR_username_vcenter='user_svc_jenkins'}",
+                   "TF_VAR_passwd_vcenter=${credentials('user_svc_jenkins')}"]) { 
             script {           
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
                 // Executa o comando init do terragrunt
@@ -70,16 +74,22 @@ pipeline {
                 }                            
             }          
           }
+        }
       }
       stage('Terragrunt Apply') {
-          steps {
+        steps {
+          withEnv(["TF_VAR_backend_access_key=${credentials('access_key_prod')}", 
+                   "TF_VAR_backend_secret_key=${credentials('secret_key_prod')}",
+                   "TF_VAR_username_vcenter='user_svc_jenkins'}",
+                   "TF_VAR_passwd_vcenter=${credentials('user_svc_jenkins')}"]) {             
             script {           
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
                 // export TF_LOG=DEBUG; 
                 sh """ terragrunt apply -auto-approve -lock=${lock} """                                            
               }
             }          
-          }                     
+          }
+        }                     
       }               
     }
 }
