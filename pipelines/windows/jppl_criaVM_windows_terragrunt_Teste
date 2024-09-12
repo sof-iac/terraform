@@ -1,0 +1,85 @@
+pipeline {
+    agent any
+    parameters {
+      // Nome do projeto no gitea
+      choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
+      choice(name: 'Datacenter', choices: ['vsphere-sof','aws'], description: 'Datacenter') 
+      choice(name: 'Site', choices: [ 'sof', 'blocok'], description: 'Site')
+      choice(name: 'Ambiente', choices: ['teste','lab','prod'], description: 'Ambiente')
+      string(name: 'Diretorio', defaultValue: 'vm_windows', description: 'Nome do diretorio do projeto Terraform a executar')
+      choice(name: 'init', choices: [ 'nao', 'init', 'init -reconfigure','init -migrate-state'], description: 'Alterações no Tfsate')
+      choice(name: 'lock', choices: ['true','false'], description: 'Lock do dynamodb')
+      password(name: 'GITEA_TOKEN', description: 'Token gitea')
+      text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
+      choice(name: 'distro', choices: ['ubuntu', 'centos', 'orcl','rocklinux'], description: 'Distribuição Linux')  
+    }
+
+    stages {
+      stage('Retornando as chaves publica e certificados') {
+        steps {
+            script {
+              dir("${Datacenter}/${Site}/envs/${Ambiente}/vm_windows") {
+                // define the secrets and the env variables
+                def cert_minio = [
+                    [path: 'secrets/certificados/minio.sof.intra', engineVersion: 2, secretValues: [
+                        [envVar: 'minio.pem', vaultKey: 'minio.pem']]]
+                ]
+                // Retorna a chave de conexao com o vcenter
+                def secrets_vcenter = [
+                    [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
+                        [envVar: 'passwd_vcenter', vaultKey: 'password']]]
+                ]               
+
+                // optional configuration
+                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
+                                      vaultCredentialId: 'token_vault',
+                                      engineVersion: 2]
+
+                // inside this block your credentials will be available as env variables
+                withVault([configuration: configuration, vaultSecrets: cert_minio]) {
+                    sh 'echo $minio.pem > minio.pem'
+                }
+
+                withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
+                  sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"                   
+                  // sh 'echo $passwd_vcenter > secrets.txt'
+                }
+            }
+          }
+        }
+      }   
+      stage('Copia Terragrunt.hcl') {
+          steps {
+            script {           
+              dir("${Datacenter}/${Site}/envs/${Ambiente}/files") {    
+                sh 'cp terragrunt.hcl ../'   
+              }
+            }
+          }
+      }                        
+      stage('Terragrunt Plan') {
+        steps {
+            script {           
+              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
+                // Executa o comando init do terragrunt
+                if("${init}" != 'nao')
+                {
+                    sh """ terragrunt ${init}  """
+                }
+                sh """ terragrunt plan -lock=${lock} """ 
+                }                            
+            }          
+          }
+      }
+      stage('Terragrunt Apply') {
+          steps {
+            script {           
+              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
+                // export TF_LOG=DEBUG; 
+                sh """ terragrunt apply -auto-approve -lock=${lock} """                                            
+              }
+            }          
+          }                     
+      }               
+    }
+}
