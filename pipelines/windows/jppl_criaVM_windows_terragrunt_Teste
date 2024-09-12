@@ -59,8 +59,8 @@ pipeline {
       }                        
       stage('Terragrunt Plan') {
         steps {
-          withEnv(["TF_VAR_backend_access_key=${credentials('access_key_prod')}", 
-                   "TF_VAR_backend_secret_key=${credentials('secret_key_prod')}",
+          withEnv(["TF_VAR_backend_access_key=${credentials('access_key_teste')}", 
+                   "TF_VAR_backend_secret_key=${credentials('secret_key_teste')}",
                    "TF_VAR_username_vcenter='user_svc_jenkins'}",
                    "TF_VAR_passwd_vcenter=${credentials('user_svc_jenkins')}"]) { 
             script {           
@@ -78,8 +78,8 @@ pipeline {
       }
       stage('Terragrunt Apply') {
         steps {
-          withEnv(["TF_VAR_backend_access_key=${credentials('access_key_prod')}", 
-                   "TF_VAR_backend_secret_key=${credentials('secret_key_prod')}",
+          withEnv(["TF_VAR_backend_access_key=${credentials('access_key_teste')}", 
+                   "TF_VAR_backend_secret_key=${credentials('secret_key_teste')}",
                    "TF_VAR_username_vcenter='user_svc_jenkins'}",
                    "TF_VAR_passwd_vcenter=${credentials('user_svc_jenkins')}"]) {             
             script {           
