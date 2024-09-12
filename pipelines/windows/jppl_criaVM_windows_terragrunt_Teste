@@ -70,10 +70,10 @@ pipeline {
                    "TF_VAR_passwd_vcenter=${credentials('user_svc_jenkins')}"]) { 
                     // Imprime os valores das variáveis  
                     sh '''  
-                    echo "TF_VAR_backend_access_key: $TF_VAR_backend_access_key"  
-                    echo "TF_VAR_backend_secret_key: $TF_VAR_backend_secret_key"  
+                    echo "TF_VAR_backend_access_key: $backendAccessKey"  
+                    echo "TF_VAR_backend_secret_key: $backendSecretKey"  
                     echo "TF_VAR_username_vcenter: $TF_VAR_username_vcenter"  
-                    echo "TF_VAR_passwd_vcenter: $TF_VAR_passwd_vcenter"  
+                    echo "TF_VAR_passwd_vcenter: $passwdVCenter"  
                     '''                                  
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
                 // Executa o comando init do terragrunt
