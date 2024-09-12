@@ -1,9 +1,5 @@
 pipeline {
     agent any
-  // Atribui os valores das credenciais a variáveis  
-    def backendAccessKey = credentials('access_key_teste')  
-    def backendSecretKey = credentials('secret_key_teste')  
-    def passwdVCenter = credentials('user_svc_jenkins') 
     parameters {
       // Nome do projeto no gitea
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
