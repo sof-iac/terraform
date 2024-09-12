@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    minio = {
+      source = "aminueza/minio"
+      version = ">= 2.4.0"
+    }
+  }
+}
+
 resource "minio_s3_bucket" "minio_bucket" {
   count = length(var.minio_bucket_names)
   bucket = var.minio_bucket_names[count.index]
