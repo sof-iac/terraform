@@ -4,7 +4,7 @@ variable vm {
       datacenter        = string
       datastore_cluster = string
       resource_pool     = string
-      vmname            = map(list(string))
+      vmname            = string
       template          = string
       instances         = number
       cpu               = number
