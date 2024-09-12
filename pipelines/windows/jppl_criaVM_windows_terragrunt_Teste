@@ -1,5 +1,9 @@
 pipeline {
     agent any
+  // Atribui os valores das credenciais a variáveis  
+    def backendAccessKey = credentials('access_key_teste')  
+    def backendSecretKey = credentials('secret_key_teste')  
+    def passwdVCenter = credentials('user_svc_jenkins') 
     parameters {
       // Nome do projeto no gitea
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
@@ -60,30 +64,39 @@ pipeline {
       stage('Terragrunt Plan') {
         steps {                    
             script { 
-              // Atribui os valores das credenciais a variáveis  
-                    def backendAccessKey = credentials('access_key_teste')  
-                    def backendSecretKey = credentials('secret_key_teste')  
-                    def passwdVCenter = credentials('user_svc_jenkins')    
-              withEnv(["TF_VAR_backend_access_key=${credentials('access_key_teste')}", 
-                   "TF_VAR_backend_secret_key=${credentials('secret_key_teste')}",
-                   "TF_VAR_username_vcenter='user_svc_jenkins'}",
-                   "TF_VAR_passwd_vcenter=${credentials('user_svc_jenkins')}"]) { 
-                    // Imprime os valores das variáveis  
-                    sh '''  
-                    echo "TF_VAR_backend_access_key: $backendAccessKey"  
-                    echo "TF_VAR_backend_secret_key: $backendSecretKey"  
-                    echo "TF_VAR_username_vcenter: $TF_VAR_username_vcenter"  
-                    echo "TF_VAR_passwd_vcenter: $passwdVCenter"  
-                    '''                                  
-              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
-                // Executa o comando init do terragrunt
-                if("${init}" != 'nao')
-                {
-                    sh """ terragrunt ${init}  """
-                }
-                sh """ terragrunt plan -lock=${lock} """ 
-                }                            
-            }          
+              withCredentials([  
+                  [class: 'StringCredentialsImpl',   
+                  credentialsId: 'access_key_teste',   
+                  variable: 'TF_VAR_access_key_teste'],  
+                  [class: 'StringCredentialsImpl',   
+                  credentialsId: 'secret_key_teste',   
+                  variable: 'TF_VAR_secret_key_teste'],
+                  [$class: 'UsernamePasswordCredentialsImpl',   
+                  credentialsId: 'user_svc_jenkins',   
+                  usernameVariable: 'JENKINS_USER',   
+                  passwordVariable: 'JENKINS_PASS']
+              ]) { 
+                  withEnv(["TF_VAR_backend_access_key=${TF_VAR_access_key_teste}", 
+                    "TF_VAR_backend_secret_key=${TF_VAR_secret_key_teste}",
+                    "TF_VAR_username_vcenter='user_svc_jenkins'}",
+                    "TF_VAR_passwd_vcenter=${JENKINS_PASS}"]) { 
+                      // Imprime os valores das variáveis  
+                      sh '''  
+                      echo "TF_VAR_backend_access_key: $TF_VAR_access_key_teste"  
+                      echo "TF_VAR_backend_secret_key: $TF_VAR_secret_key_teste"  
+                      echo "TF_VAR_username_vcenter: $JENKINS_USER"  
+                      echo "TF_VAR_passwd_vcenter: $JENKINS_PASS"  
+                      '''                                  
+                dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
+                  // Executa o comando init do terragrunt
+                  if("${init}" != 'nao')
+                  {
+                      sh """ terragrunt ${init}  """
+                  }
+                  sh """ terragrunt plan -lock=${lock} """ 
+                  }                            
+              }  
+                }        
           }
         }
       }
