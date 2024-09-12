@@ -61,12 +61,8 @@ pipeline {
         steps {                    
             script { 
               withCredentials([  
-                  [$class: 'StringCredentialsImpl',   
-                  credentialsId: 'access_key_teste',   
-                  variable: 'TF_VAR_access_key_teste'],  
-                  [$class: 'StringCredentialsImpl',   
-                  credentialsId: 'secret_key_teste',   
-                  variable: 'TF_VAR_secret_key_teste'],
+                  [string(credentialsId: 'access_key_teste', variable: 'TF_VAR_access_key_teste')],  
+                  [string(credentialsId: 'secret_key_teste', variable: 'TF_VAR_secret_key_teste')],
                   [$class: 'UsernamePasswordCredentialsImpl',   
                   credentialsId: 'user_svc_jenkins',   
                   usernameVariable: 'JENKINS_USER',   
