@@ -38,6 +38,7 @@ pipeline {
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: cert_minio]) {
                     sh 'echo $minio.pem > /etc/ssl/certs/minio.pem'
+                    sh 'update-ca-certificates'
                 }
 
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
