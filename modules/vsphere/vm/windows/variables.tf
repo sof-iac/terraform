@@ -9,7 +9,7 @@ variable vm {
       instances         = number
       cpu               = number
       memory            = number
-      local_adminpass   = password    
+      local_adminpass   = string    
       network           = map(list(string))
       domain            = string  
       dns_server_list   = list(string)
@@ -22,11 +22,11 @@ variable vm {
       scsi_bus_sharing  = string
       scsi_type         = string
       scsi_controller   = number
-      enable_disk_uuid  = boolean
+      enable_disk_uuid  = bool
       # Parametros da Organizacao
       orgname           = string
       workgroup         = string
-      is_windows_image  = boolean
+      is_windows_image  = bool
       firmware          = string
 
     })
