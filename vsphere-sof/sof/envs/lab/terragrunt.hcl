@@ -1,11 +1,9 @@
 locals {
-  env    = "lab" #local.parsed.env
-  secrets         = jsondecode(file("secrets.json"))  
-  username_vcenter = local.secrets.username_vcenter  
-  passwd_vcenter   = local.secrets.passwd_vcenter 
-}
-inputs = {
-  minio_pem = file("minio.pem")
+  env    = "lab"
+  username_vcenter = get_env("TF_VAR_username_vcenter")  
+  passwd_vcenter   = get_env("TF_VAR_passwd_vcenter")  
+  backend_access_key   = get_env("TF_VAR_backend_access_key")
+  backend_secret_key   = get_env("TF_VAR_backend_secret_key")     
 }
 
 generate "provider" {
@@ -23,7 +21,6 @@ provider "vsphere" {
 EOF
 }
 
-
 # Configure S3 as a backend
 generate "backend" {
   path = "backend.tf"
@@ -33,14 +30,12 @@ generate "backend" {
     backend "s3" {
       bucket    = "tf-${local.env}"
       endpoints = {
-        s3 = "http://minio.minio-tenant.svc.cluster.local"   # Minio endpoint
-        dynamodb = "http://dynamodb.dynamodb.svc.cluster.local:8000"
+        s3 = "https://sof-s3.sof.intra"   # Minio endpoint
+        dynamodb = "https://dynamodb.sof.intra"
       }
-      key            = "${path_relative_to_include()}/terraform_lab.tfstate"
-      access_key     = "softflab"
-      secret_key     = "px8YVerl7uFw1Iz1VyszAlh97bfepiXjHJD9XYvr"
-      #kms_key_id     = "847b4b54-7fae-412e-aba3-50a3d8527002"
-      # custom_ca_bundle = var.minio_pem
+      key            = "${path_relative_to_include()}/terraform_test.tfstate"
+      access_key     = "${local.backend_access_key}"
+      secret_key     = "${local.backend_secret_key}"
       region         = "us-east-1"
       skip_credentials_validation = true  # Skip AWS related checks and validations
       skip_requesting_account_id = true

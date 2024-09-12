@@ -33,7 +33,7 @@ generate "backend" {
         s3 = "https://sof-s3.sof.intra"   # Minio endpoint
         dynamodb = "https://dynamodb.sof.intra"
       }
-      key            = "${path_relative_to_include()}/terraform_prod.tfstate"
+      key            = "${path_relative_to_include()}/terraform_test.tfstate"
       access_key     = "${local.backend_access_key}"
       secret_key     = "${local.backend_secret_key}"
       region         = "us-east-1"
@@ -43,7 +43,7 @@ generate "backend" {
       skip_region_validation = true
       use_path_style = true             # Enable path-style S3 URLs
 
-      dynamodb_table = "sof-tfstate-prod"
+      dynamodb_table = "sof-tfstate-test"
       }
     }
   EOF
