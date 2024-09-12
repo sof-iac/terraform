@@ -34,8 +34,8 @@ generate "backend" {
         dynamodb = "https://dynamodb.sof.intra"
       }
       key            = "${path_relative_to_include()}/terraform_test.tfstate"
-      access_key     = "${local.backend_access_key}"
-      secret_key     = "${local.backend_secret_key}"
+      access_key     = "softftest"
+      secret_key     = "JyruHhEbqQQROEEPIeY6K0sPsB85XinCiL5WypxQ"     
       region         = "us-east-1"
       skip_credentials_validation = true  # Skip AWS related checks and validations
       skip_requesting_account_id = true
