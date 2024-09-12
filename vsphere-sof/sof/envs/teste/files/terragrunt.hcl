@@ -1,5 +1,5 @@
 locals {
-  env    = "prod"
+  env    = "test"
   username_vcenter = get_env("TF_VAR_username_vcenter")  
   passwd_vcenter   = get_env("TF_VAR_passwd_vcenter")  
   backend_access_key   = get_env("TF_VAR_backend_access_key")
