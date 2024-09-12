@@ -7,7 +7,7 @@ module "vsphere_windows_vm" {
   dc                = each.value.datacenter
   datastore_cluster = each.value.datastore_cluster
   vmrp              = each.value.resource_pool
-  vmname            = each.key.vmname
+  vmname            = each.value.vmname
   vmtemp            = each.value.template
   instances         = each.value.instances 
   cpu_number        = each.value.cpu
