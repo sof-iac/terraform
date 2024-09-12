@@ -62,22 +62,16 @@ pipeline {
             script { 
               withCredentials([  
                   string(credentialsId: 'access_key_teste', variable: 'TF_VAR_access_key_teste'),
-                  string(credentialsId: 'secret_key_teste', variable: 'TF_VAR_secret_key_teste'),
-                  [class: 'UsernamePasswordCredentialsImpl',   
-                  credentialsId: 'user_svc_jenkins',   
-                  usernameVariable: 'JENKINS_USER',   
-                  passwordVariable: 'JENKINS_PASS']
+                  string(credentialsId: 'secret_key_teste', variable: 'TF_VAR_secret_key_teste')
               ]) { 
                   withEnv(["TF_VAR_backend_access_key=${TF_VAR_access_key_teste}", 
                     "TF_VAR_backend_secret_key=${TF_VAR_secret_key_teste}",
                     "TF_VAR_username_vcenter='user_svc_jenkins'}",
-                    "TF_VAR_passwd_vcenter=${JENKINS_PASS}"]) { 
+                    "TF_VAR_passwd_vcenter='sof123'"]) { 
                       // Imprime os valores das variáveis  
                       sh '''  
                       echo "TF_VAR_backend_access_key: $TF_VAR_access_key_teste"  
-                      echo "TF_VAR_backend_secret_key: $TF_VAR_secret_key_teste"  
-                      echo "TF_VAR_username_vcenter: $JENKINS_USER"  
-                      echo "TF_VAR_passwd_vcenter: $JENKINS_PASS"  
+                      echo "TF_VAR_backend_secret_key: $TF_VAR_secret_key_teste"   
                       '''                                  
                 dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
                   // Executa o comando init do terragrunt
