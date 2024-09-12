@@ -6,6 +6,10 @@ locals {
   backend_secret_key   = get_env("TF_VAR_backend_secret_key")     
 }
 
+inputs = {
+  minio_pem = file("/etc/ssl/certs/minio.pem")
+}
+
 generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite_terragrunt"
@@ -37,6 +41,7 @@ generate "backend" {
       access_key     = "${local.backend_access_key}"
       secret_key     = "${local.backend_secret_key}"
       region         = "us-east-1"
+      custom_ca_bundle = var.minio_pem
       skip_credentials_validation = true  # Skip AWS related checks and validations
       skip_requesting_account_id = true
       skip_metadata_api_check = true
