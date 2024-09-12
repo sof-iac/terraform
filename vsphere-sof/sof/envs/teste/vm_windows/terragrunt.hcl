@@ -14,7 +14,7 @@ inputs = {
       datastore         = "Storage_Purestorage"
       resource_pool     = "Blade_Kratos/Resources"
       vsphere_cluster   = "Blade_Kratos"
-      vmname            = "PPPP01"
+      vmname            = {"hostname" = ["PPPP01"]}
       template          = "templateserver2022datacenter"
       instances         = 1
       cpu               = 4
