@@ -19,7 +19,7 @@ module "vsphere_windows_vm" {
   dns_server_list   = each.value.dns_server_list
   ipv4submask       = each.value.mask
   vmgateway         = each.value.gateway 
-  network_type   = each.value.network_type
+  network_type      = each.value.network_type
   
   #template_storage_policy_id = each.value.template_storage_policy_id
   annotation     = each.value.annotation

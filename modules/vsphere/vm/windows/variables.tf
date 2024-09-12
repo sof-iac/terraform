@@ -11,6 +11,7 @@ variable vm {
       memory            = number
       local_adminpass   = string    
       network           = map(list(string))
+      network_type      = 
       domain            = string  
       dns_server_list   = list(string)
       vsphere_cluster   = string      
