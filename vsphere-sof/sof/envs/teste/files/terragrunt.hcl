@@ -7,7 +7,7 @@ locals {
 }
 
 inputs = {
-  minio_pem = file("minio.pem")
+  minio_pem = file("../minio.pem")
 }
 
 generate "provider" {
@@ -38,10 +38,10 @@ generate "backend" {
         dynamodb = "https://dynamodb.sof.intra"
       }
       key            = "${path_relative_to_include()}/terraform_test.tfstate"
-      access_key     = "softftest"
-      secret_key     = "JyruHhEbqQQROEEPIeY6K0sPsB85XinCiL5WypxQ"     
+      access_key     = "${local.backend_access_key}"
+      secret_key     = "${local.backend_secret_key}"
       region         = "us-east-1"
-      custom_ca_bundle = "minio.pem" 
+      custom_ca_bundle = "../minio.pem"
       skip_credentials_validation = true  # Skip AWS related checks and validations
       skip_requesting_account_id = true
       skip_metadata_api_check = true
