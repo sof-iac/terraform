@@ -78,7 +78,7 @@ pipeline {
                withEnv(["TF_VAR_VM_PASS=$VM_PASS"]) {  
                 // Comandos que usam as variáveis definidas  
                 sh 'echo "TF_VAR_VM_PASS is $VM_PASS"'  
-                sh """ terragrunt plan -lock=${lock} -var 'TF_VAR_VM_PASS=$VM_PASS' """ 
+                sh """ terragrunt plan -lock=${lock}  """ 
                 }     
               }                       
             }          
