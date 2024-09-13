@@ -20,6 +20,7 @@ inputs = {
       vmname            = "PPPPQ"
       template          = "templateserver2022datacenter"
       instances         = 1
+      vmstartcount      = 1
       cpu               = 4
       memory            = 4096
       local_adminpass   = "sof123"

@@ -5,9 +5,10 @@ module "vsphere_linux_vm" {
 
   for_each = var.vm
 
-  vmname    = each.key
-  vmtemp    = each.value.template
-  instances = each.value.instances
+  vmname        = each.key
+  vmtemp        = each.value.template
+  instances     = each.value.instances
+  vmstartcount  = each.value.vmstartcount
   #template  = each.value.template
   #vsphere_cluster = each.value.vsphere_cluster
   

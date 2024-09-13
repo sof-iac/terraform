@@ -10,6 +10,7 @@ module "vsphere_windows_vm" {
   vmname            = each.value.vmname
   vmtemp            = each.value.template
   instances         = each.value.instances 
+  vmstartcount  = each.value.vmstartcount
   cpu_number        = each.value.cpu
   ram_size          = each.value.memory
   local_adminpass   = each.value.local_adminpass 

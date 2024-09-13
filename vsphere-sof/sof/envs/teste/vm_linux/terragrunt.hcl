@@ -16,13 +16,14 @@ inputs = {
     "testetf" = {
         template          = "templateubuntu2204_ansible"
         instances         = 1
+        vmstartcount      = 2
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Storage_Purestorage"
         datastore         = "Storage_Purestorage"
         resource_pool     = "Blade_Atreus/Resources"
         vsphere_cluster   = "Blade_Atreus"
         network           = {"PG_Atlas_Teste" = ["192.168.30.172"]}
-        #dns_server_list   = ["172.27.3.5", "172.27.3.6"]
+        dns_server_list   = ["172.27.3.5", "172.27.3.6"]
         mask              = ["24"]
         gateway           = "192.168.30.1"
         cpu               = 2

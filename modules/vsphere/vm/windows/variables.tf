@@ -7,6 +7,7 @@ variable vm {
       vmname            = string
       template          = string
       instances         = number
+      vmstartcount      = number
       cpu               = number
       memory            = number
       local_adminpass   = string    
