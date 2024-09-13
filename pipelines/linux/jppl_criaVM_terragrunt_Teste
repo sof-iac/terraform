@@ -77,8 +77,9 @@ pipeline {
                 }
                withEnv(["TF_VAR_VM_PASS=$VM_PASS"]) {  
                 // Comandos que usam as variáveis definidas  
-                sh 'echo "TF_VAR_VM_PASS is $VM_PASS"'  
-                sh """ terragrunt plan -lock=${lock}  """ 
+                sh """ 
+                  export TF_VAR_VM_PASS=${VM_PASS}
+                  terragrunt plan -lock=${lock}  """ 
                 }     
               }                       
             }          
@@ -91,7 +92,7 @@ pipeline {
                 // export TF_LOG=DEBUG; 
                 sh """ 
                   export TF_VAR_VM_PASS=${VM_PASS}
-                  terragrunt apply -auto-approve -lock=${lock} -var 'local_adminpass=$TF_VAR_VM_PASS' """                                  
+                  terragrunt apply -auto-approve -lock=${lock} """                                  
               }
             }          
           }                     

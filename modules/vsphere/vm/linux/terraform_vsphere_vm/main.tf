@@ -266,20 +266,28 @@ resource "vsphere_virtual_machine" "vm" {
     }
   }
   # Quando este recurso é criado, executa o seguinte script localmente para dar permissões ao usuario ansible
+    # Adicione aqui o wait_for_guest_net_timeout para aguardar a conexão  
+  wait_for_guest_net_timeout = 5   
+
   provisioner "remote-exec" {
-    connection {
-      type     = "ssh"
-      user     = var.vm_user
-      password = var.vm_pass
-      host     = self.public_ip 
-    }
-    inline = [
-      "touch /etc/sudoers.d/ansible_automation",
-      "echo 'User_Alias ANSIBLE_AUTOMATION = ansible' | tee -a /etc/sudoers.d/ansible_automation",
-      "echo 'Defaults:ANSIBLE_AUTOMATION !requiretty' | tee -a /etc/sudoers.d/ansible_automation",
-      "echo 'ANSIBLE_AUTOMATION ALL=(ALL) NOPASSWD: ALL' | tee -a /etc/sudoers.d/ansible_automation",
-      "chmod 0440 /etc/sudoers.d/ansible_automation"
-    ]
+    # Define o bloco de conexão fora do loop dynamic  
+    dynamic "connection" {  
+      for_each = [for i in keys(var.network) : split("/", var.network[i][count.index])[0]]  
+      content {  
+        type     = "ssh"  
+        user     = "root"  
+        password = var.local_adminpass  
+        host     = connection.value  
+      }  
+      inline = [
+        "touch /etc/sudoers.d/ansible_automation",
+        "echo 'User_Alias ANSIBLE_AUTOMATION = ansible' | tee -a /etc/sudoers.d/ansible_automation",
+        "echo 'Defaults:ANSIBLE_AUTOMATION !requiretty' | tee -a /etc/sudoers.d/ansible_automation",
+        "echo 'ANSIBLE_AUTOMATION ALL=(ALL) NOPASSWD: ALL' | tee -a /etc/sudoers.d/ansible_automation",
+        "chmod 0440 /etc/sudoers.d/ansible_automation"
+      ]
+    } 
+
   }
   # Quando este recurso é criado, executa o seguinte script localmente para configurar o DNS
   provisioner "remote-exec" {
