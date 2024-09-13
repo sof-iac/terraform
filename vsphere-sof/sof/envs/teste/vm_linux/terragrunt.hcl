@@ -7,7 +7,7 @@ terraform {
   source = "../../../../../modules/vsphere/vm/linux"  # Caminho relativo ao terragrunt.hcl
 }
 
-locals {  
+inouts {  
   local_adminpass = get_env("local_adminpass")
 }  
 
