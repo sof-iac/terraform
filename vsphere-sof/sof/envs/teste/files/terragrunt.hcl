@@ -7,7 +7,7 @@ locals {
 }
 
 inputs = {
-  minio_pem = file("/etc/ssl/certs/minio.pem")
+  minio_pem = file("minio.pem")
 }
 
 generate "provider" {
@@ -41,7 +41,7 @@ generate "backend" {
       access_key     = "softftest"
       secret_key     = "JyruHhEbqQQROEEPIeY6K0sPsB85XinCiL5WypxQ"     
       region         = "us-east-1"
-      custom_ca_bundle = "/etc/ssl/certs/minio.pem" 
+      custom_ca_bundle = "minio.pem" 
       skip_credentials_validation = true  # Skip AWS related checks and validations
       skip_requesting_account_id = true
       skip_metadata_api_check = true
