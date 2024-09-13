@@ -40,7 +40,7 @@ generate "backend" {
       access_key     = "softftest"
       secret_key     = "JyruHhEbqQQROEEPIeY6K0sPsB85XinCiL5WypxQ"
       #kms_key_id     = "847b4b54-7fae-412e-aba3-50a3d8527002"
-      custom_ca_bundle = var.minio_pem
+      #custom_ca_bundle = var.minio_pem
       region         = "us-east-1"
       skip_credentials_validation = true  # Skip AWS related checks and validations
       skip_requesting_account_id = true
