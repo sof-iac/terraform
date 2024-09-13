@@ -8,7 +8,7 @@ terraform {
 }
 
 locals {  
-  local_adminpass = get_terragrunt_var("local_adminpass")  
+  local_adminpass = var.local_adminpass
 }  
 
 inputs = {
