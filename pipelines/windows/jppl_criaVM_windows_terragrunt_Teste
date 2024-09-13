@@ -44,7 +44,10 @@ pipeline {
 
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
                   sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"                   
-                  // sh 'echo $passwd_vcenter > secrets.txt'
+                }
+                withCredentials([ string(credentialsId: 'access_key_teste', variable: 'TF_VAR_access_key_teste'),
+                                  string(credentialsId: 'secret_key_teste', variable: 'TF_VAR_secret_key_teste') ]) { 
+                  sh " echo '{\\n  \"TF_VAR_access_key_teste\": \"$TF_VAR_access_key_teste\",\\n  \"TF_VAR_secret_key_teste\": \"$TF_VAR_secret_key_teste\"\\n}' > bucket.json"
                 }
             }
           }
@@ -61,47 +64,27 @@ pipeline {
       }                        
       stage('Terragrunt Plan') {
         steps {                    
-            script { 
-              withCredentials([  
-                  string(credentialsId: 'access_key_teste', variable: 'TF_VAR_access_key_teste'),
-                  string(credentialsId: 'secret_key_teste', variable: 'TF_VAR_secret_key_teste')
-              ]) { 
-                  sh " echo '{\\n  \"TF_VAR_access_key_teste\": \"$TF_VAR_access_key_teste\",\\n  \"TF_VAR_secret_key_teste\": \"$TF_VAR_secret_key_teste\"\\n}' > teste.json"
-                  withEnv(["TF_VAR_backend_access_key=${TF_VAR_access_key_teste}", 
-                    "TF_VAR_backend_secret_key=${TF_VAR_secret_key_teste}",
-                    "TF_VAR_username_vcenter='user_svc_jenkins'}",
-                    "TF_VAR_passwd_vcenter='sof123'"]) { 
-                      // Imprime os valores das variáveis  
-                      sh '''  
-                      echo "$TF_VAR_access_key_teste > teste.txt"  
-                      echo "$TF_VAR_secret_key_teste >> > teste.txt"   
-                      '''                                  
-                dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
-                  // Executa o comando init do terragrunt
-                  if("${init}" != 'nao')
-                  {
-                      sh """ terragrunt ${init}  """
-                  }
-                  sh """ export TF_VAR_access_key_teste=$TF_VAR_backend_secret_key ; export TF_VAR_secret_key_teste=$TF_VAR_secret_key_teste; terragrunt plan -lock=${lock} """ 
-                  }                            
-              }  
-                }        
+          script {                                  
+              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
+                // Executa o comando init do terragrunt
+                if("${init}" != 'nao')
+                {
+                    sh """ terragrunt ${init}  """
+                }
+                sh """  terragrunt plan -lock=${lock} """ 
+              }                            
+            }        
           }
         }
       }
       stage('Terragrunt Apply') {
-        steps {
-          withEnv(["TF_VAR_backend_access_key=${credentials('access_key_teste')}", 
-                   "TF_VAR_backend_secret_key=${credentials('secret_key_teste')}",
-                   "TF_VAR_username_vcenter='user_svc_jenkins'}",
-                   "TF_VAR_passwd_vcenter=${credentials('user_svc_jenkins')}"]) {             
-            script {           
-              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
-                // export TF_LOG=DEBUG; 
-                sh """ terragrunt apply -auto-approve -lock=${lock} """                                            
-              }
-            }          
-          }
+        steps {            
+          script {           
+            dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
+              // export TF_LOG=DEBUG; 
+              sh """ terragrunt apply -auto-approve -lock=${lock} """                                            
+            }
+          }          
         }                     
       }               
     }
