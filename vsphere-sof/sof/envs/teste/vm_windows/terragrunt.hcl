@@ -27,7 +27,7 @@ inputs = {
       dns_server_list   = ["172.27.3.5", "172.27.3.6", "172.27.3.7"]
       network           = {"PG_Atlas_Teste" = ["192.168.30.50", "10.13.113.3"]}
       mask              = ["24"]
-      gateway           = "192.168.250.1"
+      gateway           = "192.168.30.1"
       annotation        = "Servidor de teste windows- 11/09/2024 - Rogerio Vieira Silva"
       tags = {
         "Origem"    = "Terraform"
