@@ -37,8 +37,8 @@ pipeline {
 
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: cert_minio]) {
-                    // sh 'echo $minio.pem > /etc/ssl/certs/minio.pem'
-                    sh 'echo $minio_cert > minio_cert.pem'
+                    sh 'echo $minio_cert.pem > /etc/ssl/certs/minio.pem'
+                    sh 'echo $minio_cert > minio.pem'
                     sh 'update-ca-certificates'
                 }
 
@@ -82,7 +82,7 @@ pipeline {
                   {
                       sh """ terragrunt ${init}  """
                   }
-                  sh """ echo $TF_VAR_backend_secret_key; terragrunt plan -lock=${lock} """ 
+                  sh """ { export TF_VAR_access_key_teste=$TF_VAR_backend_secret_key ; export TF_VAR_secret_key_teste=$TF_VAR_secret_key_teste; terragrunt plan -lock=${lock} } """ 
                   }                            
               }  
                 }        
