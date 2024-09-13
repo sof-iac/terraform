@@ -80,9 +80,9 @@ pipeline {
                   // Executa o comando init do terragrunt
                   if("${init}" != 'nao')
                   {
-                      sh """ echo $TF_VAR_backend_secret_key; terragrunt ${init}  """
+                      sh """ terragrunt ${init}  """
                   }
-                  sh """ terragrunt plan -lock=${lock} """ 
+                  sh """ echo $TF_VAR_backend_secret_key; terragrunt plan -lock=${lock} """ 
                   }                            
               }  
                 }        
