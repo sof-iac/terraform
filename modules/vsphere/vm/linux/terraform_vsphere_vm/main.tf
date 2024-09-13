@@ -268,7 +268,7 @@ resource "vsphere_virtual_machine" "vm" {
   # Quando este recurso é criado, executa o seguinte script localmente para dar permissões ao usuario ansible
   provisioner "remote-exec" {
     # Define o bloco de conexão fora do loop dynamic  
-     "connection" {  
+     connection {  
       for_each = [for i in keys(var.network) : split("/", var.network[i][count.index])[0]]  
       content {  
         type     = "ssh"  
