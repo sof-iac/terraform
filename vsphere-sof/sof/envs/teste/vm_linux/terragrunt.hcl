@@ -13,7 +13,7 @@ locals {
 
 inputs = {
   vm = {
-    "testetf" = {
+    "tested" = {
         template          = "templateubuntu2204_ansible"
         instances         = 1
         vmstartcount      = 2
