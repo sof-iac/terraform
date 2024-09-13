@@ -276,15 +276,14 @@ resource "vsphere_virtual_machine" "vm" {
         password = var.local_adminpass  
         host     = connection.value  
       }  
+     }
       inline = [
         "touch /etc/sudoers.d/ansible_automation",
         "echo 'User_Alias ANSIBLE_AUTOMATION = ansible' | tee -a /etc/sudoers.d/ansible_automation",
         "echo 'Defaults:ANSIBLE_AUTOMATION !requiretty' | tee -a /etc/sudoers.d/ansible_automation",
         "echo 'ANSIBLE_AUTOMATION ALL=(ALL) NOPASSWD: ALL' | tee -a /etc/sudoers.d/ansible_automation",
         "chmod 0440 /etc/sudoers.d/ansible_automation"
-      ]
-    } 
-
+      ] 
   }
   # Quando este recurso é criado, executa o seguinte script localmente para configurar o DNS
   provisioner "remote-exec" {
