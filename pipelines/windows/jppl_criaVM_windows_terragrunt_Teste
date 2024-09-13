@@ -72,8 +72,8 @@ pipeline {
                     "TF_VAR_passwd_vcenter='sof123'"]) { 
                       // Imprime os valores das variáveis  
                       sh '''  
-                      echo "TF_VAR_backend_access_key: $TF_VAR_access_key_teste"  
-                      echo "TF_VAR_backend_secret_key: $TF_VAR_secret_key_teste"   
+                      echo "$TF_VAR_access_key_teste > teste.txt"  
+                      echo "$TF_VAR_secret_key_teste >> > teste.txt"   
                       '''                                  
                 dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
                   // Executa o comando init do terragrunt
