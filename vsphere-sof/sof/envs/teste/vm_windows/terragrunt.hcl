@@ -8,7 +8,7 @@ terraform {
 
 inputs = {
   vm = {
-    "PPPP01" = {
+    "PPPPQ" = {
       datacenter        = "SOF" 
       orgname           = "SOF"
       workgroup         = "SOF"
