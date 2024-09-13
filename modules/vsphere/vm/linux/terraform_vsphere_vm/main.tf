@@ -266,9 +266,6 @@ resource "vsphere_virtual_machine" "vm" {
     }
   }
   # Quando este recurso é criado, executa o seguinte script localmente para dar permissões ao usuario ansible
-    # Adicione aqui o wait_for_guest_net_timeout para aguardar a conexão  
-  wait_for_guest_net_timeout = 5   
-
   provisioner "remote-exec" {
     # Define o bloco de conexão fora do loop dynamic  
     dynamic "connection" {  
