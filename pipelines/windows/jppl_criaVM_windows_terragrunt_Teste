@@ -65,16 +65,15 @@ pipeline {
       stage('Terragrunt Plan') {
         steps {                    
           script {                                  
-              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
-                // Executa o comando init do terragrunt
-                if("${init}" != 'nao')
-                {
-                    sh """ terragrunt ${init}  """
-                }
-                sh """  terragrunt plan -lock=${lock} """ 
-              }                            
-            }        
-          }
+            dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
+              // Executa o comando init do terragrunt
+              if("${init}" != 'nao')
+              {
+                  sh """ terragrunt ${init}  """
+              }
+              sh """  terragrunt plan -lock=${lock} """ 
+            }                            
+          }        
         }
       }
       stage('Terragrunt Apply') {
