@@ -73,8 +73,12 @@ pipeline {
                 {
                     sh """ terragrunt ${init}  """
                 }
+               withEnv(["local_adminpass=$vm_pass"]) {  
+                // Comandos que usam as variáveis definidas  
+                sh 'echo "local_adminpass is $vm_pass"'  
                 sh """ terragrunt plan -lock=${lock} -var 'local_adminpass=$vm_pass' """ 
-                }                            
+                }     
+              }                       
             }          
           }
       }
