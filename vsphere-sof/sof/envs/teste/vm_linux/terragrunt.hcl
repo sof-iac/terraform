@@ -8,7 +8,7 @@ terraform {
 }
 
 locals {  
-  local_adminpass = get_env("VM_PASS")
+  local_adminpass = get_env("local_adminpass")
 }  
 
 inputs = {
