@@ -90,9 +90,12 @@ pipeline {
             script {           
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
                 // export TF_LOG=DEBUG; 
+               withEnv(["TF_VAR_VM_PASS=$VM_PASS"]) {  
+                // Comandos que usam as variáveis definidas                  
                 sh """ 
                   export TF_VAR_VM_PASS=${VM_PASS}
-                  terragrunt apply -auto-approve -lock=${lock} """                                  
+                  terragrunt apply -auto-approve -lock=${lock} """  
+               }                               
               }
             }          
           }                     
