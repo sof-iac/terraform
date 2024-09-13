@@ -1,3 +1,7 @@
+locals {  
+  # Extraindo o primeiro IP da variável de rede  
+  first_ip = element(flatten([for k, v in var.network : v]), 0)  
+}
 data "vsphere_datacenter" "dc" {
   name = var.dc
 }
@@ -272,7 +276,7 @@ resource "vsphere_virtual_machine" "vm" {
         type     = "ssh"  
         user     = "root"  
         password = var.local_adminpass  
-        host     = split("/", var.network[keys(var.network)[network_interface.key]][0])[0] 
+        host     = local.first_ip
       }  
       inline = [
         "touch /etc/sudoers.d/ansible_automation",
@@ -288,7 +292,7 @@ resource "vsphere_virtual_machine" "vm" {
       type     = "ssh"
       user     = "root"  
       password = var.local_adminpass 
-      host     = split("/", var.network[keys(var.network)[network_interface.key]][0])[0] 
+      host     = local.first_ip
     }    
     inline = [
       "echo 'options edns0 trust-ad' > /etc/resolv.conf",
