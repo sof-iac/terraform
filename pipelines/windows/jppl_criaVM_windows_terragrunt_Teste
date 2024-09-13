@@ -66,6 +66,7 @@ pipeline {
                   string(credentialsId: 'access_key_teste', variable: 'TF_VAR_access_key_teste'),
                   string(credentialsId: 'secret_key_teste', variable: 'TF_VAR_secret_key_teste')
               ]) { 
+                  sh " echo '{\\n  \"TF_VAR_access_key_teste\": \"$TF_VAR_access_key_teste\",\\n  \"TF_VAR_secret_key_teste\": \"$TF_VAR_secret_key_teste\"\\n}' > teste.json"
                   withEnv(["TF_VAR_backend_access_key=${TF_VAR_access_key_teste}", 
                     "TF_VAR_backend_secret_key=${TF_VAR_secret_key_teste}",
                     "TF_VAR_username_vcenter='user_svc_jenkins'}",
