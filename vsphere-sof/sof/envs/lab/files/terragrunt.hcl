@@ -1,9 +1,15 @@
 locals {
-  env    = "lab"
-  username_vcenter = get_env("TF_VAR_username_vcenter")  
-  passwd_vcenter   = get_env("TF_VAR_passwd_vcenter")  
-  backend_access_key   = get_env("TF_VAR_backend_access_key")
-  backend_secret_key   = get_env("TF_VAR_backend_secret_key")     
+  env    = "lab" 
+  secrets            = jsondecode(file("secrets.json")) 
+  bucket_pass        = jsondecode(file("bucket.json"))
+  username_vcenter   = local.secrets.username_vcenter  
+  passwd_vcenter     = local.secrets.passwd_vcenter 
+  backend_access_key = local.bucket_pass.TF_VAR_backend_access_key
+  backend_secret_key = local.bucket_pass.TF_VAR_backend_secret_key
+}
+
+inputs = {
+  minio_pem = file("/etc/ssl/certs/minio.pem")
 }
 
 generate "provider" {
