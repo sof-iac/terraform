@@ -268,7 +268,7 @@ resource "vsphere_virtual_machine" "vm" {
   # Quando este recurso é criado, executa o seguinte script localmente para dar permissões ao usuario ansible
   provisioner "remote-exec" {
     # Define o bloco de conexão fora do loop dynamic  
-    dynamic "connection" {  
+     "connection" {  
       for_each = [for i in keys(var.network) : split("/", var.network[i][count.index])[0]]  
       content {  
         type     = "ssh"  
@@ -285,6 +285,24 @@ resource "vsphere_virtual_machine" "vm" {
       ]
     } 
 
+  }
+  # Quando este recurso é criado, executa o seguinte script localmente para configurar o DNS
+  provisioner "remote-exec" {
+    connection {
+      type     = "ssh"
+      user     = var.vm_user
+      password = var.vm_pass
+      host     = self.public_ip 
+    }    
+    inline = [
+      "echo 'options edns0 trust-ad' > /etc/resolv.conf",
+      "echo 'nameserver 172.27.3.5' >> /etc/resolv.conf",
+      "echo 'nameserver 172.27.3.6' >> /etc/resolv.conf",
+      "echo 'nameserver 172.27.3.7' >> /etc/resolv.conf",
+      "echo 'search sof.intra blocok.sof.remoto' >> /etc/resolv.conf",
+      "echo '192.168.250.163         PREP02' >> /etc/hosts",
+      "echo '192.168.250.125         PREP01' >> /etc/hosts"
+    ]
   }
   // Advanced options
   hv_mode                          = var.hv_mode
