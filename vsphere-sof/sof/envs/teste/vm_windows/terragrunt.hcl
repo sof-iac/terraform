@@ -35,10 +35,10 @@ inputs = {
       # Adicionando discos adicionais  
       enable_disk_uuid = true
       is_windows_image = true
-      scsi_bus_sharing = "physicalSharing"
-      scsi_type        = "lsilogic" 
-      scsi_controller  = 0
-      firmware         = "efi"
+      scsi_bus_sharing = null
+      scsi_type        = null
+      scsi_controller  = null
+      firmware         = null
       data_disk = {  
         "disk_A1" = {  
           size_gb                = 30  
