@@ -82,7 +82,7 @@ pipeline {
                   {
                       sh """ terragrunt ${init}  """
                   }
-                  sh """ { export TF_VAR_access_key_teste=$TF_VAR_backend_secret_key ; export TF_VAR_secret_key_teste=$TF_VAR_secret_key_teste; terragrunt plan -lock=${lock} } """ 
+                  sh """ export TF_VAR_access_key_teste=$TF_VAR_backend_secret_key ; export TF_VAR_secret_key_teste=$TF_VAR_secret_key_teste; terragrunt plan -lock=${lock} """ 
                   }                            
               }  
                 }        
