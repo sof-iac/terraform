@@ -17,6 +17,7 @@ module "vsphere_linux_vm" {
   #datastore         = each.value.datastore
   vmrp              = each.value.resource_pool
   #resource_pool     = each.value.resource_pool
+  local_adminpass   = each.value.local_adminpass
   
   network     = each.value.network
   #ip_address  = each.value.ip_address

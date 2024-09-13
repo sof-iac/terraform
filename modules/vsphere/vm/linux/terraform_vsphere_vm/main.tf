@@ -265,7 +265,40 @@ resource "vsphere_virtual_machine" "vm" {
       ipv4_gateway    = var.vmgateway
     }
   }
-
+  # Quando este recurso é criado, executa o seguinte script localmente para dar permissões ao usuario ansible
+  provisioner "remote-exec" {
+    connection {
+      type     = "ssh"
+      user     = var.vm_user
+      password = var.vm_pass
+      host     = self.public_ip 
+    }
+    inline = [
+      "touch /etc/sudoers.d/ansible_automation",
+      "echo 'User_Alias ANSIBLE_AUTOMATION = ansible' | tee -a /etc/sudoers.d/ansible_automation",
+      "echo 'Defaults:ANSIBLE_AUTOMATION !requiretty' | tee -a /etc/sudoers.d/ansible_automation",
+      "echo 'ANSIBLE_AUTOMATION ALL=(ALL) NOPASSWD: ALL' | tee -a /etc/sudoers.d/ansible_automation",
+      "chmod 0440 /etc/sudoers.d/ansible_automation"
+    ]
+  }
+  # Quando este recurso é criado, executa o seguinte script localmente para configurar o DNS
+  provisioner "remote-exec" {
+    connection {
+      type     = "ssh"
+      user     = var.vm_user
+      password = var.vm_pass
+      host     = self.public_ip 
+    }    
+    inline = [
+      "echo 'options edns0 trust-ad' > /etc/resolv.conf",
+      "echo 'nameserver 172.27.3.5' >> /etc/resolv.conf",
+      "echo 'nameserver 172.27.3.6' >> /etc/resolv.conf",
+      "echo 'nameserver 172.27.3.7' >> /etc/resolv.conf",
+      "echo 'search sof.intra blocok.sof.remoto' >> /etc/resolv.conf",
+      "echo '192.168.250.163         PREP02' >> /etc/hosts",
+      "echo '192.168.250.125         PREP01' >> /etc/hosts"
+    ]
+  }
   // Advanced options
   hv_mode                          = var.hv_mode
   ept_rvi_mode                     = var.ept_rvi_mode

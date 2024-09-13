@@ -12,6 +12,8 @@ pipeline {
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
       text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
       choice(name: 'distro', choices: ['ubuntu', 'centos', 'orcl','rocklinux'], description: 'Distribuição Linux')  
+      choice(name: 'disco_adicional', choices: [ '0', '1'], description: 'Possui disco de dados adicional ?')
+      password(name: 'vm_pass', description: 'Senha para a máquina virtual')
     }
 
     stages {
@@ -66,7 +68,7 @@ pipeline {
                 {
                     sh """ terragrunt ${init}  """
                 }
-                sh """ terragrunt plan -lock=${lock} """ 
+                sh """ terragrunt plan -lock=${lock} -var 'local_adminpass=$vm_pass' """ 
                 }                            
             }          
           }

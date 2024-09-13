@@ -8,6 +8,7 @@ variable vm {
       vsphere_cluster   = string
       resource_pool     = string
       network           = map(list(string))
+      local_adminpass   = string
       mask              = list(string)
       gateway           = string
       data_disk         = map(map(any))
