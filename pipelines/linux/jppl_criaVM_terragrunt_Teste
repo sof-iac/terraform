@@ -13,9 +13,11 @@ pipeline {
       text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
       choice(name: 'distro', choices: ['ubuntu', 'centos', 'orcl','rocklinux'], description: 'Distribuição Linux')  
       choice(name: 'disco_adicional', choices: [ '0', '1'], description: 'Possui disco de dados adicional ?')
-      password(name: 'vm_pass', description: 'Senha para a máquina virtual')
+      password(name: 'VM_PASS', description: 'Senha para a máquina virtual')
     }
-
+    environment {
+       TF_VAR_VM_PASS="${VM_PASS}"
+    }
     stages {
       stage('Retornando as chaves publica e certificados') {
         steps {
@@ -73,10 +75,10 @@ pipeline {
                 {
                     sh """ terragrunt ${init}  """
                 }
-               withEnv(["local_adminpass=$vm_pass"]) {  
+               withEnv(["TF_VAR_VM_PASS=$VM_PASS"]) {  
                 // Comandos que usam as variáveis definidas  
-                sh 'echo "local_adminpass is $vm_pass"'  
-                sh """ terragrunt plan -lock=${lock} -var 'local_adminpass=$vm_pass' """ 
+                sh 'echo "TF_VAR_VM_PASS is $VM_PASS"'  
+                sh """ terragrunt plan -lock=${lock} -var 'TF_VAR_VM_PASS=$VM_PASS' """ 
                 }     
               }                       
             }          
@@ -87,7 +89,9 @@ pipeline {
             script {           
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
                 // export TF_LOG=DEBUG; 
-                sh """ terragrunt apply -auto-approve -lock=${lock} -var 'local_adminpass=$vm_pass' """                                  
+                sh """ 
+                  export TF_VAR_VM_PASS=${VM_PASS}
+                  terragrunt apply -auto-approve -lock=${lock} -var 'local_adminpass=$TF_VAR_VM_PASS' """                                  
               }
             }          
           }                     

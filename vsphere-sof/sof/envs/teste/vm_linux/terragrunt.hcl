@@ -7,8 +7,8 @@ terraform {
   source = "../../../../../modules/vsphere/vm/linux"  # Caminho relativo ao terragrunt.hcl
 }
 
-inouts {  
-  local_adminpass = get_env("local_adminpass")
+locals {  
+  TF_VAR_VM_PASS = get_env("TF_VAR_VM_PASS")
 }  
 
 inputs = {
@@ -27,7 +27,7 @@ inputs = {
         gateway           = "192.168.30.1"
         cpu               = 2
         memory            = 8192
-        local_adminpass   = var.local_adminpass
+        local_adminpass   = "${local.TF_VAR_VM_PASS}"
         network_type      = ["vmxnet3"]
         annotation        = "Servidor de Teste - 09/09/2024 - Rogerio Vieira Silva"
         tags = {
