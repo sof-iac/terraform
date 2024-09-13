@@ -5,7 +5,7 @@ locals {
   passwd_vcenter   = local.secrets.passwd_vcenter 
 }
 inputs = {
-  minio_pem = file("minio.pem")
+  minio_pem = file("/etc/ssl/certs/minio.pem")
 }
 
 generate "provider" {
