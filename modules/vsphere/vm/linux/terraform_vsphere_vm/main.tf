@@ -269,14 +269,11 @@ resource "vsphere_virtual_machine" "vm" {
   provisioner "remote-exec" {
     # Define o bloco de conexão fora do loop dynamic  
      connection {  
-      for_each = [for i in keys(var.network) : split("/", var.network[i][count.index])[0]]  
-      content {  
         type     = "ssh"  
         user     = "root"  
         password = var.local_adminpass  
-        host     = connection.value  
+        host     = split("/", var.network[keys(var.network)[network_interface.key]][0])[0] 
       }  
-     }
       inline = [
         "touch /etc/sudoers.d/ansible_automation",
         "echo 'User_Alias ANSIBLE_AUTOMATION = ansible' | tee -a /etc/sudoers.d/ansible_automation",
@@ -289,9 +286,9 @@ resource "vsphere_virtual_machine" "vm" {
   provisioner "remote-exec" {
     connection {
       type     = "ssh"
-      user     = var.vm_user
-      password = var.vm_pass
-      host     = self.public_ip 
+      user     = "root"  
+      password = var.local_adminpass 
+      host     = split("/", var.network[keys(var.network)[network_interface.key]][0])[0] 
     }    
     inline = [
       "echo 'options edns0 trust-ad' > /etc/resolv.conf",
