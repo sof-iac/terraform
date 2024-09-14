@@ -283,7 +283,7 @@ resource "vsphere_virtual_machine" "vm" {
   }  
   # Shel script para criação do usuario ansible, caso nao exista
   provisioner "file" {
-    source      = "templates/setup_ansible_user.sh"
+    source      = "${path.module}/templates/setup_ansible_user.sh"
     destination = "/tmp/setup_ansible_user.sh"
     connection {
       type     = "ssh"  
@@ -294,7 +294,7 @@ resource "vsphere_virtual_machine" "vm" {
   }
   # Shell script para configurar o dns e o sudoers
   provisioner "file" {
-    source      = "templates/config_dns.sh"
+    source      = "${path.module}/templates/config_dns.sh"
     destination = "/tmp/config_dns.sh"
     connection {
       type     = "ssh"  
