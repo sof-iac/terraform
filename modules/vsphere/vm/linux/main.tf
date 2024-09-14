@@ -9,6 +9,7 @@ module "vsphere_linux_vm" {
   vmtemp        = each.value.template
   instances     = each.value.instances
   vmstartcount  = each.value.vmstartcount
+  distro        = each.value.distro
   #template  = each.value.template
   #vsphere_cluster = each.value.vsphere_cluster
   

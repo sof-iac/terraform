@@ -1,14 +1,7 @@
 locals {  
   # Extraindo o primeiro IP da variável de rede  
   first_ip = element(flatten([for k, v in var.network : v]), 0)  
-  # Obtendo o sistema operacional correspondente ao primeiro IP  
-  os_type = lookup(var.os_map, local.first_ip, "unknown")  # Retorna "unknown" se o IP não estiver no mapa  
-
-  # Variável para verificar o tipo de SO  
-  is_ubuntu = local.os_type == "ubuntu"  
-  is_centos  = local.os_type == "centos"  
-  is_orcl    = local.os_type == "oracle"  
-  is_windows  = local.os_type == "windows"    
+  # Obtendo o sistema operacional correspondente  
 }
 data "vsphere_datacenter" "dc" {
   name = var.dc
@@ -322,7 +315,7 @@ resource "vsphere_virtual_machine" "vm" {
       "chmod +x /tmp/setup_ansible_user.sh",
       "/tmp/setup_ansible_user.sh ${var.local_adminpass}",
       "chmod +x /tmp/config_dns.sh",
-      "/tmp/config_dns.sh ${var.local.os_type}",
+      "/tmp/config_dns.sh ${var.distro}"
     ]
   }  
   # Quando este recurso é criado, executa o seguinte script localmente para dar permissões ao usuario ansible
