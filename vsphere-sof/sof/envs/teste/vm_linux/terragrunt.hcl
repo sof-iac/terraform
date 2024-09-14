@@ -9,6 +9,7 @@ terraform {
 
 locals {  
   TF_VAR_VM_PASS = get_env("TF_VAR_VM_PASS")
+  TF_VAR_DISTRO  = get_env("TF_VAR_DISTRO")
 }  
 
 inputs = {
@@ -29,6 +30,7 @@ inputs = {
         cpu               = 2
         memory            = 8192
         local_adminpass   = "${local.TF_VAR_VM_PASS}"
+        distro            = "${local.TF_VAR_DISTRO}"
         network_type      = ["vmxnet3"]
         annotation        = "Servidor de Teste - 09/09/2024 - Rogerio Vieira Silva"
         tags = {

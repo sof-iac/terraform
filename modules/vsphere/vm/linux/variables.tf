@@ -18,6 +18,7 @@ variable vm {
       network_type      = list(string)
       annotation        = string
       tags              = map(any)
+      distro            - string
     })
   )
 }

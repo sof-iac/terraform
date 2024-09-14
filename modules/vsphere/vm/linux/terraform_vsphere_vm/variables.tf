@@ -498,3 +498,9 @@ variable "passwd_vcenter" {
   type        = string  
   default     = ""  # Você pode definir um valor padrão ou deixar vazio  
 }
+
+variable "distro" {  
+  description = "Qual a distribuicao"  
+  type        = string  
+  default     = ""  # Você pode definir um valor padrão ou deixar vazio  
+}

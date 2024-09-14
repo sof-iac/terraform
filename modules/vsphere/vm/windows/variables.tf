@@ -30,7 +30,7 @@ variable vm {
       workgroup         = string
       is_windows_image  = bool
       firmware          = string
-
+      distro            =string
     })
   )
 }

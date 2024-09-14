@@ -75,10 +75,11 @@ pipeline {
                 {
                     sh """ terragrunt ${init}  """
                 }
-               withEnv(["TF_VAR_VM_PASS=$VM_PASS"]) {  
+               withEnv(["TF_VAR_VM_PASS=$VM_PASS", "TF_VAR_DISTRO=$Distro"]) {  
                 // Comandos que usam as variáveis definidas  
                 sh """ 
                   export TF_VAR_VM_PASS=${VM_PASS}
+                  export TF_VAR_DISTRO=${Distro}
                   terragrunt plan -lock=${lock}  """ 
                 }     
               }                       
@@ -90,10 +91,11 @@ pipeline {
             script {           
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
                 // export TF_LOG=DEBUG; 
-               withEnv(["TF_VAR_VM_PASS=$VM_PASS"]) {  
+               withEnv(["TF_VAR_VM_PASS=$VM_PASS", "TF_VAR_DISTRO=$Distro"]) {  
                 // Comandos que usam as variáveis definidas                  
                 sh """ 
                   export TF_VAR_VM_PASS=${VM_PASS}
+                  export TF_VAR_DISTRO=${Distro}
                   terragrunt apply -auto-approve -lock=${lock} """  
                }                               
               }
