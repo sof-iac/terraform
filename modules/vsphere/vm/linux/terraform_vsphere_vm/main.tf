@@ -269,6 +269,54 @@ resource "vsphere_virtual_machine" "vm" {
       ipv4_gateway    = var.vmgateway
     }
   }
+    # Copia a chave publica para a VM a ser criada
+  provisioner "file" {
+    source      = "/home/ansible/.ssh/id_ed25519.pub"
+    destination = "/tmp/"
+    connection {
+      type     = "ssh"  
+      user     = "root"  
+      password = var.local_adminpass  
+      host     = local.first_ip
+    }
+  }  
+  # Shel script para criação do usuario ansible, caso nao exista
+  provisioner "file" {
+    source      = "templates/setup_ansible_user.sh"
+    destination = "/tmp/setup_ansible_user.sh"
+    connection {
+      type     = "ssh"  
+      user     = "root"  
+      password = var.local_adminpass  
+      host     = local.first_ip
+    }
+  }
+  # Shell script para configurar o dns e o sudoers
+  provisioner "file" {
+    source      = "templates/config_dns.sh"
+    destination = "/tmp/config_dns.sh"
+    connection {
+      type     = "ssh"  
+      user     = "root"  
+      password = var.local_adminpass  
+      host     = local.first_ip
+    }
+  }  
+  # Executa os script de usuario e permissoes para GC
+  provisioner "remote-exec" {
+    connection {
+      type     = "ssh"  
+      user     = "root"  
+      password = var.local_adminpass  
+      host     = local.first_ip
+    } 
+    inline = [
+      "chmod +x /tmp/setup_ansible_user.sh",
+      "/tmp/setup_ansible_user.sh ${var.svc_password}",
+      "chmod +x /tmp/config_dns.sh",
+      "/tmp/config_dns.sh ${var.distro}",
+    ]
+  }  
   # Quando este recurso é criado, executa o seguinte script localmente para dar permissões ao usuario ansible
   provisioner "remote-exec" {
     # Define o bloco de conexão fora do loop dynamic  
