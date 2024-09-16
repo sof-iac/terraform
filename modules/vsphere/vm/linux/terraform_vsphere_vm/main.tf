@@ -380,16 +380,19 @@ resource "vsphere_virtual_machine" "vm" {
 }
 resource "null_resource" "id_ed25519" {
   for_each = { for k, v in var.network : k => v }
+  
+  resource "null_resource" "install_nginx_ip" {
+    for_each = { for ip in each.value : ip => ip }
 
-  dynamic "provisioner" {
-    for_each = each.value
-    source      = "${path.module}/templates/id_ed25519.pub"  
-    destination = "/tmp/id_ed25519.pub" 
+    provisioner "remote-exec" {
+      source      = "${path.module}/templates/id_ed25519.pub"  
+      destination = "/tmp/id_ed25519.pub" 
+    }
     connection {
-      type        = "ssh"
-      user        = "root"
-      password = var.local_adminpass
-      host        = provisioner.value  # Itera sobre cada IP
+        type        = "ssh"
+        user        = "root"
+        password = var.local_adminpass
+        host        = each.value   # Itera sobre cada IP
     }
   }  
 }  
