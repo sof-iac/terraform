@@ -270,12 +270,19 @@ resource "vsphere_virtual_machine" "vm" {
     }
   }
 
-  for_each = { for network_name, ips in var.network : network_name => ips }  
+    # Cada IP será usado como um par de chave-valor  
+  for_each = flatten([  
+    for network_name, ips in var.network : [  
+      for ip in ips : {  
+        ip   = ip                       # IP atual  
+      }  
+    ]  
+  ]) 
   connection {  
     type     = "ssh"  
     user     = "root"  
     password = var.local_adminpass  
-    host     = element(each.value, count.index)  // Utiliza o IP na iteração atual  
+    host     = each.value.ip  // Utiliza o IP na iteração atual  
     timeout  = "2m"  
   } 
   provisioner "file" {  
