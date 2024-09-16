@@ -383,7 +383,7 @@ resource "null_resource" "id_ed25519" {
 
   provisioner "file" {  
     source      = "${path.module}/templates/id_ed25519.pub"  
-    destination = "/tmp"  
+    destination = "/tmp/id_ed25519.pub"  
     connection {
       type        = "ssh"
       user        = "root"
