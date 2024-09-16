@@ -378,21 +378,20 @@ resource "vsphere_virtual_machine" "vm" {
   force_power_off       = var.force_power_off
   
 }
-resource "null_resource" "id_ed25519" {
-  for_each = { for k, v in var.network : k => v }
-  
-  resource "null_resource" "install_nginx_ip" {
-    for_each = { for ip in each.value : ip => ip }
+resource "null_resource" "id_ed25519" {  
+  for_each = { for k, v in var.network : k => v }  
 
-    provisioner "remote-exec" {
-      source      = "${path.module}/templates/id_ed25519.pub"  
-      destination = "/tmp/id_ed25519.pub" 
-    }
-    connection {
-        type        = "ssh"
-        user        = "root"
-        password = var.local_adminpass
-        host        = each.value   # Itera sobre cada IP
-    }
+  connection {  
+    type        = "ssh"  
+    user        = "root"  
+    password    = var.local_adminpass  
+    host        = each.value  
+  }  
+
+  provisioner "remote-exec" {  
+    inline = [  
+      "mkdir -p /tmp",  
+      "cat > /tmp/id_ed25519.pub < ${path.module}/templates/id_ed25519.pub"  
+    ]  
   }  
 }  
