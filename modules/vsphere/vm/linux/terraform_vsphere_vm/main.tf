@@ -303,6 +303,17 @@ resource "vsphere_virtual_machine" "vm" {
       host     = local.first_ip
     }
   }  
+  # Shell script para configurar os discos
+  provisioner "file" {
+    source      = "${path.module}/templates/format_discos_extras.sh"
+    destination = "/tmp/format_discos_extras.sh"
+    connection {
+      type     = "ssh"  
+      user     = "root"  
+      password = var.local_adminpass  
+      host     = local.first_ip
+    }
+  }    
   # Executa os script de usuario e permissoes para GC
   provisioner "remote-exec" {
     connection {
@@ -315,7 +326,9 @@ resource "vsphere_virtual_machine" "vm" {
       "chmod +x /tmp/setup_ansible_user.sh",
       "/tmp/setup_ansible_user.sh ${var.local_adminpass}",
       "chmod +x /tmp/config_dns.sh",
-      "/tmp/config_dns.sh ${var.distro}"
+      "/tmp/config_dns.sh ${var.distro}",
+      "chmod +x /tmp/format_discos_extras.sh",
+      "/tmp/format_discos_extras.sh"
     ]
   }  
   # Quando este recurso é criado, executa o seguinte script localmente para dar permissões ao usuario ansible
