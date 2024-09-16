@@ -382,15 +382,13 @@ resource "null_resource" "id_ed25519" {
   for_each = var.network
 
   provisioner "file" {  
-    content {  
-      source      = "${path.module}/templates/id_ed25519.pub"  
-      destination = "/tmp"  
+    source      = "${path.module}/templates/id_ed25519.pub"  
+    destination = "/tmp"  
+    connection {
+      type        = "ssh"
+      user        = "root"
+      password = var.local_adminpass
+      host        = each.value[count.index]
     }
-  }
-  connection {
-    type        = "ssh"
-    user        = "root"
-    password = var.local_adminpass
-    host        = each.value[count.index]
   }
 }  
