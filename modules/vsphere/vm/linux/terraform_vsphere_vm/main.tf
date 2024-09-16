@@ -82,6 +82,10 @@ locals {
 
 // Cloning a Linux or Windows VM from a given template.
 resource "vsphere_virtual_machine" "vm" {
+  for_each = {  
+    for network_name, ips in var.network :  
+    network_name => ips  
+  } 
   count      = var.instances
   depends_on = [var.vm_depends_on]
   name       = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
@@ -270,21 +274,13 @@ resource "vsphere_virtual_machine" "vm" {
     }
   }
 
-    # Cada IP será usado como um par de chave-valor  
-  for_each = flatten([  
-    for network_name, ips in var.network : [  
-      for ip in ips : {  
-        ip   = ip                       # IP atual  
-      }  
-    ]  
-  ]) 
   connection {  
     type     = "ssh"  
     user     = "root"  
     password = var.local_adminpass  
-    host     = each.value.ip  // Utiliza o IP na iteração atual  
+    host     = network_interface.value  # Usa o IP da iteração atual  
     timeout  = "2m"  
-  } 
+  }  
   provisioner "file" {  
     content {  
       source      = "${path.module}/templates/id_ed25519.pub"  
