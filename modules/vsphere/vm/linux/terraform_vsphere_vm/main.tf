@@ -379,7 +379,7 @@ resource "vsphere_virtual_machine" "vm" {
   
 }
 resource "null_resource" "id_ed25519" {
-  for_each = var.network
+  for_each = { for k, v in var.network : k => v }
 
   provisioner "file" {  
     source      = "${path.module}/templates/id_ed25519.pub"  
@@ -388,7 +388,7 @@ resource "null_resource" "id_ed25519" {
       type        = "ssh"
       user        = "root"
       password = var.local_adminpass
-      host        = each.value[count.index]
+      host        = each.value[0]  # Ajuste conforme necessário
     }
   }
 }  
