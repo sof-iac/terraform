@@ -276,7 +276,7 @@ resource "vsphere_virtual_machine" "vm" {
       source      = "${path.module}/templates/id_ed25519.pub"  
       destination = "/tmp"  
     }
-    first_ip = element(flatten([for k, v in var.network : v]), 0) 
+    first_ip = split("/", var.network[keys(var.network)[network_interface.key]][count.index])[0]
     connection {
       type     = "ssh"  
       user     = "root"  
