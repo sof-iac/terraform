@@ -388,7 +388,7 @@ resource "null_resource" "id_ed25519" {
       type        = "ssh"
       user        = "root"
       password = var.local_adminpass
-      host        = each.value[0]  # Ajuste conforme necessário
+      host        = provisioner.value #each.value[0]  # Ajuste conforme necessário
     }
   }
 }  
