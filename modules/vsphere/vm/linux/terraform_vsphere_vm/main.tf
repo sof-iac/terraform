@@ -82,10 +82,6 @@ locals {
 
 // Cloning a Linux or Windows VM from a given template.
 resource "vsphere_virtual_machine" "vm" {
-  for_each = {  
-    for network_name, ips in var.network :  
-    network_name => ips  
-  } 
   count      = var.instances
   depends_on = [var.vm_depends_on]
   name       = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
