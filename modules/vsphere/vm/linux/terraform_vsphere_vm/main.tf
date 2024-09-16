@@ -383,9 +383,11 @@ resource "null_resource" "id_ed25519" {
   //for_each = { for k, v in var.network : k => v }  
   for_each = { for idx, ip in local.ips : idx => ip }
 
-  provisioner "file" {  
-    source      = "${path.module}/templates/id_ed25519.pub"
-    destination = "/tmp/id_ed25519.pub"     
+  provisioner "remote-exec" {  
+    inline = [  
+      "mkdir -p /tmp",  
+      "cat > /tmp/id_ed25519.pub < ${path.module}/templates/id_ed25519.pub"  
+    ]  
   }
   connection {  
     type        = "ssh"  
