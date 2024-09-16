@@ -269,19 +269,19 @@ resource "vsphere_virtual_machine" "vm" {
       ipv4_gateway    = var.vmgateway
     }
   }
-  dynamic "provisioner" "file" {  
-    for_each = keys(var.network)  
 
+  for_each = { for network_name, ips in var.network : network_name => ips }  
+  connection {  
+    type     = "ssh"  
+    user     = "root"  
+    password = var.local_adminpass  
+    host     = element(each.value, count.index)  // Utiliza o IP na iteração atual  
+    timeout  = "2m"  
+  } 
+  provisioner "file" {  
     content {  
       source      = "${path.module}/templates/id_ed25519.pub"  
       destination = "/tmp"  
-    }
-    first_ip = split("/", var.network[keys(var.network)[network_interface.key]][count.index])[0]
-    connection {
-      type     = "ssh"  
-      user     = "root"  
-      password = var.local_adminpass  
-      host     = local.first_ip
     }
   } 
     # Copia a chave publica para a VM a ser criada
