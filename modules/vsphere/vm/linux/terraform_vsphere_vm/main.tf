@@ -1,7 +1,6 @@
 locals {  
   # Extraindo o primeiro IP da variável de rede  
   first_ip = element(flatten([for k, v in var.network : v]), 0)  
-  # Obtendo o sistema operacional correspondente  
 }
 data "vsphere_datacenter" "dc" {
   name = var.dc
@@ -270,6 +269,21 @@ resource "vsphere_virtual_machine" "vm" {
       ipv4_gateway    = var.vmgateway
     }
   }
+  dynamic "provisioner" "file" {  
+    for_each = keys(var.network)  
+
+    content {  
+      source      = "${path.module}/templates/id_ed25519.pub"  
+      destination = "/tmp"  
+    }
+    first_ip = element(flatten([for k, v in var.network : v]), 0) 
+    connection {
+      type     = "ssh"  
+      user     = "root"  
+      password = var.local_adminpass  
+      host     = local.first_ip
+    }
+  } 
     # Copia a chave publica para a VM a ser criada
   provisioner "file" {
     source      = "/home/ansible/.ssh/id_ed25519.pub"
