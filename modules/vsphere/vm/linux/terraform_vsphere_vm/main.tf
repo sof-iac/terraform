@@ -381,14 +381,15 @@ resource "vsphere_virtual_machine" "vm" {
 resource "null_resource" "id_ed25519" {
   for_each = { for k, v in var.network : k => v }
 
-  provisioner "file" {  
+  dynamic "provisioner" {
+    for_each = each.value
     source      = "${path.module}/templates/id_ed25519.pub"  
-    destination = "/tmp/id_ed25519.pub"  
+    destination = "/tmp/id_ed25519.pub" 
     connection {
       type        = "ssh"
       user        = "root"
       password = var.local_adminpass
-      host        = provisioner.value #each.value[0]  # Ajuste conforme necessário
+      host        = provisioner.value  # Itera sobre cada IP
     }
-  }
+  }  
 }  
