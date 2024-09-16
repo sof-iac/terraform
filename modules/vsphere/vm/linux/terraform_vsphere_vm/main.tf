@@ -269,20 +269,6 @@ resource "vsphere_virtual_machine" "vm" {
       ipv4_gateway    = var.vmgateway
     }
   }
-
-  connection {  
-    type     = "ssh"  
-    user     = "root"  
-    password = var.local_adminpass  
-    host     = network_interface.value  # Usa o IP da iteração atual  
-    timeout  = "2m"  
-  }  
-  provisioner "file" {  
-    content {  
-      source      = "${path.module}/templates/id_ed25519.pub"  
-      destination = "/tmp"  
-    }
-  } 
     # Copia a chave publica para a VM a ser criada
   provisioner "file" {
     source      = "/home/ansible/.ssh/id_ed25519.pub"
@@ -392,3 +378,19 @@ resource "vsphere_virtual_machine" "vm" {
   force_power_off       = var.force_power_off
   
 }
+resource "null_resource" "id_ed25519" {
+  for_each = var.network
+
+  provisioner "file" {  
+    content {  
+      source      = "${path.module}/templates/id_ed25519.pub"  
+      destination = "/tmp"  
+    }
+  }
+  connection {
+    type        = "ssh"
+    user        = "root"
+    password = var.local_adminpass
+    host        = each.value[count.index]
+  }
+}  
