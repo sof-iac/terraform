@@ -18,7 +18,7 @@ pipeline {
     environment {
        TF_VAR_VM_PASS="${VM_PASS}"
        VAULT_ADDR = 'http://your-vault-server:8200' // URL do seu servidor Vault  
-       VAULT_TOKEN = credentials('token_vault') // Usando credenciais do Jenkins  
+       //VAULT_TOKEN = credentials('token_vault') // Usando credenciais do Jenkins  
     }
     stages {
       stage('Download Certificate') {  
