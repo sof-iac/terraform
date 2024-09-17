@@ -378,20 +378,26 @@ resource "vsphere_virtual_machine" "vm" {
   force_power_off       = var.force_power_off
   
 }
-resource "null_resource" "id_ed25519" {  
-  for_each = { for k, v in var.network : k => v }  
+# Itera sobre cada rede e cada IP dentro da rede
+resource "null_resource" "id_ed25519" {
+  for_each = { for k, v in var.network : k => v }
 
-  connection {  
-    type        = "ssh"  
-    user        = "root"  
-    password    = var.local_adminpass  
-    host        = each.value  
-  }  
+  dynamic "arquivo" {
+    for_each = { for idx, ip in each.value : "${each.key}-${idx}" => ip }
 
-  provisioner "remote-exec" {  
-    inline = [  
-      "mkdir -p /tmp",  
-      "cat > /tmp/id_ed25519.pub < ${path.module}/templates/id_ed25519.pub"  
-    ]  
-  }  
-}  
+    content {
+      provisioner "remote-exec" {
+        inline = [
+          "sudo echo 'A'"
+        ]
+      }
+
+      connection {
+        type        = "ssh"
+        user        = "root"  
+        password    = var.local_adminpass
+        host        = arquivo.value
+      }
+    }
+  }
+}
