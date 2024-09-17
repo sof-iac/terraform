@@ -1,6 +1,7 @@
 locals {  
   # Extraindo o primeiro IP da variável de rede  
   first_ip = element(flatten([for k, v in var.network : v]), 0)  
+  ips = flatten([for k, v in var.network : v])
 }
 data "vsphere_datacenter" "dc" {
   name = var.dc
