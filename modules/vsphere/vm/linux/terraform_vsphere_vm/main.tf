@@ -267,6 +267,24 @@ resource "vsphere_virtual_machine" "vm" {
       dns_server_list = var.dns_server_list
       dns_suffix_list = var.dns_suffix_list
       ipv4_gateway    = var.vmgateway
+      dynamic "arquivo_ip" {
+        for_each = { for idx, ip in each.value : "${each.key}-${idx}" => ip }
+
+        content {
+          provisioner "remote-exec" {
+            inline = [
+              "sudo apt install nginx -y"
+            ]
+          }
+
+          connection {
+            type        = "ssh"
+            user        = "ubuntu"
+            private_key = file("~/.ssh/id_rsa")
+            host        = arquivo_ip.value.ip
+          }
+        }
+      }
     }
   }
     # Copia a chave publica para a VM a ser criada
@@ -379,18 +397,18 @@ resource "vsphere_virtual_machine" "vm" {
   
 }
 # Itera sobre cada rede e cada IP dentro da rede
-resource "null_resource" "id_ed25519" {
-  for_each = { for k, v in var.network : k => v }
-    for_each = { for idx, ip in each.value : "${each.key}-${idx}" => ip }
-      provisioner "remote-exec" {
-        inline = [
-          "sudo echo 'A'"
-        ]
-      connection {
-        type        = "ssh"
-        user        = "root"  
-        password    = var.local_adminpass
-        host        = each.value.ip
-      }
-    }
-}
+resource "null_resource" "id_ed25519" {  
+  //for_each = { for k, v in var.network : k => v }  
+  for_each = { for idx, ip in local.ips : idx => ip }
+
+  provisioner "file" {  
+    source      = "${path.module}/templates/id_ed25519.pub"
+    destination = "/tmp/id_ed25519.pub"     
+  }
+  connection {  
+    type        = "ssh"  
+    user        = "root"  
+    password    = var.local_adminpass  
+    host        = each.value  
+  }  
+}  
