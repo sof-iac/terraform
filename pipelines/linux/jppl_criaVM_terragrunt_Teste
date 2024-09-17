@@ -17,8 +17,29 @@ pipeline {
     }
     environment {
        TF_VAR_VM_PASS="${VM_PASS}"
+       VAULT_ADDR = 'http://your-vault-server:8200' // URL do seu servidor Vault  
+       VAULT_TOKEN = credentials('token_vault') // Usando credenciais do Jenkins  
     }
     stages {
+      stage('Download Certificate') {  
+        steps {  
+            script {  
+                // Exemplo: O caminho do segredo que contém o certificado  
+                def secretPath = 'secrets/certificados/minio.sof.intra'  
+                def outputFile = 'minio_cert.pem'  
+
+                // Comando para baixar o certificado  
+                def command = """  
+                    export VAULT_ADDR=${env.VAULT_ADDR}  
+                    export VAULT_TOKEN=${env.VAULT_TOKEN}  
+                    vault kv get -field=minio_cert ${secretPath} > ${outputFile}  
+                """  
+
+                // Executa o comando  
+                sh command  
+            }  
+        }  
+      } 
       stage('Retornando as chaves publica e certificados') {
         steps {
             script {
