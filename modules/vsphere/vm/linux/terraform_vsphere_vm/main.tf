@@ -294,6 +294,12 @@ resource "null_resource" "ansible" {
     password    = var.local_adminpass  
     host        = each.value 
   }
+  # Apaga a chave privada se existir
+  provisioner "remote-exec" {
+    inline = [
+      "rm -f /home/ansible/.ssh/id_ed25519"
+    ]
+  }
     # Copia a chave publica para a VM a ser criada
   provisioner "file" {
     source      = "/home/ansible/.ssh/id_ed25519.pub"
