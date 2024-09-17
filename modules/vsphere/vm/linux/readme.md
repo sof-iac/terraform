@@ -1,4 +1,4 @@
-## Iteração sobre uma lista de UPs
+## Iteração sobre uma lista de IPs
 
 Explicação detalhada sobre a configuração do Terraform para implantar um script `ansible.sh` em várias máquinas, utilizando `null_resource`.
 
