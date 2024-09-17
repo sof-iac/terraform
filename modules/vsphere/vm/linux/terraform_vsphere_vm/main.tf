@@ -269,103 +269,8 @@ resource "vsphere_virtual_machine" "vm" {
       dns_suffix_list = var.dns_suffix_list
       ipv4_gateway    = var.vmgateway
     }
-  }
-    # Copia a chave publica para a VM a ser criada
-  provisioner "file" {
-    source      = "/home/ansible/.ssh/id_ed25519.pub"
-    destination = "/tmp/"
-    connection {
-      type     = "ssh"  
-      user     = "root"  
-      password = var.local_adminpass  
-      host     = local.first_ip
-    }
-  }  
-  # Shel script para criação do usuario ansible, caso nao exista
-  provisioner "file" {
-    source      = "${path.module}/templates/setup_ansible_user.sh"
-    destination = "/tmp/setup_ansible_user.sh"
-    connection {
-      type     = "ssh"  
-      user     = "root"  
-      password = var.local_adminpass  
-      host     = local.first_ip
-    }
-  }
-  # Shell script para configurar o dns e o sudoers
-  provisioner "file" {
-    source      = "${path.module}/templates/config_dns.sh"
-    destination = "/tmp/config_dns.sh"
-    connection {
-      type     = "ssh"  
-      user     = "root"  
-      password = var.local_adminpass  
-      host     = local.first_ip
-    }
-  }  
-  # Shell script para configurar os discos
-  provisioner "file" {
-    source      = "${path.module}/templates/format_discos_extras.sh"
-    destination = "/tmp/format_discos_extras.sh"
-    connection {
-      type     = "ssh"  
-      user     = "root"  
-      password = var.local_adminpass  
-      host     = local.first_ip
-    }
-  }    
-  # Executa os script de usuario e permissoes para GC
-  provisioner "remote-exec" {
-    connection {
-      type     = "ssh"  
-      user     = "root"  
-      password = var.local_adminpass  
-      host     = local.first_ip
-    } 
-    inline = [
-      "chmod +x /tmp/setup_ansible_user.sh",
-      "/tmp/setup_ansible_user.sh ${var.local_adminpass}",
-      "chmod +x /tmp/config_dns.sh",
-      "/tmp/config_dns.sh ${var.distro}",
-      "chmod +x /tmp/format_discos_extras.sh",
-      "/tmp/format_discos_extras.sh"
-    ]
-  }  
-  # Quando este recurso é criado, executa o seguinte script localmente para dar permissões ao usuario ansible
-  provisioner "remote-exec" {
-    # Define o bloco de conexão fora do loop dynamic  
-     connection {  
-        type     = "ssh"  
-        user     = "root"  
-        password = var.local_adminpass  
-        host     = local.first_ip
-      }  
-      inline = [
-        "touch /etc/sudoers.d/ansible_automation",
-        "echo 'User_Alias ANSIBLE_AUTOMATION = ansible' | tee -a /etc/sudoers.d/ansible_automation",
-        "echo 'Defaults:ANSIBLE_AUTOMATION !requiretty' | tee -a /etc/sudoers.d/ansible_automation",
-        "echo 'ANSIBLE_AUTOMATION ALL=(ALL) NOPASSWD: ALL' | tee -a /etc/sudoers.d/ansible_automation",
-        "chmod 0440 /etc/sudoers.d/ansible_automation"
-      ] 
-  }
-  # Quando este recurso é criado, executa o seguinte script localmente para configurar o DNS
-  provisioner "remote-exec" {
-    connection {
-      type     = "ssh"
-      user     = "root"  
-      password = var.local_adminpass 
-      host     = local.first_ip
-    }    
-    inline = [
-      "echo 'options edns0 trust-ad' > /etc/resolv.conf",
-      "echo 'nameserver 172.27.3.5' >> /etc/resolv.conf",
-      "echo 'nameserver 172.27.3.6' >> /etc/resolv.conf",
-      "echo 'nameserver 172.27.3.7' >> /etc/resolv.conf",
-      "echo 'search sof.intra blocok.sof.remoto' >> /etc/resolv.conf",
-      "echo '192.168.250.163         PREP02' >> /etc/hosts",
-      "echo '192.168.250.125         PREP01' >> /etc/hosts"
-    ]
-  }
+  }     
+
   // Advanced options
   hv_mode                          = var.hv_mode
   ept_rvi_mode                     = var.ept_rvi_mode
@@ -382,10 +287,6 @@ resource "vsphere_virtual_machine" "vm" {
 # Itera sobre cada rede e cada IP dentro da rede
 resource "null_resource" "ansible" {  
   for_each = { for idx, ip in local.all_ips : idx => ip }
-  provisioner "file" {  
-    source      = "${path.module}/templates/ansible.sh"
-    destination = "/tmp/ansible.sh"     
-  }
 
   connection {
     type        = "ssh"
@@ -393,4 +294,64 @@ resource "null_resource" "ansible" {
     password    = var.local_adminpass  
     host        = each.value 
   }
+    # Copia a chave publica para a VM a ser criada
+  provisioner "file" {
+    source      = "/home/ansible/.ssh/id_ed25519.pub"
+    destination = "/tmp/"
+  }  
+  # Shel script para criação do usuario ansible, caso nao exista
+  provisioner "file" {
+    source      = "${path.module}/templates/setup_ansible_user.sh"
+    destination = "/tmp/setup_ansible_user.sh"
+  }
+  # Shell script para configurar o dns e o sudoers
+  provisioner "file" {
+    source      = "${path.module}/templates/config_dns.sh"
+    destination = "/tmp/config_dns.sh"
+  }  
+  # Shell script para configurar os discos
+  provisioner "file" {
+    source      = "${path.module}/templates/format_discos_extras.sh"
+    destination = "/tmp/format_discos_extras.sh"
+  }  
+  # Executa os script de usuario e permissoes para GC
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/setup_ansible_user.sh",
+      "/tmp/setup_ansible_user.sh ${var.local_adminpass}",
+      "chmod +x /tmp/config_dns.sh",
+      "/tmp/config_dns.sh ${var.distro}",
+      "chmod +x /tmp/format_discos_extras.sh",
+      "/tmp/format_discos_extras.sh"
+    ]
+  }  
+  # Quando este recurso é criado, executa o seguinte script localmente para configurar o DNS
+  provisioner "remote-exec" {   
+    inline = [
+      "echo 'options edns0 trust-ad' > /etc/resolv.conf",
+      "echo 'nameserver 172.27.3.5' >> /etc/resolv.conf",
+      "echo 'nameserver 172.27.3.6' >> /etc/resolv.conf",
+      "echo 'nameserver 172.27.3.7' >> /etc/resolv.conf",
+      "echo 'search sof.intra blocok.sof.remoto' >> /etc/resolv.conf",
+      "echo '192.168.250.163         PREP02' >> /etc/hosts",
+      "echo '192.168.250.125         PREP01' >> /etc/hosts"
+    ]
+  }  
+  # Quando este recurso é criado, executa o seguinte script localmente para dar permissões ao usuario ansible
+  provisioner "remote-exec" {
+    # Define o bloco de conexão fora do loop dynamic    
+      inline = [
+        "touch /etc/sudoers.d/ansible_automation",
+        "echo 'User_Alias ANSIBLE_AUTOMATION = ansible' | tee -a /etc/sudoers.d/ansible_automation",
+        "echo 'Defaults:ANSIBLE_AUTOMATION !requiretty' | tee -a /etc/sudoers.d/ansible_automation",
+        "echo 'ANSIBLE_AUTOMATION ALL=(ALL) NOPASSWD: ALL' | tee -a /etc/sudoers.d/ansible_automation",
+        "chmod 0440 /etc/sudoers.d/ansible_automation"
+      ] 
+  }
+  provisioner "file" {  
+    source      = "${path.module}/templates/ansible.sh"
+    destination = "/tmp/ansible.sh"     
+  }
+
+
 }
