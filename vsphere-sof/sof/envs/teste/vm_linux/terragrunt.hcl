@@ -14,7 +14,7 @@ locals {
 
 inputs = {
   vm = {
-    "TUBU" = {
+    "TIBU" = {
         template          = "templateubuntu2204_ansible"
         instances         = 1
         vmstartcount      = 2
@@ -23,7 +23,7 @@ inputs = {
         datastore         = "Storage_Purestorage"
         resource_pool     = "Blade_Atreus/Resources"
         vsphere_cluster   = "Blade_Atreus"
-        network           = {"PG_Atlas_Teste" = ["192.168.30.172"]}
+        network           = {"PG_Atlas_Teste" = ["192.168.30.177"]}
         dns_server_list   = ["172.27.3.5", "172.27.3.6"]
         mask              = ["24"]
         gateway           = "192.168.30.1"
