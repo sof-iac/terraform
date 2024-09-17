@@ -381,17 +381,11 @@ resource "vsphere_virtual_machine" "vm" {
 # Itera sobre cada rede e cada IP dentro da rede
 resource "null_resource" "id_ed25519" {
   for_each = { for k, v in var.network : k => v }
-
-  dynamic "copia_arquivo" {
     for_each = { for idx, ip in each.value : "${each.key}-${idx}" => ip }
-
-    content {
       provisioner "remote-exec" {
         inline = [
           "sudo echo 'A'"
         ]
-      }
-
       connection {
         type        = "ssh"
         user        = "root"  
@@ -399,5 +393,4 @@ resource "null_resource" "id_ed25519" {
         host        = each.value.ip
       }
     }
-  }
 }
