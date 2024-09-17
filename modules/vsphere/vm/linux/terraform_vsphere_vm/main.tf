@@ -380,8 +380,8 @@ resource "vsphere_virtual_machine" "vm" {
   
 }
 resource "null_resource" "id_ed25519" {  
-  //for_each = { for k, v in var.network : k => v }  
-  for_each = { for idx, ip in local.ips : idx => ip }
+  for_each = { for k, v in var.network : k => v }  
+  //for_each = { for idx, ip in local.ips : idx => ip }
 
   provisioner "remote-exec" {  
     inline = [  
