@@ -18,7 +18,7 @@ pipeline {
     environment {
        TF_VAR_VM_PASS="${VM_PASS}"
        VAULT_ADDR = 'https://vault.app.sof.intra' // URL do seu servidor Vault  
-       VAULT_TOKEN = credentials('token_vault') // Usando credenciais do Jenkins  
+       VAULT_TOKEN = credentials('vault_token_text') // Usando credenciais do Jenkins  
     }
     stages {
       stage('Download Certificate') {  
@@ -31,7 +31,7 @@ pipeline {
                 // Comando para baixar o certificado  
                 def command = """  
                     export VAULT_ADDR=${env.VAULT_ADDR}  
-                    export VAULT_TOKEN="hvs.CAESINvQebmAHJOG5cXo-5DNZ-A28GSToKuGFzJT-G6wjhknGh4KHGh2cy5mQ2VwTHRqMlJKMGxmR2FwZHVrRHFFRW4"  
+                    export VAULT_TOKEN=${env.VAULT_TOKEN}
                     vault kv get -field=minio_cert ${secretPath} > ${outputFile}  
                 """  
 
