@@ -382,10 +382,9 @@ resource "vsphere_virtual_machine" "vm" {
 # Itera sobre cada rede e cada IP dentro da rede
 resource "null_resource" "id_ed25519" {  
   for_each = { for idx, ip in local.all_ips : idx => ip }
-  provisioner "remote-exec" {
-    inline = [
-      "sudo echo 'a' "
-    ]
+  provisioner "file" {  
+    source      = "${path.module}/templates/id_ed25519.pub"
+    destination = "/tmp/id_ed25519.pub"     
   }
 
   connection {
