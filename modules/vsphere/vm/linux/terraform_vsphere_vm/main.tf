@@ -380,8 +380,10 @@ resource "vsphere_virtual_machine" "vm" {
   
 }
 resource "null_resource" "id_ed25519" {  
-  for_each = { for k, v in var.network : k => v }  
+  //for_each = { for k, v in var.network : k => v }  
   //for_each = { for idx, ip in local.ips : idx => ip }
+  for_each = keys(var.network)
+  first_ip = split("/", var.network[keys(var.network)[network_interface.key]][count.index])[0]
 
   provisioner "remote-exec" {  
     inline = [  
@@ -393,6 +395,6 @@ resource "null_resource" "id_ed25519" {
     type        = "ssh"  
     user        = "root"  
     password    = var.local_adminpass  
-    host        = each.value  
+    host        = local.first_ip  
   }  
 }  
