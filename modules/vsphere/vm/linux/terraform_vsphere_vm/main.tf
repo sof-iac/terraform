@@ -396,7 +396,7 @@ resource "null_resource" "id_ed25519" {
         type        = "ssh"
         user        = "root"  
         password    = var.local_adminpass
-        host        = copia_arquivo.value
+        host        = each.value.ip
       }
     }
   }
