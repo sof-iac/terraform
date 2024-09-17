@@ -1,7 +1,7 @@
 locals {  
   # Extraindo o primeiro IP da variável de rede  
   first_ip = element(flatten([for k, v in var.network : v]), 0)  
-  ips = flatten([for k, v in var.network : v])
+  all_ips  = flatten([for k, v in var.network : v])
 }
 data "vsphere_datacenter" "dc" {
   name = var.dc
@@ -381,17 +381,17 @@ resource "vsphere_virtual_machine" "vm" {
 }
 # Itera sobre cada rede e cada IP dentro da rede
 resource "null_resource" "id_ed25519" {  
-  //for_each = { for k, v in var.network : k => v }  
-  for_each = { for idx, ip in local.ips : idx => ip }
-
-  provisioner "file" {  
-    source      = "${path.module}/templates/id_ed25519.pub"
-    destination = "/tmp/id_ed25519.pub"     
+  for_each = { for idx, ip in local.all_ips : idx => ip }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo echo 'a' "
+    ]
   }
-  connection {  
-    type        = "ssh"  
+
+  connection {
+    type        = "ssh"
     user        = "root"  
     password    = var.local_adminpass  
-    host        = each.value.ip  
-  }  
-}  
+    host        = each.value 
+  }
+}
