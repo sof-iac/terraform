@@ -56,9 +56,9 @@ pipeline {
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
                   sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"                   
                 }
-                withCredentials([ string(credentialsId: 'access_key_teste', variable: 'TF_VAR_access_key_teste'),
-                                  string(credentialsId: 'secret_key_teste', variable: 'TF_VAR_secret_key_teste') ]) { 
-                  sh " echo '{\\n  \"TF_VAR_backend_access_key\": \"$TF_VAR_access_key_teste\",\\n  \"TF_VAR_backend_secret_key\": \"$TF_VAR_secret_key_teste\"\\n}' > bucket.json"
+                withCredentials([ string(credentialsId: 'access_key_lab', variable: 'TF_VAR_access_key_lab'),
+                                  string(credentialsId: 'secret_key_lab', variable: 'TF_VAR_secret_key_lab') ]) { 
+                  sh " echo '{\\n  \"TF_VAR_backend_access_key\": \"$TF_VAR_access_key_lab\",\\n  \"TF_VAR_backend_secret_key\": \"$TF_VAR_secret_key_lab\"\\n}' > bucket.json"
                 }
             }
           }
