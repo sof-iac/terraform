@@ -44,11 +44,6 @@ pipeline {
         steps {
             script {
               dir("${Datacenter}/${Site}/envs/${Ambiente}") {
-                // define the secrets and the env variables
-                def cert_minio = [
-                    [path: 'secrets/certificados/minio.sof.intra', engineVersion: 2, secretValues: [
-                        [envVar: 'minio_cert', vaultKey: 'minio_cert']]]
-                ]
                 // Retorna a chave de conexao com o vcenter
                 def secrets_vcenter = [
                     [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
@@ -59,13 +54,6 @@ pipeline {
                 def configuration = [vaultUrl: 'https://vault.app.sof.intra',
                                       vaultCredentialId: 'token_vault',
                                       engineVersion: 2]
-
-                // inside this block your credentials will be available as env variables
-                withVault([configuration: configuration, vaultSecrets: cert_minio]) {
-                    sh 'printf "%s" "$minio_cert" > /etc/ssl/certs/minio.pem 2>&1 >/dev/null'
-                    sh 'printf "%s" "$minio_cert" > minio.pem 2>&1 >/dev/null'
-                    sh 'update-ca-certificates'
-                }
 
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
                   sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"                   
