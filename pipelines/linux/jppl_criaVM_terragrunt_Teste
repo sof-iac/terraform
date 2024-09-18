@@ -34,7 +34,6 @@ pipeline {
                     export VAULT_TOKEN=${env.VAULT_TOKEN}
                     vault kv get -field=minio_cert ${secretPath} > ${outputFile}  
                 """  
-
                 // Executa o comando  
                 sh command  
             }  

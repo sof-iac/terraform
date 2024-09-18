@@ -12,18 +12,36 @@ pipeline {
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
       text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
       choice(name: 'distro', choices: ['ubuntu', 'centos', 'orcl','rocklinux'], description: 'Distribuição Linux')  
+      password(name: 'VM_PASS', description: 'Senha para a máquina virtual')
     }
-
+    environment {
+       TF_VAR_VM_PASS="${VM_PASS}"
+       VAULT_ADDR = 'https://vault.app.sof.intra' // URL do seu servidor Vault  
+       VAULT_TOKEN = credentials('vault_token_text') // Usando credenciais do Jenkins  
+    }
     stages {
+      stage('Download Certificate') {  
+        steps {  
+            script {  
+                // Exemplo: O caminho do segredo que contém o certificado  
+                def secretPath = 'secrets/certificados/minio.sof.intra'  
+                def outputFile = '/etc/ssl/certs/minio.pem'  
+
+                // Comando para baixar o certificado  
+                def command = """  
+                    export VAULT_ADDR=${env.VAULT_ADDR}  
+                    export VAULT_TOKEN=${env.VAULT_TOKEN}
+                    vault kv get -field=minio_cert ${secretPath} > ${outputFile}  
+                """  
+                // Executa o comando  
+                sh command  
+            }  
+        }  
+      } 
       stage('Retornando as chaves publica e certificados') {
         steps {
             script {
               dir("${Datacenter}/${Site}/envs/${Ambiente}") {
-                // define the secrets and the env variables
-                def cert_minio = [
-                    [path: 'secrets/certificados/minio.sof.intra', engineVersion: 2, secretValues: [
-                        [envVar: 'minio.pem', vaultKey: 'minio.pem']]]
-                ]
                 // Retorna a chave de conexao com o vcenter
                 def secrets_vcenter = [
                     [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
@@ -35,14 +53,12 @@ pipeline {
                                       vaultCredentialId: 'token_vault',
                                       engineVersion: 2]
 
-                // inside this block your credentials will be available as env variables
-                withVault([configuration: configuration, vaultSecrets: cert_minio]) {
-                    sh 'echo $minio.pem > minio.pem'
-                }
-
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
                   sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"                   
-                  // sh 'echo $passwd_vcenter > secrets.txt'
+                }
+                withCredentials([ string(credentialsId: 'access_key_teste', variable: 'TF_VAR_access_key_teste'),
+                                  string(credentialsId: 'secret_key_teste', variable: 'TF_VAR_secret_key_teste') ]) { 
+                  sh " echo '{\\n  \"TF_VAR_backend_access_key\": \"$TF_VAR_access_key_teste\",\\n  \"TF_VAR_backend_secret_key\": \"$TF_VAR_secret_key_teste\"\\n}' > bucket.json"
                 }
             }
           }
@@ -66,8 +82,14 @@ pipeline {
                 {
                     sh """ terragrunt ${init}  """
                 }
-                sh """ terragrunt plan -lock=${lock} """ 
-                }                            
+               withEnv(["TF_VAR_VM_PASS=$VM_PASS", "TF_VAR_DISTRO=$Distro"]) {  
+                // Comandos que usam as variáveis definidas  
+                sh """ 
+                  export TF_VAR_VM_PASS=${VM_PASS}
+                  export TF_VAR_DISTRO=${Distro}
+                  terragrunt plan -lock=${lock}  """ 
+                }     
+              }                       
             }          
           }
       }
@@ -76,7 +98,13 @@ pipeline {
             script {           
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
                 // export TF_LOG=DEBUG; 
-                sh """ terragrunt apply -auto-approve -lock=${lock} """                                            
+               withEnv(["TF_VAR_VM_PASS=$VM_PASS", "TF_VAR_DISTRO=$Distro"]) {  
+                // Comandos que usam as variáveis definidas                  
+                sh """ 
+                  export TF_VAR_VM_PASS=${VM_PASS}
+                  export TF_VAR_DISTRO=${Distro}
+                  terragrunt apply -auto-approve -lock=${lock} """  
+               }                               
               }
             }          
           }                     
