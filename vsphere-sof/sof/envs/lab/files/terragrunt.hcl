@@ -26,8 +26,9 @@ provider "vsphere" {
 }
 EOF
 }
-
+# "${local.backend_secret_key}"
 # Configure S3 as a backend
+# "${local.backend_access_key}"
 generate "backend" {
   path = "backend.tf"
   if_exists = "overwrite_terragrunt"
@@ -40,8 +41,8 @@ generate "backend" {
         dynamodb = "https://dynamodb.sof.intra"
       }
       key            = "${path_relative_to_include()}/terraform_test.tfstate"
-      access_key     = "${local.backend_access_key}"
-      secret_key     = "${local.backend_secret_key}"
+      access_key     = "softflab" 
+      secret_key     = "px8YVerl7uFw1Iz1VyszAlh97bfepiXjHJD9XYvr" 
       region         = "us-east-1"
       skip_credentials_validation = true  # Skip AWS related checks and validations
       skip_requesting_account_id = true
