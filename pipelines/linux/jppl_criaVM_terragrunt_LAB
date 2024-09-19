@@ -69,7 +69,7 @@ pipeline {
                 // define the secrets and the env variables
                 def cert_minio = [
                     [path: 'secrets/certificados/minio.sof.intra', engineVersion: 2, secretValues: [
-                        [envVar: 'minio_cert_CA', vaultKey: 'minio_cert_CA']]]
+                        [envVar: 'minio_cert_2', vaultKey: 'minio_cert_CA']]]
                 ]                
                 // Retorna a chave de conexao com o vcenter
                 def secrets_vcenter = [
@@ -83,7 +83,7 @@ pipeline {
                                       engineVersion: 2]
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: cert_minio]) {  
-                    sh 'printf "%s" "$minio_cert_CA" > minio.pem > /dev/null 2>&1'  
+                    sh 'printf "%s" "$minio_cert_2" > minio.pem > /dev/null 2>&1'  
                 }  
 
                 withVault([configuration: configuration, vaultSecrets: AC_Raiz_SOF]) {  
