@@ -87,6 +87,7 @@ pipeline {
                 sh """ 
                   export TF_VAR_VM_PASS=${VM_PASS}
                   export TF_VAR_DISTRO=${Distro}
+                  export AWS_VERIFY_SSL=false 
                   terragrunt plan -lock=${lock}  """ 
                 }     
               }                       
