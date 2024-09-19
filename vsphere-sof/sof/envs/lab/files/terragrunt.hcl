@@ -37,7 +37,7 @@ generate "backend" {
         s3 = "https://sof-s3.sof.intra"   # Minio endpoint
         dynamodb = "https://dynamodb.sof.intra"
       }
-      key            = "${path_relative_to_include()}/terraform_test.tfstate"
+      key            = "${path_relative_to_include()}/terraform_lab.tfstate"
       access_key     = "softflab" 
       secret_key     = "px8YVerl7uFw1Iz1VyszAlh97bfepiXjHJD9XYvr" 
       region         = "us-east-1"
