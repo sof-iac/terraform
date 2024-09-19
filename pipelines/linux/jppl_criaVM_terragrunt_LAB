@@ -29,11 +29,12 @@ pipeline {
                 def outputFile = '/etc/ssl/certs/minio.pem'  
 
                 // Comando para baixar o certificado  
+                // vault kv get -field=minio_cert ${secretPath} > minio.pem
                 def command = """  
                     export VAULT_ADDR=${env.VAULT_ADDR}  
                     export VAULT_TOKEN=${env.VAULT_TOKEN}
                     vault kv get -field=minio_cert ${secretPath} > ${outputFile}  
-                    vault kv get -field=minio_cert ${secretPath} > minio.pem
+                    
                     update-ca-certificates
                 """  
                 // Executa o comando  
@@ -46,6 +47,11 @@ pipeline {
         steps {
             script {
               dir("${Datacenter}/${Site}/envs/${Ambiente}") {
+                // define the secrets and the env variables
+                def cert_minio = [
+                    [path: 'secrets/certificados/minio.sof.intra', engineVersion: 2, secretValues: [
+                        [envVar: 'minio.pem', vaultKey: 'minio.pem']]]
+                ]                
                 // Retorna a chave de conexao com o vcenter
                 def secrets_vcenter = [
                     [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
@@ -56,6 +62,10 @@ pipeline {
                 def configuration = [vaultUrl: 'https://vault.app.sof.intra',
                                       vaultCredentialId: 'token_vault',
                                       engineVersion: 2]
+                // inside this block your credentials will be available as env variables
+                withVault([configuration: configuration, vaultSecrets: cert_minio]) {
+                    sh 'echo $minio.pem > minio.pem'
+                }
 
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
                   sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"                   
