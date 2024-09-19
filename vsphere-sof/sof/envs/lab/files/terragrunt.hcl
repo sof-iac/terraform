@@ -45,7 +45,7 @@ generate "backend" {
       secret_key     = "px8YVerl7uFw1Iz1VyszAlh97bfepiXjHJD9XYvr" 
       region         = "us-east-1"
       skip_credentials_validation = true  # Skip AWS related checks and validations
-      custom_ca_bundle = "./minio.pem"
+      custom_ca_bundle = "minio.pem"
       skip_requesting_account_id = true
       skip_metadata_api_check = true
       skip_region_validation = true
