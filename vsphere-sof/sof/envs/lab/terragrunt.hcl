@@ -42,7 +42,7 @@ generate "backend" {
       secret_key     = "${local.backend_secret_key}"
       region         = "us-east-1"
       skip_credentials_validation = true  # Skip AWS related checks and validations
-      custom_ca_bundle = var.minio_pem
+      custom_ca_bundle = "${var.minio_pem}"
       skip_requesting_account_id = true
       skip_metadata_api_check = true
       skip_region_validation = true
