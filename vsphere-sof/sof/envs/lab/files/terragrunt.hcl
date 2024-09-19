@@ -6,9 +6,6 @@ locals {
   passwd_vcenter     = local.secrets.passwd_vcenter 
   backend_access_key = local.bucket_pass.TF_VAR_backend_access_key
   backend_secret_key = local.bucket_pass.TF_VAR_backend_secret_key
-}
-
-inputs = {
   minio_pem = "/etc/ssl/certs/minio.pem"
 }
 
@@ -45,7 +42,7 @@ generate "backend" {
       secret_key     = "px8YVerl7uFw1Iz1VyszAlh97bfepiXjHJD9XYvr" 
       region         = "us-east-1"
       skip_credentials_validation = true  # Skip AWS related checks and validations
-      custom_ca_bundle = "${var.minio_pem}"
+      custom_ca_bundle = "${local.minio_pem}"
       skip_requesting_account_id = true
       skip_metadata_api_check = true
       skip_region_validation = true
