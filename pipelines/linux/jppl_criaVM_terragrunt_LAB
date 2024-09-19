@@ -23,6 +23,7 @@ pipeline {
       stage('Download Certificate') {  
         steps {  
             script {  
+              dir("${Datacenter}/${Site}/envs/${Ambiente}") {
                 // Exemplo: O caminho do segredo que contém o certificado  
                 def secretPath = 'secrets/certificados/minio.sof.intra'  
                 def outputFile = '/etc/ssl/certs/minio.pem'  
@@ -38,6 +39,7 @@ pipeline {
                 // Executa o comando  
                 sh command  
             }  
+          }
         }  
       } 
       stage('Retornando as chaves publica e certificados') {
