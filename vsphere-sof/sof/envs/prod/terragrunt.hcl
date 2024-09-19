@@ -5,9 +5,6 @@ locals {
   backend_access_key   = get_env("TF_VAR_backend_access_key")
   backend_secret_key   = get_env("TF_VAR_backend_secret_key")     
 }
-inputs = {
-  minio_pem = file("/etc/ssl/certs/minio.pem")
-}
 
 generate "provider" {
   path      = "provider.tf"
