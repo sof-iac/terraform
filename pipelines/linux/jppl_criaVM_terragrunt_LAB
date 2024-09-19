@@ -82,22 +82,25 @@ pipeline {
                                       vaultCredentialId: 'token_vault',
                                       engineVersion: 2]
                 // inside this block your credentials will be available as env variables
-                withVault([configuration: configuration, vaultSecrets: cert_minio]) {
-                    sh 'echo $minio_cert_CA> minio.pem'
-                }
-                withVault([configuration: configuration, vaultSecrets: AC_Raiz_SOF]) {
-                    sh 'echo $AC_Raiz_SOF> /etc/ssl/certs/Autoridade_Certificadora_Raiz_SOF.crt'
-                }
-                withVault([configuration: configuration, vaultSecrets: CA_RaizSOF]) {
-                    sh 'echo $CA_RaizSOF> /etc/ssl/certs/CA-RaizSOF.crt'
-                }
-                withVault([configuration: configuration, vaultSecrets: CA_RaizSOFv2]) {
-                    sh 'echo $CA_RaizSOFv2> /etc/ssl/certs/CA-RaizSOFv2.crt'
-                }
-                withVault([configuration: configuration, vaultSecrets: ca_certificates]) {
-                    sh 'echo $ca_certificates> /etc/ssl/certs/ca-certificates.crt'
-                }                                                                
+                withVault([configuration: configuration, vaultSecrets: cert_minio]) {  
+                    sh 'printf "%s" "$minio_cert_CA" > minio.pem > /dev/null 2>&1'  
+                }  
 
+                withVault([configuration: configuration, vaultSecrets: AC_Raiz_SOF]) {  
+                    sh 'printf "%s" "$AC_Raiz_SOF" > /etc/ssl/certs/Autoridade_Certificadora_Raiz_SOF.crt > /dev/null 2>&1'  
+                }  
+
+                withVault([configuration: configuration, vaultSecrets: CA_RaizSOF]) {  
+                    sh 'printf "%s" "$CA_RaizSOF" > /etc/ssl/certs/CA-RaizSOF.crt > /dev/null 2>&1'  
+                }  
+
+                withVault([configuration: configuration, vaultSecrets: CA_RaizSOFv2]) {  
+                    sh 'printf "%s" "$CA_RaizSOFv2" > /etc/ssl/certs/CA-RaizSOFv2.crt > /dev/null 2>&1'  
+                }  
+
+                withVault([configuration: configuration, vaultSecrets: ca_certificates]) {  
+                    sh 'printf "%s" "$ca_certificates" > /etc/ssl/certs/ca-certificates.crt > /dev/null 2>&1'  
+                }
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
                   sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"                   
                 }
