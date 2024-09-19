@@ -44,8 +44,6 @@ generate "backend" {
       key            = "${path_relative_to_include()}/terraform_prod.tfstate"
       access_key     = "${local.backend_access_key}"
       secret_key     = "${local.backend_secret_key}"
-      AWS_ACCESS_KEY_ID = "softfprod"
-      AWS_SECRET_ACCESS_KEY = "aaLj9DvFB2jW8bsrfcrg7jve1AyPXTYj1Bq3LcPf"
       region         = "us-east-1"
       skip_credentials_validation = true  # Skip AWS related checks and validations
       skip_requesting_account_id = true
