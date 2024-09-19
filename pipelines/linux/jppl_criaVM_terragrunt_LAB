@@ -64,7 +64,7 @@ pipeline {
                                       engineVersion: 2]
                 // inside this block your credentials will be available as env variables
                 withVault([configuration: configuration, vaultSecrets: cert_minio]) {
-                    sh 'echo $minio_cert> minio.pem'
+                    sh 'echo $minio_pem> minio.pem'
                 }
 
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
