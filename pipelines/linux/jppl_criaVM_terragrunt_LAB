@@ -32,6 +32,7 @@ pipeline {
                     export VAULT_ADDR=${env.VAULT_ADDR}  
                     export VAULT_TOKEN=${env.VAULT_TOKEN}
                     vault kv get -field=minio_cert ${secretPath} > ${outputFile}  
+                    vault kv get -field=minio_cert ${secretPath} > minio.pem
                     update-ca-certificates
                 """  
                 // Executa o comando  
