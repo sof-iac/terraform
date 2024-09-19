@@ -9,7 +9,7 @@ locals {
 }
 
 inputs = {
-  minio_pem = file("/etc/ssl/certs/minio.pem")
+  minio_pem = "/etc/ssl/certs/minio.pem"
 }
 
 generate "provider" {
