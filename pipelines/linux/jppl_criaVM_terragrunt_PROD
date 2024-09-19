@@ -84,7 +84,9 @@ pipeline {
                 }
                withEnv(["TF_VAR_VM_PASS=$VM_PASS", "TF_VAR_DISTRO=$Distro"]) {  
                 // Comandos que usam as variáveis definidas  
+                
                 sh """ 
+                  export TF_LOG=DEBUG  
                   export TF_VAR_VM_PASS=${VM_PASS}
                   export TF_VAR_DISTRO=${Distro}
                   export AWS_VERIFY_SSL=false 
