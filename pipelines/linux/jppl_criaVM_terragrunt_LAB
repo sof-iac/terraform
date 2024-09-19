@@ -48,6 +48,25 @@ pipeline {
             script {
               dir("${Datacenter}/${Site}/envs/${Ambiente}") {
                 // define the secrets and the env variables
+                def AC_Raiz_SOF = [
+                    [path: 'secrets/certificados/cadeia-certificados-sof', engineVersion: 2, secretValues: [
+                        [envVar: 'AC_Raiz_SOF', vaultKey: 'Autoridade_Certificadora_Raiz_SOF.crt']]]
+                ] 
+                // define the secrets and the env variables
+                def CA_RaizSOFv2 = [
+                    [path: 'secrets/certificados/cadeia-certificados-sof', engineVersion: 2, secretValues: [
+                        [envVar: 'CA_RaizSOFv2', vaultKey: 'CA-RaizSOFv2.crt']]]
+                ]                                 
+                // define the secrets and the env variables
+                def CA_RaizSOF = [
+                    [path: 'secrets/certificados/cadeia-certificados-sof', engineVersion: 2, secretValues: [
+                        [envVar: 'CA_RaizSOF', vaultKey: 'CA-RaizSOF.crt']]]
+                ]                 
+                def ca_certificates = [
+                    [path: 'secrets/certificados/cadeia-certificados-sof', engineVersion: 2, secretValues: [
+                        [envVar: 'ca_certificates', vaultKey: 'ca-certificates.crt']]]
+                ] 
+                // define the secrets and the env variables
                 def cert_minio = [
                     [path: 'secrets/certificados/minio.sof.intra', engineVersion: 2, secretValues: [
                         [envVar: 'minio_pem', vaultKey: 'minio_cert']]]
@@ -66,6 +85,18 @@ pipeline {
                 withVault([configuration: configuration, vaultSecrets: cert_minio]) {
                     sh 'echo $minio_pem> minio.pem'
                 }
+                withVault([configuration: configuration, vaultSecrets: AC_Raiz_SOF]) {
+                    sh 'echo $AC_Raiz_SOF> /etc/ssl/certs/Autoridade_Certificadora_Raiz_SOF.crt'
+                }
+                withVault([configuration: configuration, vaultSecrets: CA_RaizSOF]) {
+                    sh 'echo $CA_RaizSOF> /etc/ssl/certs/CA-RaizSOF.crt'
+                }
+                withVault([configuration: configuration, vaultSecrets: CA_RaizSOFv2]) {
+                    sh 'echo $CA_RaizSOFv2> /etc/ssl/certs/CA-RaizSOFv2.crt'
+                }
+                withVault([configuration: configuration, vaultSecrets: ca_certificates]) {
+                    sh 'echo $ca_certificates> /etc/ssl/certs/ca-certificates.crt'
+                }                                                                
 
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
                   sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"                   
@@ -82,6 +113,7 @@ pipeline {
           steps {
             script {           
               dir("${Datacenter}/${Site}/envs/${Ambiente}/files") {    
+                sh 'update-ca-certificates'
                 sh 'cp terragrunt.hcl ../'   
               }
             }
