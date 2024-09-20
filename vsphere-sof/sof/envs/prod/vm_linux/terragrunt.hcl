@@ -7,11 +7,17 @@ terraform {
   source = "../../../../../modules/vsphere/vm/linux"  # Caminho relativo ao terragrunt.hcl
 }
 
+locals {  
+  TF_VAR_VM_PASS = get_env("TF_VAR_VM_PASS")
+  TF_VAR_DISTRO  = get_env("TF_VAR_DISTRO")
+}  
+
 inputs = {
   vm = {
     "PSBD28" = {
         template          = "templateubuntu2204_ansible"
         instances         = 1
+        vmstartcount      = 1        
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Storage_Purestorage"
         datastore         = "Storage_Purestorage"
@@ -22,6 +28,8 @@ inputs = {
         gateway           = "192.168.250.1"
         cpu               = 8
         memory            = 8192
+        local_adminpass   = "${local.TF_VAR_VM_PASS}"
+        distro            = "${local.TF_VAR_DISTRO}"        
         network_type      = ["vmxnet3"]
         annotation        = "Servidor que subsituira o PSBD18 - 06/09/2024 - Rogerio Vieira Silva"
         tags = {
