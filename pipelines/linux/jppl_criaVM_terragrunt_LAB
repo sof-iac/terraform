@@ -19,58 +19,11 @@ pipeline {
        VAULT_ADDR = 'https://vault.app.sof.intra' // URL do seu servidor Vault  
        VAULT_TOKEN = credentials('vault_token_text') // Usando credenciais do Jenkins  
     }
-    stages {
-      stage('Download Certificate') {  
-        steps {  
-            script {  
-              dir("${Datacenter}/${Site}/envs/${Ambiente}") {
-                // Exemplo: O caminho do segredo que contém o certificado  
-                def secretPath = 'secrets/certificados/minio.sof.intra'  
-                def outputFile = '/etc/ssl/certs/minio.pem'  
-
-                // Comando para baixar o certificado  
-                // vault kv get -field=minio_cert ${secretPath} > minio.pem
-                def command = """  
-                    export VAULT_ADDR=${env.VAULT_ADDR}  
-                    export VAULT_TOKEN=${env.VAULT_TOKEN}
-                    vault kv get -field=minio_cert ${secretPath} > ${outputFile}  
-                    
-                    update-ca-certificates
-                """  
-                // Executa o comando  
-                sh command  
-            }  
-          }
-        }  
-      } 
-      stage('Retornando as chaves publica e certificados') {
+    stages { 
+      stage('Retornando as chaves publicas') {
         steps {
             script {
-              dir("${Datacenter}/${Site}/envs/${Ambiente}") {
-                // define the secrets and the env variables
-                def AC_Raiz_SOF = [
-                    [path: 'secrets/certificados/cadeia-certificados-sof', engineVersion: 2, secretValues: [
-                        [envVar: 'AC_Raiz_SOF', vaultKey: 'Autoridade_Certificadora_Raiz_SOF.crt']]]
-                ] 
-                // define the secrets and the env variables
-                def CA_RaizSOFv2 = [
-                    [path: 'secrets/certificados/cadeia-certificados-sof', engineVersion: 2, secretValues: [
-                        [envVar: 'CA_RaizSOFv2', vaultKey: 'CA-RaizSOFv2.crt']]]
-                ]                                 
-                // define the secrets and the env variables
-                def CA_RaizSOF = [
-                    [path: 'secrets/certificados/cadeia-certificados-sof', engineVersion: 2, secretValues: [
-                        [envVar: 'CA_RaizSOF', vaultKey: 'CA-RaizSOF.crt']]]
-                ]                 
-                def ca_certificates = [
-                    [path: 'secrets/certificados/cadeia-certificados-sof', engineVersion: 2, secretValues: [
-                        [envVar: 'ca_certificates', vaultKey: 'ca-certificates.crt']]]
-                ] 
-                // define the secrets and the env variables
-                def cert_minio = [
-                    [path: 'secrets/certificados/minio.sof.intra', engineVersion: 2, secretValues: [
-                        [envVar: 'minio_cert_2', vaultKey: 'minio_cert_CA']]]
-                ]                
+              dir("${Datacenter}/${Site}/envs/${Ambiente}") {               
                 // Retorna a chave de conexao com o vcenter
                 def secrets_vcenter = [
                     [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
@@ -81,26 +34,7 @@ pipeline {
                 def configuration = [vaultUrl: 'https://vault.app.sof.intra',
                                       vaultCredentialId: 'token_vault',
                                       engineVersion: 2]
-                // inside this block your credentials will be available as env variables
-                withVault([configuration: configuration, vaultSecrets: cert_minio]) {  
-                    sh 'printf "%s" "$minio_cert_2" > minio.pem > /dev/null 2>&1'  
-                }  
 
-                withVault([configuration: configuration, vaultSecrets: AC_Raiz_SOF]) {  
-                    sh 'printf "%s" "$AC_Raiz_SOF" > /etc/ssl/certs/Autoridade_Certificadora_Raiz_SOF.crt > /dev/null 2>&1'  
-                }  
-
-                withVault([configuration: configuration, vaultSecrets: CA_RaizSOF]) {  
-                    sh 'printf "%s" "$CA_RaizSOF" > /etc/ssl/certs/CA-RaizSOF.crt > /dev/null 2>&1'  
-                }  
-
-                withVault([configuration: configuration, vaultSecrets: CA_RaizSOFv2]) {  
-                    sh 'printf "%s" "$CA_RaizSOFv2" > /etc/ssl/certs/CA-RaizSOFv2.crt > /dev/null 2>&1'  
-                }  
-
-                withVault([configuration: configuration, vaultSecrets: ca_certificates]) {  
-                    sh 'printf "%s" "$ca_certificates" > /etc/ssl/certs/ca-certificates.crt > /dev/null 2>&1'  
-                }
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
                   sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"                   
                 }
