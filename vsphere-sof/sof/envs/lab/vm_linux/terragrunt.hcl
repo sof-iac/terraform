@@ -13,7 +13,7 @@ locals {
 
 inputs = {
   vm = {
-    "testetf" = {
+    "labtf" = {
         template          = "templateubuntu2204_ansible"
         instances         = 1
         vmstartcount      = 1
@@ -66,7 +66,7 @@ inputs = {
           }  
         }
     },  
-    "orcl01" = {
+    "orcl" = {
         template          = "templateoraclelinux810"
         instances         = 1
         vmstartcount      = 1        
