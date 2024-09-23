@@ -71,8 +71,8 @@ inputs = {
         }
     }, 
     "orcl02" = {
-        template          = "configurandotemplateoraclelinux810"
-        instances         = 1
+        template          = "templateoraclelinux810"
+        instances         = 2
         vmstartcount      = 1        
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Storage_Purestorage"
