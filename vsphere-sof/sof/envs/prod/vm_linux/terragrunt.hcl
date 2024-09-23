@@ -34,6 +34,7 @@ inputs = {
         annotation        = "Servidor que subsituira o PSBD18 - 06/09/2024 - Rogerio Vieira Silva"
         tags = {
           "Origem"    = "Terraform"
+          "Ambiente"  = "Prod"
         }
         # Adicionando discos adicionais  
         data_disk = {  

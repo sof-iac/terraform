@@ -33,6 +33,7 @@ inputs = {
         annotation        = "Servidor de LAb - 09/09/2024 - Rogerio Vieira Silva"
         tags = {
           "Origem"    = "Terraform"
+          "Ambiente"  = "Lab"
         }         
         # Adicionando discos adicionais  
         data_disk = {  
@@ -87,6 +88,7 @@ inputs = {
         annotation        = "Servidor de LAb - 09/09/2024 - Rogerio Vieira Silva"
         tags = {
           "Origem"    = "Terraform"
+          "Ambiente"  = "Lab"
         }          
     }
   }     
