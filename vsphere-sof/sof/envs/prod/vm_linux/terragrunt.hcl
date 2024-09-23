@@ -35,6 +35,7 @@ inputs = {
         tags = {
           "Origem"    = "Terraform"
           "Ambiente"  = "Prod"
+          "Aplicacao" = "Mariadb"
         }
         # Adicionando discos adicionais  
         data_disk = {  
