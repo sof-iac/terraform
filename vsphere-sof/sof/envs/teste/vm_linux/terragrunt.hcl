@@ -14,16 +14,16 @@ locals {
 
 inputs = {
   vm = {
-    "TIBU" = {
+    "ubuntu" = {
         template          = "templateubuntu2204_ansible"
         instances         = 1
-        vmstartcount      = 2
+        vmstartcount      = 1
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Storage_Purestorage"
         datastore         = "Storage_Purestorage"
         resource_pool     = "Blade_Atreus/Resources"
         vsphere_cluster   = "Blade_Atreus"
-        network           = {"PG_Atlas_Teste" = ["192.168.30.177"]}
+        network           = {"PG_Atlas_Teste" = ["192.168.30.172"]}
         dns_server_list   = ["172.27.3.5", "172.27.3.6"]
         mask              = ["24"]
         gateway           = "192.168.30.1"
@@ -72,7 +72,7 @@ inputs = {
     }, 
     "orcl02" = {
         template          = "templateoraclelinux810"
-        instances         = 2
+        instances         = 1
         vmstartcount      = 1        
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Storage_Purestorage"
@@ -82,7 +82,7 @@ inputs = {
         local_adminpass   = "${local.TF_VAR_VM_PASS}"
         distro            = "${local.TF_VAR_DISTRO}" 
         network_type      = ["vmxnet3"]
-        network           = {"PG_Atlas_Teste" = ["192.168.30.172", "192.168.30.177"}
+        network           = {"PG_Atlas_Teste" = ["192.168.30.177"}
         mask              = ["24"]
         gateway           = "192.168.30.1"
         cpu               = 2
@@ -91,7 +91,7 @@ inputs = {
         annotation        = "Servidor de LAb - 09/09/2024 - Rogerio Vieira Silva"
         tags = {
           "Origem"    = "Terraform"
-          "Ambiente"  = "Lab"
+          "Ambiente"  = "Teste"
         }          
     }    
   }     
