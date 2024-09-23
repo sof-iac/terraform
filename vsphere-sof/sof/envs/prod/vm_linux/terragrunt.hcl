@@ -14,10 +14,10 @@ locals {
 
 inputs = {
   vm = {
-    "PSBD28" = {
+    "PSBD" = {
         template          = "templateubuntu2204_ansible"
         instances         = 1
-        vmstartcount      = 1        
+        vmstartcount      = 28        
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Storage_Purestorage"
         datastore         = "Storage_Purestorage"
