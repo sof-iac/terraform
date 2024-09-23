@@ -69,119 +69,31 @@ inputs = {
             path                   = null  
           }  
         }
-    },
-    "TABU" = {
-        template          = "templateubuntu2204_ansible"
+    }, 
+    "orcl02" = {
+        template          = "configurandotemplateoraclelinux810"
         instances         = 1
-        vmstartcount      = 2
+        vmstartcount      = 1        
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Storage_Purestorage"
         datastore         = "Storage_Purestorage"
         resource_pool     = "Blade_Atreus/Resources"
         vsphere_cluster   = "Blade_Atreus"
-        network           = {"PG_Atlas_Teste" = ["192.168.30.176"]}
-        dns_server_list   = ["172.27.3.5", "172.27.3.6"]
+        local_adminpass   = "${local.TF_VAR_VM_PASS}"
+        distro            = "${local.TF_VAR_DISTRO}" 
+        network_type      = ["vmxnet3"]
+        network           = {"PG_Atlas_Teste" = ["192.168.30.172"]}
         mask              = ["24"]
         gateway           = "192.168.30.1"
         cpu               = 2
         memory            = 8192
-        local_adminpass   = "${local.TF_VAR_VM_PASS}"
-        distro            = "${local.TF_VAR_DISTRO}"
-        network_type      = ["vmxnet3"]
-        annotation        = "Servidor de Teste - 09/09/2024 - Rogerio Vieira Silva"
+        data_disk         = {}
+        annotation        = "Servidor de LAb - 09/09/2024 - Rogerio Vieira Silva"
         tags = {
           "Origem"    = "Terraform"
-          "Ambiente"  = "Teste"
-          "Aplicacao" = "Postgres"
-        }        
-        # Adicionando discos adicionais  
-        data_disk = {  
-          "disk_A1" = {  
-            size_gb                = 12  
-            unit_number            = 3  
-            thin_provisioned       = true  
-            eagerly_scrub          = false  
-            #datastore_id           = "Storage_Purestorage"  
-            storage_policy_id      = null  
-            io_reservation         = null  
-            io_share_level         = "normal"  
-            disk_mode              = null  
-            disk_sharing           = null  
-            attach                 = null  
-            path                   = null  
-          },  
-          "disk_A2" = {  
-            size_gb                = 8  
-            unit_number            = 4  
-            thin_provisioned       = true  
-            eagerly_scrub          = false  
-            #datastore_id           = "Storage_Purestorage"  
-            storage_policy_id      = null  
-            io_reservation         = null  
-            io_share_level         = "normal"  
-            disk_mode              = null  
-            disk_sharing           = null  
-            attach                 = null  
-            path                   = null  
-          }  
-        }
-    },
-    "TUEL" = {
-        template          = "templateubuntu2204_ansible"
-        instances         = 2
-        vmstartcount      = 2
-        datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
-        datastore_cluster = "Storage_Purestorage"
-        datastore         = "Storage_Purestorage"
-        resource_pool     = "Blade_Atreus/Resources"
-        vsphere_cluster   = "Blade_Atreus"
-        network           = {"PG_Atlas_Teste" = ["192.168.30.174","192.168.30.175"]}
-        dns_server_list   = ["172.27.3.5", "172.27.3.6"]
-        mask              = ["24"]
-        gateway           = "192.168.30.1"
-        cpu               = 2
-        memory            = 4096
-        local_adminpass   = "${local.TF_VAR_VM_PASS}"
-        distro            = "${local.TF_VAR_DISTRO}"
-        network_type      = ["vmxnet3"]
-        annotation        = "Servidor de Teste - 09/09/2024 - Rogerio Vieira Silva"
-        tags = {
-          "Origem"    = "Terraform"
-          "Ambiente"  = "Teste"
-          "Aplicacao" = "Postgres"
-        }        
-        # Adicionando discos adicionais  
-        data_disk = {  
-          "disk_A1" = {  
-            size_gb                = 10  
-            unit_number            = 3  
-            thin_provisioned       = true  
-            eagerly_scrub          = false  
-            #datastore_id           = "Storage_Purestorage"  
-            storage_policy_id      = null  
-            io_reservation         = null  
-            io_share_level         = "normal"  
-            disk_mode              = null  
-            disk_sharing           = null  
-            attach                 = null  
-            path                   = null  
-          },  
-          "disk_A2" = {  
-            size_gb                = 8  
-            unit_number            = 4  
-            thin_provisioned       = true  
-            eagerly_scrub          = false  
-            #datastore_id           = "Storage_Purestorage"  
-            storage_policy_id      = null  
-            io_reservation         = null  
-            io_share_level         = "normal"  
-            disk_mode              = null  
-            disk_sharing           = null  
-            attach                 = null  
-            path                   = null  
-          }  
-        }
-    }
+          "Ambiente"  = "Lab"
+        }          
+    }    
   }     
 }
 
