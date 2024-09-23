@@ -67,7 +67,7 @@ inputs = {
           }  
         }
     },  
-    "orcl" = {
+    "orcl0" = {
         template          = "K8s Template Oracle Linux 8"
         instances         = 1
         vmstartcount      = 1        
@@ -79,7 +79,7 @@ inputs = {
         local_adminpass   = "${local.TF_VAR_VM_PASS}"
         distro            = "${local.TF_VAR_DISTRO}" 
         network_type      = ["vmxnet3"]
-        network           = {"PG_Atlas_Teste" = ["192.168.30.173"]}
+        network           = {"PG_Atlas_Teste" = ["192.168.30.179"]}
         mask              = ["24"]
         gateway           = "192.168.30.1"
         cpu               = 2
