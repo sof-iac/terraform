@@ -68,7 +68,7 @@ inputs = {
         }
     },  
     "orcl0" = {
-        template          = "K8s Template Oracle Linux 8"
+        template          = "CentOS 8.3 - Template Basico"
         instances         = 1
         vmstartcount      = 1        
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
