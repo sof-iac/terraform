@@ -82,7 +82,7 @@ inputs = {
         local_adminpass   = "${local.TF_VAR_VM_PASS}"
         distro            = "${local.TF_VAR_DISTRO}" 
         network_type      = ["vmxnet3"]
-        network           = {"PG_Atlas_Teste" = ["192.168.30.177"}
+        network           = {"PG_Atlas_Teste" = ["192.168.30.177"]}
         mask              = ["24"]
         gateway           = "192.168.30.1"
         cpu               = 2
