@@ -43,9 +43,9 @@ pipeline {
                   sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"                   
                   // sh 'echo $passwd_vcenter > secrets.txt'
                 }
-                withCredentials([ string(credentialsId: 'access_key_teste', variable: 'TF_VAR_access_key_teste'),
-                                  string(credentialsId: 'secret_key_teste', variable: 'TF_VAR_secret_key_teste') ]) { 
-                  sh " echo '{\\n  \"TF_VAR_backend_access_key\": \"$TF_VAR_access_key_teste\",\\n  \"TF_VAR_backend_secret_key\": \"$TF_VAR_secret_key_teste\"\\n}' > bucket.json"
+                withCredentials([ string(credentialsId: 'access_key_prod', variable: 'TF_VAR_access_key_prod'),
+                                  string(credentialsId: 'secret_key_prod', variable: 'TF_VAR_secret_key_prod') ]) { 
+                  sh " echo '{\\n  \"TF_VAR_backend_access_key\": \"$TF_VAR_access_key_prod\",\\n  \"TF_VAR_backend_secret_key\": \"$TF_VAR_secret_key_prod\"\\n}' > bucket.json"
                 }                
             }
           }
