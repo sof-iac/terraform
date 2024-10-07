@@ -52,6 +52,11 @@ inputs = {
       category_name        = "Responsavel"
       tag_name             = "Rogerio Vieira Silva"
       tag_description      = "Responsável pela criacao"
+      },   
+    "Tags_Aplicacao_Elk" = {
+      category_name        = "Aplicacao"
+      tag_name             = "ELK"
+      tag_description      = "Pilha Elastic"
       }            
     }   
 }
