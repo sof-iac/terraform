@@ -7,6 +7,7 @@ pipeline {
       choice(name: 'Site', choices: [ 'sof', 'blocok'], description: 'Site')
       choice(name: 'Ambiente', choices: ['teste','lab','prod'], description: 'Ambiente')
       string(name: 'Diretorio', defaultValue: 'vm_linux', description: 'Nome do diretorio do projeto Terraform a executar')
+      string(name: 'Grupo', defaultValue: 'nome_do_grupo', description: 'Nome do grupo das VMs')
       choice(name: 'init', choices: [ 'nao', 'init', 'init -reconfigure','init -migrate-state'], description: 'Alterações no Tfsate')
       choice(name: 'lock', choices: ['true','false'], description: 'Lock do dynamodb')
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
@@ -76,8 +77,8 @@ pipeline {
       }                        
       stage('Terragrunt Plan') {
         steps {
-            script {           
-              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
+            script {  
+              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {    
                 // Executa o comando init do terragrunt
                 if("${init}" != 'nao')
                 {
@@ -97,7 +98,7 @@ pipeline {
       stage('Terragrunt Apply') {
           steps {
             script {           
-              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
+              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {
                 // export TF_LOG=DEBUG; 
                withEnv(["TF_VAR_VM_PASS=$VM_PASS", "TF_VAR_DISTRO=$Distro"]) {  
                 // Comandos que usam as variáveis definidas                  
