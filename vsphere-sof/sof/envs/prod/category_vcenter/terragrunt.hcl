@@ -23,7 +23,11 @@ inputs = {
     "category_aplicacao" = {
       category_name        = "Aplicacao"
       category_description = "A qual aplicacao se destina"
-      }                       
+      },
+    "category_owner" = {
+      category_name        = "Proprietario"
+      category_description = "Responsavel pelo recurso"
+      }        
     }   
 }
 
