@@ -49,7 +49,7 @@ inputs = {
       tag_description      = "Repositorios Ubuntu"
       },   
     "Tags_proprietario" = {
-      category_name        = "Proprietario"
+      category_name        = "Responsavel"
       tag_name             = "Rogerio Vieira Silva"
       tag_description      = "Responsável pela criacao"
       }            
