@@ -78,7 +78,7 @@ pipeline {
       stage('Terragrunt Plan') {
         steps {
             script {  
-              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {    
+              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}/${Grupo}") {     
                 // Executa o comando init do terragrunt
                 if("${init}" != 'nao')
                 {
@@ -98,7 +98,7 @@ pipeline {
       stage('Terragrunt Apply') {
           steps {
             script {           
-              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {
+              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}/${Grupo}") {     
                 // export TF_LOG=DEBUG; 
                withEnv(["TF_VAR_VM_PASS=$VM_PASS", "TF_VAR_DISTRO=$Distro"]) {  
                 // Comandos que usam as variáveis definidas                  
