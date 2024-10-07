@@ -36,6 +36,7 @@ inputs = {
           "Origem"    = "Terraform"
           "Ambiente"  = "Prod"
           "Aplicacao" = "Jenkins"
+          ""
         }
         # Adicionando discos adicionais  
         data_disk = {  
