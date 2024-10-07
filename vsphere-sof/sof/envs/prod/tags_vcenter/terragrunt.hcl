@@ -37,7 +37,17 @@ inputs = {
       category_name        = "Aplicacao"
       tag_name             = "Postgres"
       tag_description      = "Banco de dados Postgres"
-      }              
+      },
+    "Tags_Aplicacao_Jenkins" = {
+      category_name        = "Aplicacao"
+      tag_name             = "Jenkins"
+      tag_description      = "Servidores do Jenkins"
+      },   
+    "Tags_Aplicacao_repo_ubuntu" = {
+      category_name        = "Aplicacao"
+      tag_name             = "repositorio"
+      tag_description      = "Repositorios Ubuntu"
+      }         
     }   
 }
 
