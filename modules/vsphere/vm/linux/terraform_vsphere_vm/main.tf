@@ -341,6 +341,7 @@ resource "null_resource" "ansible" {
       "echo 'search sof.intra blocok.sof.remoto' >> /etc/resolv.conf",
       "echo '192.168.250.163         PREP02' >> /etc/hosts",
       "echo '192.168.250.125         PREP01' >> /etc/hosts"
+      "echo '172.27.3.125            PREP03' >> /etc/hosts"
     ]
   }  
   # Quando este recurso é criado, executa o seguinte script localmente para dar permissões ao usuario ansible

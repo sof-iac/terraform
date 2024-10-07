@@ -324,7 +324,7 @@ variable "hw_clock_utc" {
 
 variable "domain" {
   description = "default VM domain for linux guest customization and fqdn name (if fqdnvmname is true)."
-  default     = "Development.com"
+  default     = "sof.intra"
 }
 
 

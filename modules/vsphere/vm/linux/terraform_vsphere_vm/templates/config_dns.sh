@@ -11,6 +11,7 @@ case $distro in
     echo 'nameserver 172.27.3.6' | tee -a /etc/systemd/resolved.conf
     echo 'nameserver 172.27.3.7' | tee -a /etc/systemd/resolved.conf
     echo 'search sof.intra blocok.sof.remoto' | tee -a /etc/systemd/resolved.conf
+    echo 172.27.3.125            PREP03 | tee -a /etc/systemd/resolved.conf
     echo 192.168.250.163         PREP02 | tee -a /etc/systemd/resolved.conf
     echo 192.168.250.125         PREP01 | tee -a /etc/systemd/resolved.conf
     systemctl restart systemd-resolved
@@ -51,6 +52,7 @@ case $distro in
     echo 'nameserver 172.27.3.6' >> /etc/resolv.conf
     echo 'nameserver 172.27.3.7' >> /etc/resolv.conf
     echo 'search sof.intra blocok.sof.remoto' >> /etc/resolv.conf
+    echo 172.27.3.125            PREP03 >> /etc/hosts
     echo 192.168.250.163         PREP02 >> /etc/hosts
     echo 192.168.250.125         PREP01 >> /etc/hosts
     systemctl restart systemd-resolved.service
