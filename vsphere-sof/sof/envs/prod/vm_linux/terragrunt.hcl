@@ -36,7 +36,7 @@ inputs = {
           "Origem"    = "Terraform"
           "Ambiente"  = "Prod"
           "Aplicacao" = "Jenkins"
-          ""
+          "Responsavel" = "Rogerio Vieira Silva"
         }
         # Adicionando discos adicionais  
         data_disk = {  
@@ -78,6 +78,7 @@ inputs = {
           "Origem"    = "Terraform"
           "Ambiente"  = "Prod"
           "Aplicacao" = "Mariadb"
+          "Responsavel" = "Rogerio Vieira Silva"
         }
         # Adicionando discos adicionais  
         data_disk = {  

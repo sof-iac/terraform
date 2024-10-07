@@ -25,7 +25,7 @@ inputs = {
       category_description = "A qual aplicacao se destina"
       },
     "category_owner" = {
-      category_name        = "Proprietario"
+      category_name        = "Responsavel"
       category_description = "Responsavel pelo recurso"
       }        
     }   
