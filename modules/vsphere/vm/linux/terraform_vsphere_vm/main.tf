@@ -344,16 +344,15 @@ resource "null_resource" "ansible" {
     ]
   }  
   # Quando este recurso é criado, executa o seguinte script localmente para dar permissões ao usuario ansible
-  provisioner "remote-exec" {
-    # Define o bloco de conexão fora do loop dynamic    
-      inline = [
-        "touch /etc/sudoers.d/ansible_automation",
-        "echo 'User_Alias ANSIBLE_AUTOMATION = ansible' | tee -a /etc/sudoers.d/ansible_automation",
-        "echo 'Defaults:ANSIBLE_AUTOMATION !requiretty' | tee -a /etc/sudoers.d/ansible_automation",
-        "echo 'ANSIBLE_AUTOMATION ALL=(ALL) NOPASSWD: ALL' | tee -a /etc/sudoers.d/ansible_automation",
-        "chmod 0440 /etc/sudoers.d/ansible_automation"
-      ] 
-  }
+  provisioner "remote-exec" {  
+    inline = [  
+      "touch /etc/sudoers.d/ansible_automation",  
+      "grep -qxF 'User_Alias ANSIBLE_AUTOMATION = ansible' /etc/sudoers.d/ansible_automation || echo 'User_Alias ANSIBLE_AUTOMATION = ansible' | tee -a /etc/sudoers.d/ansible_automation",  
+      "grep -qxF 'Defaults:ANSIBLE_AUTOMATION !requiretty' /etc/sudoers.d/ansible_automation || echo 'Defaults:ANSIBLE_AUTOMATION !requiretty' | tee -a /etc/sudoers.d/ansible_automation",  
+      "grep -qxF 'ANSIBLE_AUTOMATION ALL=(ALL) NOPASSWD: ALL' /etc/sudoers.d/ansible_automation || echo 'ANSIBLE_AUTOMATION ALL=(ALL) NOPASSWD: ALL' | tee -a /etc/sudoers.d/ansible_automation",  
+      "chmod 0440 /etc/sudoers.d/ansible_automation"  
+    ]  
+  } 
   provisioner "file" {  
     source      = "${path.module}/templates/ansible.sh"
     destination = "/tmp/ansible.sh"     
