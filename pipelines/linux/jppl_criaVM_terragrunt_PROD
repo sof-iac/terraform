@@ -13,12 +13,13 @@ pipeline {
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
       text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
       choice(name: 'distro', choices: ['ubuntu', 'centos', 'orcl','rocklinux'], description: 'Distribuição Linux')  
-      password(name: 'VM_PASS', description: 'Senha para a máquina virtual')
+      //password(name: 'VM_PASS', description: 'Senha para a máquina virtual')
     }
     environment {
-       TF_VAR_VM_PASS="${VM_PASS}"
+       TF_VAR_VM_PASS = credentials('ansible_pass_text') // Usando credenciais do ansible 
        VAULT_ADDR = 'https://vault.app.sof.intra' // URL do seu servidor Vault  
        VAULT_TOKEN = credentials('vault_token_text') // Usando credenciais do Jenkins  
+       ANSIBLE_PASSWD = credentials('ansible_pass_text') // Usando credenciais do ansible 
     }
     stages {
       stage('Download Certificate') {  
@@ -84,12 +85,12 @@ pipeline {
                 {
                     sh """ terragrunt ${init}  """
                 }
-               withEnv(["TF_VAR_VM_PASS=$VM_PASS", "TF_VAR_DISTRO=$Distro"]) {  
+               withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro"]) {  
                 // Comandos que usam as variáveis definidas  
                 
                 sh """ 
                   export TF_LOG=DEBUG  
-                  export TF_VAR_VM_PASS=${VM_PASS}
+                  export TF_VAR_VM_PASS=${ANSIBLE_PASSWD}
                   export TF_VAR_DISTRO=${Distro}
                   export AWS_VERIFY_SSL=false 
                   terragrunt plan -lock=${lock}  """ 
@@ -103,10 +104,10 @@ pipeline {
             script {           
               dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}/${Grupo}") {
                 // export TF_LOG=DEBUG; 
-               withEnv(["TF_VAR_VM_PASS=$VM_PASS", "TF_VAR_DISTRO=$Distro"]) {  
+               withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro"]) {  
                 // Comandos que usam as variáveis definidas                  
                 sh """ 
-                  export TF_VAR_VM_PASS=${VM_PASS}
+                  export TF_VAR_VM_PASS=${ANSIBLE_PASSWD}
                   export TF_VAR_DISTRO=${Distro}
                   terragrunt apply -auto-approve -lock=${lock} """  
                }                               
