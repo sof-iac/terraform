@@ -28,6 +28,7 @@ inputs = {
         gateway           = "172.27.3.1"
         cpu               = 2
         memory            = 8192
+        domain            = "sof.intra"
         local_adminpass   = "${local.TF_VAR_VM_PASS}"
         distro            = "${local.TF_VAR_DISTRO}"        
         network_type      = ["vmxnet3"]

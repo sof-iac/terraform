@@ -26,6 +26,7 @@ inputs = {
         network           = {"PG_Gaia_Gerencia" = ["192.168.250.159"]}
         mask              = ["24"]
         gateway           = "192.168.250.1"
+        domain            = "sof.intra"
         cpu               = 8
         memory            = 8192
         local_adminpass   = "${local.TF_VAR_VM_PASS}"

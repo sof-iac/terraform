@@ -23,6 +23,7 @@ inputs = {
         datastore         = "Storage_Purestorage"
         resource_pool     = "Blade_Atreus/Resources"
         vsphere_cluster   = "Blade_Atreus"
+        domain            = "sof.intra"
         local_adminpass   = "${local.TF_VAR_VM_PASS}"
         distro            = "${local.TF_VAR_DISTRO}" 
         network_type      = ["vmxnet3"]

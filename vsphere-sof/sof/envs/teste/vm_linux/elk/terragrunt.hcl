@@ -23,6 +23,7 @@ inputs = {
         datastore         = "Storage_Purestorage"
         resource_pool     = "Blade_Atreus/Resources"
         vsphere_cluster   = "Blade_Atreus"
+        domain            = "sof.intra"
         network           = {"PG_Atlas_Teste" = ["192.168.30.231","192.168.30.232","192.168.30.233"]}
         dns_server_list   = ["172.27.3.5", "172.27.3.6"]
         mask              = ["24"]
