@@ -8,6 +8,7 @@ variable vm {
       datastore_cluster = string
       vsphere_cluster   = string
       resource_pool     = string
+      domain            = string
       network           = map(list(string))
       local_adminpass   = string
       mask              = list(string)

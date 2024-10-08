@@ -10,24 +10,15 @@ module "vsphere_linux_vm" {
   instances     = each.value.instances
   vmstartcount  = each.value.vmstartcount
   distro        = each.value.distro
-  #template  = each.value.template
-  #vsphere_cluster = each.value.vsphere_cluster
-  
   dc                = each.value.datacenter
-  #datacenter        = each.value.datacenter
   datastore_cluster = each.value.datastore_cluster
-  #datastore         = each.value.datastore
   vmrp              = each.value.resource_pool
-  #resource_pool     = each.value.resource_pool
   local_adminpass   = each.value.local_adminpass
   
   network     = each.value.network
-  #ip_address  = each.value.ip_address
+  domain      = each.value.domain
   ipv4submask = each.value.mask
-  #mask        = each.value.mask
   vmgateway   = each.value.gateway 
-  #gateway     = each.value.gateway
-  #disk_size   = each.value.disk_size
   network_type   = each.value.network_type
   annotation     = each.value.annotation
   data_disk      = each.value.data_disk 
