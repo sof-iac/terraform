@@ -57,6 +57,11 @@ inputs = {
       category_name        = "Aplicacao"
       tag_name             = "ELK"
       tag_description      = "Pilha Elastic"
+      },   
+    "Tags_Aplicacao_Elk" = {
+      category_name        = "Aplicacao"
+      tag_name             = "repositorio"
+      tag_description      = "Repositorios de distros"
       }            
     }   
 }
