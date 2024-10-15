@@ -36,7 +36,7 @@ inputs = {
         tags = {
           "Origem"    = "Terraform"
           "Ambiente"  = "Prod"
-          "Aplicacao" = "Mariadb"
+          "Aplicacao" = "repositorio"
           "Responsavel" = "Rogerio Vieira Silva"
         }
         # Adicionando discos adicionais  
