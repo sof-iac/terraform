@@ -14,9 +14,9 @@ locals {
 
 inputs = {
   vm = {
-    "TEL" = {
+    "TELk" = {
         template          = "templateubuntu2204_ansible"
-        instances         = 1
+        instances         = 3
         vmstartcount      = 1
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Storage_Purestorage"
