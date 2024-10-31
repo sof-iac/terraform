@@ -198,37 +198,37 @@ inputs = {
   
   resource-pool = {
     "Desenv_Test"           = {
-      cluster-name = "Blade_Atreus"
+      compute-cluster = "Blade_Atreus"
     }
     "DevOPS_Atreus_Staging" = {
-      cluster-name       = "Blade_Atreus"
+      compute-cluster    = "Blade_Atreus"
       cpu-share-level    = "high"
       memory-share-level = "high"
     }
     "DevOps_Atreus_Teste"   = {
-      cluster-name = "Blade_Atreus"
+      compute-cluster = "Blade_Atreus"
     }
     "SEAIN"                 = {
-      cluster-name = "Blade_Atreus"
+      compute-cluster = "Blade_Atreus"
     }
     "WINDOWS"               = {
-      cluster-name       = "Blade_Atreus"
+      compute-cluster    = "Blade_Atreus"
       cpu-share-level    = "high"
       memory-share-level = "high"
     }
     "DevOps_Kratos_PRD"    = {
-      cluster-name       = "Blade_Kratos"
+      compute-cluster    = "Blade_Kratos"
       cpu-share-level    = "high"
       memory-share-level = "high"
     }
     "Infra_SOF"            = {
-      cluster-name = "Blade_Kratos"
+      compute-cluster = "Blade_Kratos"
     }
     "Producao_SOF"            = {
-      cluster-name = "Blade_Kratos"
+      compute-cluster = "Blade_Kratos"
     }
     "VMware_SOF"    = {
-      cluster-name       = "Blade_Kratos"
+      compute-cluster    = "Blade_Kratos"
       cpu-share-level    = "high"
       memory-share-level = "high"
     }

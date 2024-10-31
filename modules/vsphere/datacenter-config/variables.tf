@@ -65,9 +65,10 @@ variable compute-cluster {
 variable resource-pool {
   type = map(object(
     {
-      cluster-name       = string
-      cpu-share-level    = optional(string)
-      memory-share-level = optional(string)
+      compute-cluster          = string
+      cpu-share-level          = optional(string)
+      memory-share-level       = optional(string)
+      scale-descendants-shares = optional(string)
     })
   )
 }

@@ -1,15 +1,13 @@
 locals {
-  # Parse the file path we're in to read the env name: e.g., env 
-  # will be "dev" in the dev folder, "stage" in the stage folder, 
-  # etc.
-  # parsed = regex(".*\/envs\/(?P<env>.*?)\/.*", get_terragrunt_dir())
-  env    = "lab" #local.parsed.enn
-}
-inputs = {
-  passwd_vcenter = file("secrets.txt")
-  minio_pem = file("minio.pem")
-  AWS_ACCESS_KEY_ID = "sof-tf-lab"
-  AWS_SECRET_ACCESS_KEY = "0CtpstM00a3G6PuNXE4PnuEUZ1xDPdjIvqBwM8hM"
+  env    = "prod"
+  ad-hostname = get_env("TF_VAR_hostname_ad_k") 
+  ad-username = get_env("TF_VAR_username_ad_k") 
+  ad-password = get_env("TF_VAR_passwd_ad_k") 
+  hostname_vcenter = get_env("TF_VAR_hostname_vcenter_k")
+  username_vcenter = get_env("TF_VAR_username_vcenter_k")  
+  passwd_vcenter   = get_env("TF_VAR_passwd_vcenter_k")  
+  backend_access_key   = get_env("TF_VAR_backend_access_key_prod")
+  backend_secret_key   = get_env("TF_VAR_backend_secret_key_prod")     
 }
 
 generate "provider" {
@@ -17,12 +15,22 @@ generate "provider" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 provider "vsphere" {
-  user           = "username_vcenter"
-  password       =  var.passwd_vcenter
-  vsphere_server = "pvcn01.sof.intra"
+  user           = "${local.username_vcenter}"
+  password       = "${local.passwd_vcenter}"
+  vsphere_server = "${local.hostname_vcenter}"
 
   # if you have a self-signed cert
   allow_unverified_ssl = true
+}
+
+provider "ad" {
+  winrm_hostname = "${local.ad-hostname}"
+  winrm_username = "${local.ad-username}"
+  winrm_password = "${local.ad-password}"
+  winrm_port     = 5985
+  winrm_proto    = "http"
+  winrm_insecure = true
+  krb_realm      = "BLOCOK.SOF.REMOTO"
 }
 EOF
 }
@@ -36,14 +44,12 @@ generate "backend" {
     backend "s3" {
       bucket    = "tf-${local.env}"
       endpoints = {
-        s3 = "http://minio.minio-tenant.svc.cluster.local"   # Minio endpoint
-        dynamodb = "http://dynamodb.dynamodb.svc.cluster.local:8000"
+        s3 = "https://sof-s3.sof.intra"   # Minio endpoint
+        dynamodb = "https://dynamodb.sof.intra"
       }
-      key            = "${path_relative_to_include()}/terraform_lab.tfstate"
-      access_key     = "softflab"
-      secret_key     = "px8YVerl7uFw1Iz1VyszAlh97bfepiXjHJD9XYvr"
-      #kms_key_id     = "847b4b54-7fae-412e-aba3-50a3d8527002"
-      # custom_ca_bundle = var.minio_pem
+      key            = "${path_relative_to_include()}/terraform_prod.tfstate"
+      access_key     = "${local.backend_access_key}"
+      secret_key     = "${local.backend_secret_key}"
       region         = "us-east-1"
       skip_credentials_validation = true  # Skip AWS related checks and validations
       skip_requesting_account_id = true
@@ -51,12 +57,8 @@ generate "backend" {
       skip_region_validation = true
       use_path_style = true             # Enable path-style S3 URLs
 
-      dynamodb_table = "sof-tf-state-lab"
+      dynamodb_table = "sof-tfstate-prod"
       }
     }
   EOF
 }
-
-
-
- 

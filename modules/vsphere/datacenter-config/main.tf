@@ -50,8 +50,9 @@ resource "vsphere_compute_cluster" "compute_cluster" {
 resource "vsphere_resource_pool" "resource_pool" {
   for_each = var.resource-pool
 
-  name                    = each.key
-  parent_resource_pool_id = vsphere_compute_cluster.compute_cluster[each.value.cluster-name].resource_pool_id
-  cpu_share_level         = each.value.cpu-share-level
-  memory_share_level      = each.value.memory-share-level
+  name                     = each.key
+  parent_resource_pool_id  = vsphere_compute_cluster.compute_cluster[each.value.compute-cluster].resource_pool_id
+  cpu_share_level          = each.value.cpu-share-level
+  memory_share_level       = each.value.memory-share-level
+  scale_descendants_shares = each.value.scale-descendants-shares
 }
