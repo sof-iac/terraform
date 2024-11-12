@@ -23,7 +23,7 @@ inputs = {
         datastore         = "Storage_Purestorage"
         resource_pool     = "Blade_Kratos/Resources"
         vsphere_cluster   = "Blade_Kratos"
-        network           = {"PG_Gaia_Gerencia" = ["192.168.250.159"]}
+        network           = {"PG_Gaia_Gerencia" = ["192.168.250.162"]}
         mask              = ["23"]
         gateway           = "192.168.250.1"
         domain            = "sof.intra"
