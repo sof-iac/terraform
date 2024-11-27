@@ -57,7 +57,19 @@ inputs = {
       category_name        = "Aplicacao"
       tag_name             = "ELK"
       tag_description      = "Pilha Elastic"
-      }           
+      }          
+    "Tags_Aplicacao_Jazz" = {
+      category_name        = "Aplicacao"
+      tag_name             = "Jazz"
+      tag_description      = "Jazz - Ciclo de Vida Desenvolvimento"
+      }  
+    "Tags_Aplicacao_ALM" = {
+      category_name        = "Aplicacao"
+      tag_name             = "ALM"
+      tag_description      = "Application lifecycle management"
+      }               
     }   
 }
 
+
+Application lifecycle management
