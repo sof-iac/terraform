@@ -39,6 +39,8 @@ inputs = {
           "Aplicacao" = "Jazz"
           "Responsavel" = "Rogerio Vieira Silva"
         }
+        # Adicionando discos adicionais  
+        data_disk = {}
       } 
     }   
 }
