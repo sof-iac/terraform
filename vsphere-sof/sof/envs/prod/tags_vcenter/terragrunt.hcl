@@ -70,6 +70,3 @@ inputs = {
       }               
     }   
 }
-
-
-Application lifecycle management
