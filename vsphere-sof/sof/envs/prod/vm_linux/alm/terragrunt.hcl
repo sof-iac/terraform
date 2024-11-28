@@ -40,7 +40,22 @@ inputs = {
           "Responsavel" = "Rogerio Vieira Silva"
         }
         # Adicionando discos adicionais  
-        data_disk = {}
+        data_disk = {
+          "disk_A1" = {  
+            size_gb                = 40
+            unit_number            = 3  
+            thin_provisioned       = true  
+            eagerly_scrub          = false  
+            #datastore_id           = "Storage_Purestorage"  
+            storage_policy_id      = null  
+            io_reservation         = null  
+            io_share_level         = "normal"  
+            disk_mode              = null  
+            disk_sharing           = null  
+            attach                 = null  
+            path                   = null  
+          }
+        }
       } 
     }   
 }
