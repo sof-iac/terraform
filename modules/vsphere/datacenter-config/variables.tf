@@ -7,68 +7,37 @@ variable datacenter {
   )
 }
 
-variable datastore-cluster {
+variable attributes {
   type = map(object(
     {
-      sdrs = object(
-        {
-          enabled                        = bool
-          automation-level               = string
-          free-space-utilization-diff    = number
-          io-balance-automation-level    = string
-          io-latency-threshold           = number
-          io-load-imbalance-threshold    = number
-          load-balance-interval          = number
-          space-balance-automation-level = string
-          space-utilization-threshold    = number
-        }
-      )
-      tags = set(string)
+      object-type = optional(string)
     })
   )
 }
 
-variable compute-cluster {
+variable categories {
   type = map(object(
     {
-      folder   = optional(string)
-      host-ids = list(string)
-      drs      = object(
-        {
-          enabled          = bool
-          automation-level = string
-          advanced-options = optional(map(string))
-        }
-      )
-      dpm     = object(
-        {
-          enabled          = bool
-          automation-level = string
-        }
-      )
-      ha      = object(
-        {
-          enabled                       = bool
-          datastore-apd-recovery-action = optional(string)
-          datastore-apd-response        = optional(string)
-          datastore-apd-response-delay  = optional(number)
-          datastore-pdl-response        = optional(string)
-          vm-maximum-failure-window     = optional(number)
-          advanced-options              = optional(map(string))
-        }
-      )
-      tags    = optional(set(string))
+      description = string
+      cardinality = string
+      types       = list(string)
     })
   )
 }
 
-variable resource-pool {
+variable tags {
   type = map(object(
     {
-      compute-cluster          = string
-      cpu-share-level          = optional(string)
-      memory-share-level       = optional(string)
-      scale-descendants-shares = optional(string)
+      description = string
+      category    = string
+    })
+  )
+}
+
+variable folders {
+  type = map(object(
+    {
+      type       = string
     })
   )
 }

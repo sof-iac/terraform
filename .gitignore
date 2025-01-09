@@ -3,7 +3,6 @@
 *.tfstate*
 *.tfvars
 *.swp
-.terraform.lock.hcl
 **/.envrc
 **/.DS_store
 **/.terraform
@@ -20,8 +19,8 @@ vendor
 .terragrunt-cache
 .bundle
 .ruby-version
-.terraform.lock.hcl
 terragrunt
 .DS_Store
 mocks/
 .go-version
+envs/minio.pem

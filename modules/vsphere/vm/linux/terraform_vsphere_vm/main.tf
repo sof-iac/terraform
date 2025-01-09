@@ -179,7 +179,7 @@ resource "vsphere_virtual_machine" "vm" {
   }
   // Additional disks defined by Terraform config
   dynamic "disk" {
-    for_each = length(var.data_disk) > 0 ? var.data_disk : {}
+    for_each = var.data_disk
     iterator = terraform_disks
     content {
       label = terraform_disks.key

@@ -3,12 +3,10 @@ output "dc_id" {
   value       = vsphere_datacenter.datacenter.moid  
 }
 
-output "datastore_clusters" {
-  description = "Datastore clusters"
-  value       = vsphere_datastore_cluster.datastore_cluster
+output "vsphere_tag_category" {
+  value = vsphere_tag_category.category
 }
 
-output "resource_pools" {
-  description = "Resource pools"
-  value       = vsphere_resource_pool.resource_pool
+output "tag" {
+  value = vsphere_tag.tag
 }

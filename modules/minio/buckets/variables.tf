@@ -1,0 +1,24 @@
+variable "minio_bucket_names" {
+  type    = list
+  default = [""]
+}
+
+variable "minio_acl" {
+  type    = string
+  default = "private"
+}
+
+variable "bucket_versioning_enabled" {
+  type    = bool
+  default = false
+}
+
+variable "bucket_policy_create" {
+  type    = bool
+  default = false 
+}
+
+variable "bucket_policy_action" {
+  type    = string
+  default = "s3:ListBucket"
+}
