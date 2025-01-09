@@ -3,10 +3,10 @@ pipeline {
     parameters {
       // Nome do projeto no gitea
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
-      choice(name: 'Datacenter', choices: ['vsphere-sof','aws'], description: 'Datacenter') 
-      choice(name: 'Site', choices: [ 'sof', 'blocok'], description: 'Site')
-      choice(name: 'Ambiente', choices: ['prod','teste','lab'], description: 'Ambiente')
-      string(name: 'Diretorio', defaultValue: 'category_vcenter', description: 'Nome do diretorio do projeto Terraform a executar')
+      choice(name: 'Datacenter', choices: ['envs','aws'], description: 'Datacenter') 
+      choice(name: 'Ambiente', choices: ['base','test','lab','prod'], description: 'Ambiente')
+      choice(name: 'Site', choices: [ 'vsphere-516', 'vsphere-k'], description: 'Site')
+      string(name: 'Grupo', defaultValue: 'nome_do_grupo', description: 'Nome do grupo das VMs')
       choice(name: 'init', choices: [ 'nao', 'init', 'init -reconfigure','init -migrate-state'], description: 'Alterações no Tfsate')
       choice(name: 'lock', choices: ['true','false'], description: 'Lock do dynamodb')
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
@@ -40,7 +40,7 @@ pipeline {
       stage('Retornando as chaves publica e certificados') {
         steps {
             script {
-              dir("${Datacenter}/${Site}/envs/${Ambiente}") {
+              dir("${Datacenter}/${Ambiente}/${Site}") {
                 // Retorna a chave de conexao com o vcenter
                 def secrets_vcenter = [
                     [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
@@ -67,7 +67,7 @@ pipeline {
       stage('Copia Terragrunt.hcl') {
           steps {
             script {           
-              dir("${Datacenter}/${Site}/envs/${Ambiente}/files") {    
+              dir("${Datacenter}/${Ambiente}/${Site}/files") {    
                 sh 'cp terragrunt.hcl ../'   
               }
             }
@@ -76,7 +76,7 @@ pipeline {
       stage('Terragrunt Plan') {
         steps {
             script {           
-              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
+              dir("${Datacenter}/${Ambiente}/${Site}/${Grupo}") {     
                 // Executa o comando init do terragrunt
                 if("${init}" != 'nao')
                 {
@@ -90,7 +90,7 @@ pipeline {
       stage('Terragrunt Apply') {
           steps {
             script {           
-              dir("${Datacenter}/${Site}/envs/${Ambiente}/${Diretorio}") {     
+              dir("${Datacenter}/${Ambiente}/${Site}/${Grupo}") {      
                 // export TF_LOG=DEBUG; 
                 sh """ terragrunt apply -auto-approve -lock=${lock} """                                            
               }
