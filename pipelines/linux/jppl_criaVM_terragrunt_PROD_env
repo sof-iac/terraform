@@ -70,7 +70,7 @@ pipeline {
         steps {  
           script {  
               // Usando credenciais para o token  
-              withCredentials([string(credentialsId: 'user_svc_jenkins_token', variable: 'GIT_TOKEN')]) {  
+              withCredentials([string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN')]) {  
                   checkout([$class: 'GitSCM',  
                             branches: [[name: '*/main']],  
                             extensions: [  
@@ -82,7 +82,7 @@ pipeline {
                             ],  
                             userRemoteConfigs: [[  
                                 url: 'https://git.sof.intra/infra/terraform.git',   
-                                credentialsId: 'user_svc_jenkins_token' // Aqui você pode usar diretamente o ID  
+                                credentialsId: 'GITEA_TOKEN' // Aqui você pode usar diretamente o ID  
                             ]]  
                   ])  
               }  
