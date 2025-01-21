@@ -77,7 +77,7 @@ pipeline {
         steps {
             script {           
               dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
-                if (env.MODULE_NAME.contains('vsphere-516')) {
+                if("${Site}" == 'vsphere-516') {
                   env.VCENTER_HOST = credentials('TF_VAR_hostname_vcenter_516')
                   env.VCENTER_USER = credentials('TF_VAR_username_vcenter_516')
                   env.VCENTER_PASS = credentials('TF_VAR_password_vcenter_516')
