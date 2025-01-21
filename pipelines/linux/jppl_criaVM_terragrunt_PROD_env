@@ -70,7 +70,7 @@ pipeline {
         steps {
             checkout([$class: 'GitSCM', branches: [[name: '*/main']],
                       extensions: [[ $class: 'SparseCheckoutPaths', sparseCheckoutPaths: [[ $class: 'SparseCheckoutPath', path: "${Diretorio}/${Ambiente}/${Site}/${Grupo}" ]]]],
-                      userRemoteConfigs: [[url: 'https://git.sof.intra/infra/terraform.git']]])
+                      userRemoteConfigs: [[url: 'https://git.sof.intra/infra/terraform.git', credentialsId: 'user_svc_jenkins_token', credentials: [token: GIT_TOKEN]]]])
         }
       }                        
       stage('Terragrunt Plan') {
