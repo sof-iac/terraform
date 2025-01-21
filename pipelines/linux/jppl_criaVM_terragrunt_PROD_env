@@ -24,24 +24,32 @@ pipeline {
        MODULE_NAME = "${TERRAGRUNT_DIR}"
     }
     stages {
-      stage('Download Certificate') {  
-        steps {  
-            script {  
-                // Exemplo: O caminho do segredo que contém o certificado  
-                def secretPath = 'secrets/certificados/minio.sof.intra'  
-                def outputFile = '/etc/ssl/certs/minio.pem'  
+ 
+      stage('Retornando as chaves publica e certificados') {
+        steps {
+            script {
+              dir("${Diretorio}/${Ambiente}/${Site}") {
+                // Retorna a chave de conexao com o vcenter
+                def secrets_vcenter = [
+                    [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
+                        [envVar: 'passwd_vcenter', vaultKey: 'password']]]
+                ]               
 
-                // Comando para baixar o certificado  
-                def command = """  
-                    export VAULT_ADDR=${env.VAULT_ADDR}  
-                    export VAULT_TOKEN=${env.VAULT_TOKEN}
-                    vault kv get -field=minio_cert ${secretPath} > ${outputFile}  
-                    
-                """  
-                // Executa o comando  
-                sh command  
-            }  
-        }  
+                // optional configuration
+                def configuration = [vaultUrl: 'https://vault.app.sof.intra',
+                                      vaultCredentialId: 'token_vault',
+                                      engineVersion: 2]
+
+                withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
+                  sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"                   
+                }
+                withCredentials([ string(credentialsId: 'access_key_prod', variable: 'TF_VAR_access_key_prod'),
+                                  string(credentialsId: 'secret_key_prod', variable: 'TF_VAR_secret_key_prod') ]) { 
+                  sh " echo '{\\n  \"TF_VAR_backend_access_key\": \"$TF_VAR_access_key_prod\",\\n  \"TF_VAR_backend_secret_key\": \"$TF_VAR_secret_key_prod\"\\n}' > bucket.json"
+                }
+            }
+          }
+        }
       }   
       stage('Checkout') {
         steps {
