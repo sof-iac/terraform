@@ -2,39 +2,20 @@ pipeline {
     agent any
 
     environment {
-        TERRAGRUNT_DIR = sh(script: 'get_terragrunt_dir()', returnStdout: true).trim()
-        ENV = sh(script: "echo ${TERRAGRUNT_DIR} | sed -n 's|.*/envs/\\(.*?\\)/.*|\\1|p'", returnStdout: true).trim()
-        MODULE_NAME = "${TERRAGRUNT_DIR}"
+        GIT_TOKEN_ID = 'gitea-token'
     }
 
     stages {
-        stage('Prepare') {
+        stage('Checkout') {
             steps {
                 script {
-                    if (env.MODULE_NAME.contains('vsphere-516')) {
-                        env.VCENTER_HOST = credentials('TF_VAR_hostname_vcenter_516')
-                        env.VCENTER_USER = credentials('TF_VAR_username_vcenter_516')
-                        env.VCENTER_PASS = credentials('TF_VAR_password_vcenter_516')
-                    } else {
-                        env.VCENTER_HOST = credentials('TF_VAR_hostname_vcenter_k')
-                        env.VCENTER_USER = credentials('TF_VAR_username_vcenter_k')
-                        env.VCENTER_PASS = credentials('TF_VAR_password_vcenter_k')
+                    withCredentials([string(credentialsId: GIT_TOKEN_ID, variable: 'GIT_TOKEN')]) {
+                        checkout([$class: 'GitSCM', branches: [[name: '*/main']],
+                                  extensions: [[$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [[$class: 'SparseCheckoutPath', path: "${Diretorio}/${Ambiente}/${Site}/${Grupo}"]]]],
+                                  userRemoteConfigs: [[url: 'https://git.sof.intra/infra/terraform.git', credentialsId: GIT_TOKEN_ID]]])
                     }
                 }
             }
-        }
-        stage('Build') {
-            steps {
-                echo "Environment: ${env.ENV}"
-                echo "vCenter Host: ${env.VCENTER_HOST}"
-                echo "vCenter User: ${env.VCENTER_USER}"
-            }
-        }
-    }
-
-    post {
-        always {
-            cleanWs()
         }
     }
 }
