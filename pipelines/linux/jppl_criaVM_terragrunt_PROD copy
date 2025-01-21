@@ -19,6 +19,9 @@ pipeline {
        VAULT_ADDR = 'https://vault.app.sof.intra' // URL do seu servidor Vault  
        VAULT_TOKEN = credentials('vault_token_text') // Usando credenciais do Jenkins  
        ANSIBLE_PASSWD = credentials('ansible_pass_text') // Usando credenciais do ansible 
+       TERRAGRUNT_DIR = sh(script: 'get_terragrunt_dir()', returnStdout: true).trim() 
+       ENV = sh(script: "echo ${TERRAGRUNT_DIR} | sed -n 's|.*/envs/\\(.*?\\)/.*|\\1|p'", returnStdout: true).trim() 
+       MODULE_NAME = "${TERRAGRUNT_DIR}"
     }
     stages {
       stage('Download Certificate') {  
@@ -72,25 +75,20 @@ pipeline {
                       extensions: [[ $class: 'SparseCheckoutPaths', sparseCheckoutPaths: [[ $class: 'SparseCheckoutPath', path: "${Diretorio}/${Ambiente}/${Site}/${Grupo}" ]]]],
                       userRemoteConfigs: [[url: 'https://git.sof.intra/infra/terraform.git']]])
         }
-      }
-      stage('Copia Terragrunt.hcl') {
-          steps {
-            script {           
-              dir("${Diretorio}/${Ambiente}/${Site}/files") {
-                sh 'cp terragrunt.hcl ../'   
-              }
-            }
-          }
       }                        
       stage('Terragrunt Plan') {
         steps {
             script {           
               dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
-                // Executa o comando init do terragrunt
-                if("${init}" != 'nao')
-                {
-                    sh """ terragrunt ${init}  """
-                }
+                if (env.MODULE_NAME.contains('vsphere-516')) {
+                  env.VCENTER_HOST = credentials('TF_VAR_hostname_vcenter_516')
+                  env.VCENTER_USER = credentials('TF_VAR_username_vcenter_516')
+                  env.VCENTER_PASS = credentials('TF_VAR_password_vcenter_516')
+                } else {
+                    env.VCENTER_HOST = credentials('TF_VAR_hostname_vcenter_k')
+                    env.VCENTER_USER = credentials('TF_VAR_username_vcenter_k')
+                    env.VCENTER_PASS = credentials('TF_VAR_password_vcenter_k')
+                } 
                withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro"]) {  
                 // Comandos que usam as variáveis definidas  
                 
@@ -104,22 +102,6 @@ pipeline {
               }                       
             }          
           }
-      }
-      stage('Terragrunt Apply') {
-          steps {
-            script {           
-              dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
-                // export TF_LOG=DEBUG; 
-               withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro"]) {  
-                // Comandos que usam as variáveis definidas                  
-                sh """ 
-                  export TF_VAR_VM_PASS=${ANSIBLE_PASSWD}
-                  export TF_VAR_DISTRO=${Distro}
-                  terragrunt apply -auto-approve -lock=${lock} """  
-               }                               
-              }
-            }          
-          }                     
-      }               
+      }              
     }
 }
