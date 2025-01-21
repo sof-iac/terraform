@@ -1,21 +1,21 @@
-pipeline {
-    agent any
-
-    environment {
-        GIT_TOKEN_ID = 'gitea-token'
-    }
-
-    stages {
-        stage('Checkout') {
-            steps {
-                script {
-                    withCredentials([string(credentialsId: GIT_TOKEN_ID, variable: 'GIT_TOKEN')]) {
-                        checkout([$class: 'GitSCM', branches: [[name: '*/main']],
-                                  extensions: [[$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [[$class: 'SparseCheckoutPath', path: "${Diretorio}/${Ambiente}/${Site}/${Grupo}"]]]],
-                                  userRemoteConfigs: [[url: 'https://git.sof.intra/infra/terraform.git', credentialsId: GIT_TOKEN_ID]]])
-                    }
-                }
-            }
-        }
-    }
+steps {  
+    script {  
+        // Usando credenciais para o token  
+        withCredentials([string(credentialsId: 'user_svc_jenkins_token', variable: 'GIT_TOKEN')]) {  
+            checkout([$class: 'GitSCM',  
+                      branches: [[name: '*/main']],  
+                      extensions: [  
+                          [$class: 'SparseCheckoutPaths',   
+                           sparseCheckoutPaths: [  
+                               [$class: 'SparseCheckoutPath', path: "${Diretorio}/${Ambiente}/${Site}/${Grupo}"]  
+                           ]  
+                          ]  
+                      ],  
+                      userRemoteConfigs: [[  
+                          url: 'https://git.sof.intra/infra/terraform.git',   
+                          credentialsId: 'user_svc_jenkins_token' // Aqui você pode usar diretamente o ID  
+                      ]]  
+            ])  
+        }  
+    }  
 }
