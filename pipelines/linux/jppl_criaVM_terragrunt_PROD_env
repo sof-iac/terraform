@@ -75,33 +75,6 @@ pipeline {
                       extensions: [[ $class: 'SparseCheckoutPaths', sparseCheckoutPaths: [[ $class: 'SparseCheckoutPath', path: "${Diretorio}/${Ambiente}/${Site}/${Grupo}" ]]]],
                       userRemoteConfigs: [[url: 'https://git.sof.intra/infra/terraform.git']]])
         }
-      }                        
-      stage('Terragrunt Plan') {
-        steps {
-            script {           
-              dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
-                if (env.MODULE_NAME.contains('vsphere-516')) {
-                  env.VCENTER_HOST = credentials('TF_VAR_hostname_vcenter_516')
-                  env.VCENTER_USER = credentials('TF_VAR_username_vcenter_516')
-                  env.VCENTER_PASS = credentials('TF_VAR_password_vcenter_516')
-                } else {
-                    env.VCENTER_HOST = credentials('TF_VAR_hostname_vcenter_k')
-                    env.VCENTER_USER = credentials('TF_VAR_username_vcenter_k')
-                    env.VCENTER_PASS = credentials('TF_VAR_password_vcenter_k')
-                } 
-               withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro"]) {  
-                // Comandos que usam as variáveis definidas  
-                
-                sh """ 
-                  export TF_LOG=DEBUG  
-                  export TF_VAR_VM_PASS=${ANSIBLE_PASSWD}
-                  export TF_VAR_DISTRO=${Distro}
-                  export AWS_VERIFY_SSL=false 
-                  terragrunt plan -lock=${lock}  """ 
-                }     
-              }                       
-            }          
-          }
-      }              
+      }                                      
     }
 }
