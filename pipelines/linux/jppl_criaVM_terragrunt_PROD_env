@@ -70,30 +70,30 @@ pipeline {
       }   
       stage('Checkout') {
         steps {  
-          script {  
-              // Verifica se as credenciais estão disponíveis  
-              def token = env.GITEA_TOKEN ?: ''  
-              if (token.isEmpty()) {  
-                  error("Credenciais não encontradas ou inválidas.")  
-              }  
-              
-              withCredentials([string(credentialsId: 'giteaacesstoken', variable: 'GITEA_TOKEN')]) {  
-                  checkout([$class: 'GitSCM',  
-                      branches: [[name: '*/main']],  
-                      extensions: [  
-                          [$class: 'SparseCheckoutPaths',  
-                          sparseCheckoutPaths: [  
-                              [$class: 'SparseCheckoutPath', path: "${Diretorio}/${Ambiente}/${Site}/${Grupo}"]  
-                          ]]  
-                      ],  
-                      userRemoteConfigs: [[  
-                          url: 'https://git.sof.intra/infra/terraform.git',  
-                          credentialsId: 'giteaacesstoken'  
-                      ]]  
-                  ])  
-              }  
-          } 
-      }
+            script {  
+                // Verifica se as credenciais estão disponíveis  
+                def token = env.GITEA_TOKEN ?: ''  
+                if (token.isEmpty()) {  
+                    error("Credenciais não encontradas ou inválidas.")  
+                }  
+
+                // Realiza o checkout usando o token armazenado  
+                checkout([$class: 'GitSCM',  
+                    branches: [[name: '*/main']],  
+                    extensions: [  
+                        [$class: 'SparseCheckoutPaths',  
+                        sparseCheckoutPaths: [  
+                            [$class: 'SparseCheckoutPath', path: "${Diretorio}/${Ambiente}/${Site}/${Grupo}"]  
+                        ]]  
+                    ],  
+                    userRemoteConfigs: [[  
+                        url: 'https://git.sof.intra/infra/terraform.git',  
+                        credentialsId: 'giteaacesstoken',  
+                        credentials: token // Usando o token diretamente  
+                    ]]  
+                ])  
+            }  
+        }
       }                        
       stage('Terragrunt Plan') {
         steps {
