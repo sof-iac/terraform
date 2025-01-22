@@ -69,7 +69,15 @@ pipeline {
           }
         }
       }   
-                    
+      stage('Copy terragrunt.hcl') {
+          steps {
+              script {
+                  sh '''
+                      cp pipelines/conf/terragrunt.hcl env/
+                  '''
+              }
+          }
+      }                    
       stage('Terragrunt Plan') {
         steps {
             script {           
