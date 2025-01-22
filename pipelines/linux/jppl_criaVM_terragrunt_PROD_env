@@ -19,6 +19,8 @@ pipeline {
        VAULT_ADDR = 'https://vault.app.sof.intra' // URL do seu servidor Vault  
        VAULT_TOKEN = credentials('vault_token_text') // Usando credenciais do Jenkins  
        ANSIBLE_PASSWD = credentials('ansible_pass_text') // Usando credenciais do ansible 
+       GITEA_TOKEN = credentials('GITEA_TOKEN') // Usando credenciais do gitea
+       giteaacesstoken = credentials('giteaacesstoken') // Usando credenciais do gitea
     }
     stages {
       stage('Download Certificate') {  
