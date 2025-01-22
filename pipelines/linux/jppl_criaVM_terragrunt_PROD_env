@@ -73,7 +73,7 @@ pipeline {
           steps {
               script {
                   sh '''
-                      cp pipelines/conf/terragrunt.hcl env/
+                      cp pipelines/conf/terragrunt.hcl envs/
                   '''
               }
           }
