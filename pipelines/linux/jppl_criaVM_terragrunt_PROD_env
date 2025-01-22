@@ -21,6 +21,7 @@ pipeline {
        ANSIBLE_PASSWD = credentials('ansible_pass_text') // Usando credenciais do ansible 
        GITEA_TOKEN = credentials('GITEA_TOKEN') // Usando credenciais do gitea
        giteaacesstoken = credentials('giteaacesstoken') // Usando credenciais do gitea
+       GITEA_CREDENTIALS = credentials('GITEA_TOKEN')
     }
     stages {
       stage('Download Certificate') {  
@@ -69,31 +70,14 @@ pipeline {
         }
       }   
       stage('Checkout') {
-        steps {  
-            script {  
-                // Verifica se as credenciais estão disponíveis  
-                def token = env.GITEA_TOKEN ?: ''  
-                if (token.isEmpty()) {  
-                    error("Credenciais não encontradas ou inválidas.")  
-                }  
-
-                // Realiza o checkout usando o token armazenado  
-                checkout([$class: 'GitSCM',  
-                    branches: [[name: '*/main']],  
-                    extensions: [  
-                        [$class: 'SparseCheckoutPaths',  
-                        sparseCheckoutPaths: [  
-                            [$class: 'SparseCheckoutPath', path: "${Diretorio}/${Ambiente}/${Site}/${Grupo}"]  
-                        ]]  
-                    ],  
-                    userRemoteConfigs: [[  
-                        url: 'https://git.sof.intra/infra/terraform.git',  
-                        credentials: token // Usando o token diretamente  
-                    ]]  
-                ])  
-            }  
-        }
-      }                        
+          steps {
+              script {
+                  git url: 'https://git.sof.intra/infra/terraform.git',
+                      branch: 'main',
+                      credentialsId: "${GITEA_CREDENTIALS}"
+              }
+          }
+      }                     
       stage('Terragrunt Plan') {
         steps {
             script {           
