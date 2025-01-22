@@ -69,15 +69,7 @@ pipeline {
           }
         }
       }   
-      stage('Checkout') {
-          steps {
-              script {
-                  git url: 'https://git.sof.intra/infra/terraform.git',
-                      branch: 'main',
-                      credentialsId: "${GITEA_CREDENTIALS}"
-              }
-          }
-      }                     
+                    
       stage('Terragrunt Plan') {
         steps {
             script {           
