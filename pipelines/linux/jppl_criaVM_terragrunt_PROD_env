@@ -107,12 +107,7 @@ pipeline {
                           sh """ 
                               export TF_LOG=DEBUG  
                               export TF_VAR_VM_PASS=${ANSIBLE_PASSWD}
-                              export TF_VAR_DISTRO=${Distro}  
-                              //export VCENTER_HOST=${VCENTER_HOST}
-                             // export VCENTER_USER=${VCENTER_USER}
-                              //export VCENTER_PASS=${VCENTER_PASS}
-                              export TF_VAR_backend_access_key=env.TF_VAR_backend_access_key
-                              export TF_VAR_backend_secret_key=${env.TF_VAR_backend_secret_key}
+                              export TF_VAR_DISTRO=${Distro}
                               export AWS_VERIFY_SSL=false 
                               terragrunt plan -lock=${lock}  
                           """ 
