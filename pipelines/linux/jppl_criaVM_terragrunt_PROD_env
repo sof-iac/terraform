@@ -108,7 +108,7 @@ pipeline {
                               export TF_LOG=DEBUG  
                               export TF_VAR_VM_PASS=${ANSIBLE_PASSWD}
                               export TF_VAR_DISTRO=${Distro}  
-                              export ${env.VCENTER_HOST}
+                              export "${env.VCENTER_HOST}"
                               export $(env.VCENTER_USER}
                               export ${env.VCENTER_PASS}
                               export TF_VAR_backend_access_key=env.TF_VAR_backend_access_key
