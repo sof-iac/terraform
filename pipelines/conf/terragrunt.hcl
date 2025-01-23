@@ -2,9 +2,9 @@ locals {
   parsed             = regex(".*/envs/(?P<env>.*?)/.*", get_terragrunt_dir())
   env                = local.parsed.env
   module-name        = get_terragrunt_dir()
-  #vcenter-host       = get_env("VCENTER_HOST")
-  #vcenter-user       = get_env("VCENTER_USER")
-  #vcenter-pass       = get_env("VCENTER_PASS")
+  vcenter-host       = get_env("VCENTER_HOST")
+  vcenter-user       = get_env("VCENTER_USER")
+  vcenter-pass       = get_env("VCENTER_PASS")
   backend-access-key = get_env("TF_VAR_backend_access_key_${local.env}")
   backend-secret-key = get_env("TF_VAR_backend_secret_key_${local.env}")     
 }

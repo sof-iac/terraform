@@ -4,7 +4,7 @@ include {
 
 terraform {
   #source = "../../../../../modules/vsphere/linux_vm"
-  source = "../../../../modules/vsphere/vm/linux"  # Caminho relativo ao terragrunt.hcl
+  source = "../../../modules/vsphere/vm/linux"  # Caminho relativo ao terragrunt.hcl
 }
 
 locals {  
