@@ -22,6 +22,8 @@ pipeline {
        GITEA_TOKEN = credentials('GITEA_TOKEN') // Usando credenciais do gitea
        giteaacesstoken = credentials('giteaacesstoken') // Usando credenciais do gitea
        GITEA_CREDENTIALS = credentials('GITEA_TOKEN')
+       TF_VAR_hostname_vcenter_516 = 'your_vcenter_516_hostname' // Substitua pelo valor real
+       TF_VAR_hostname_vcenter_k = 'your_vcenter_k_hostname' // Substitua pelo valor real
     }
     stages {
       stage('Download Certificate') {  
@@ -63,6 +65,9 @@ pipeline {
                 }
                 withCredentials([ string(credentialsId: 'access_key_prod', variable: 'TF_VAR_access_key_prod'),
                                   string(credentialsId: 'secret_key_prod', variable: 'TF_VAR_secret_key_prod') ]) { 
+                                    // Definindo variáveis de ambiente adicionais
+                  env.TF_VAR_backend_access_key = "$TF_VAR_access_key_prod"
+                  env.TF_VAR_backend_secret_key = "$TF_VAR_backend_secret_key"
                   sh " echo '{\\n  \"TF_VAR_backend_access_key\": \"$TF_VAR_access_key_prod\",\\n  \"TF_VAR_backend_secret_key\": \"$TF_VAR_secret_key_prod\"\\n}' > bucket.json"
                 }
             }
@@ -79,31 +84,39 @@ pipeline {
           }
       }                    
       stage('Terragrunt Plan') {
-        steps {
-            script {           
-              dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
-                if("${Site}" == 'vsphere-516') {
-                  env.VCENTER_HOST = credentials('TF_VAR_hostname_vcenter_516')
-                  env.VCENTER_USER = credentials('TF_VAR_username_vcenter_516')
-                  env.VCENTER_PASS = credentials('TF_VAR_password_vcenter_516')
-                } else {
-                    env.VCENTER_HOST = credentials('TF_VAR_hostname_vcenter_k')
-                    env.VCENTER_USER = credentials('TF_VAR_username_vcenter_k')
-                    env.VCENTER_PASS = credentials('TF_VAR_password_vcenter_k')
-                } 
-               withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro"]) {  
-                // Comandos que usam as variáveis definidas  
-                
-                sh """ 
-                  export TF_LOG=DEBUG  
-                  export TF_VAR_VM_PASS=${ANSIBLE_PASSWD}
-                  export TF_VAR_DISTRO=${Distro}
-                  export AWS_VERIFY_SSL=false 
-                  terragrunt plan -lock=${lock}  """ 
-                }     
-              }                       
-            }          
+          steps {
+              script {           
+                  dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
+                      if("${Site}" == 'vsphere-516') {
+                          env.VCENTER_HOST = credentials('TF_VAR_hostname_vcenter_516')
+                          env.VCENTER_USER = credentials('TF_VAR_username_vcenter_516')
+                          env.VCENTER_PASS = credentials('TF_VAR_password_vcenter_516')
+                      } else {
+                          env.VCENTER_HOST = credentials('TF_VAR_hostname_vcenter_k')
+                          env.VCENTER_USER = credentials('TF_VAR_username_vcenter_k')
+                          env.VCENTER_PASS = credentials('TF_VAR_password_vcenter_k')
+                      }
+
+                      // Definindo variáveis de ambiente adicionais
+                      // env.TF_VAR_backend_access_key = credentials("TF_VAR_backend_access_key_${env}")
+                     // env.TF_VAR_backend_secret_key = credentials("TF_VAR_backend_secret_key_${env}")
+
+                      withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro"]) {  
+                          // Comandos que usam as variáveis definidas  
+
+                          sh """ 
+                              export TF_LOG=DEBUG  
+                              export TF_VAR_VM_PASS=${ANSIBLE_PASSWD}
+                              export TF_VAR_DISTRO=${Distro}
+                              export TF_VAR_backend_access_key=${TF_VAR_backend_access_key}
+                              export TF_VAR_backend_secret_key=${TF_VAR_backend_secret_key}
+                              export AWS_VERIFY_SSL=false 
+                              terragrunt plan -lock=${lock}  
+                          """ 
+                      }     
+                  }                       
+              }          
           }
-      }              
+      }    
     }
 }
