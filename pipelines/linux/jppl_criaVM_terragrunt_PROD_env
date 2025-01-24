@@ -116,8 +116,9 @@ pipeline {
                               export TF_VAR_VM_PASS=${ANSIBLE_PASSWD}
                               export TF_VAR_DISTRO=${Distro}  
                               export VCENTER_HOST = ${VCENTER_HOST}
-                              export VCENTER_USER = ${VCENTER_USER}
                               export VCENTER_PASS = ${VCENTER_PASS}
+                              export VCENTER_USER = ${VCENTER_USER}
+                              
                               export TF_VAR_backend_access_key_prod=${env.TF_VAR_backend_access_key_prod}
                               export TF_VAR_backend_secret_key_prod=${env.TF_VAR_backend_secret_key_prod}
                               export AWS_VERIFY_SSL=false 
