@@ -10,6 +10,9 @@ terraform {
 locals {  
   TF_VAR_VM_PASS = get_env("TF_VAR_VM_PASS")
   TF_VAR_DISTRO  = get_env("TF_VAR_DISTRO")
+  vcenter-host = get_env("VCENTER_HOST")
+  vcenter-user = get_env("VCENTER_USER")
+  vcenter-pass = get_env("VCENTER_PASS")
 }  
 
 inputs = {
