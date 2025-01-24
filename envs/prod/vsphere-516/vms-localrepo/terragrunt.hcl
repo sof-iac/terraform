@@ -57,10 +57,7 @@ inputs = {
             disk_sharing           = null  
             attach                 = null  
             path                   = null 
-          }  
-        }
-      # Adicionando discos adicionais  
-        data_disk = {  
+          }   
           "disk_A2" = {  
             size_gb                = 1024
             unit_number            = 4  
