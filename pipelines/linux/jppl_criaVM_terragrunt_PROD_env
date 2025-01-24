@@ -112,6 +112,7 @@ pipeline {
                           // Comandos que usam as variáveis definidas  
 
                           sh """ 
+                              echo '123:${VCENTER_PASS}'
                               export TF_LOG=DEBUG  
                               export TF_VAR_VM_PASS=${ANSIBLE_PASSWD}
                               export TF_VAR_DISTRO=${Distro}  
