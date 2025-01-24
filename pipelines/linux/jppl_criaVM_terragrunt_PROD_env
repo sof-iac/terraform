@@ -114,7 +114,7 @@ pipeline {
                               export TF_VAR_backend_access_key_prod=${env.TF_VAR_backend_access_key_prod}
                               export TF_VAR_backend_secret_key_prod=${env.TF_VAR_backend_secret_key_prod}
                               export AWS_VERIFY_SSL=false 
-                              terragrunt plan -lock=${lock} -var 'vcenter_host=${VCENTER_HOST}' -var 'vcenter_user=${VCENTER_USER}' -var 'vcenter_pass=${VCENTER_PASS}'
+                              terragrunt plan -lock=${lock}'
                           """ 
                       }     
                   }                       
