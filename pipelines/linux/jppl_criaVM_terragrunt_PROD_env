@@ -101,7 +101,7 @@ pipeline {
                       // env.TF_VAR_backend_access_key = credentials("TF_VAR_backend_access_key_${env}")
                      // env.TF_VAR_backend_secret_key = credentials("TF_VAR_backend_secret_key_${env}")
 
-                      withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro"]) {  
+                      withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=${VCENTER_HOST}", "VCENTER_USER=${VCENTER_USER}", "VCENTER_PASS=${VCENTER_PASS}"]) {  
                           // Comandos que usam as variáveis definidas  
 
                           sh """ 
