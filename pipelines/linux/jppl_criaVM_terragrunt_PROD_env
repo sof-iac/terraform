@@ -37,7 +37,7 @@ pipeline {
                 def command = """  
                     export VAULT_ADDR=${env.VAULT_ADDR}  
                     export VAULT_TOKEN=${env.VAULT_TOKEN}
-                    sudo vault kv get -field=minio_cert ${secretPath} > ${outputFile}  
+                    vault kv get -field=minio_cert ${secretPath} > ${outputFile}  
                     
                 """  
                 // Executa o comando  
