@@ -302,7 +302,7 @@ resource "null_resource" "ansible" {
   }
     # Copia a chave publica para a VM a ser criada
   provisioner "file" {
-    source      = "/home/ansible/.ssh/id_ed25519.pub"
+    source      = "${path.module}/templates/id_ed25519.pub"
     destination = "/tmp/"
   }  
   # Shel script para criação do usuario ansible, caso nao exista
