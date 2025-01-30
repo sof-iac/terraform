@@ -40,6 +40,8 @@ inputs = {
           "Aplicacao" = "Postgres"
           "Responsavel" = ""
         }        
-    }   
+        # Adicionando discos adicionais  
+        data_disk = { }  
+    } 
   }     
 }
