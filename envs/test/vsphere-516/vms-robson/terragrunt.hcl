@@ -38,7 +38,6 @@ inputs = {
           "Origem"    = "Terraform"
           "Ambiente"  = "Teste"
           "Aplicacao" = "Postgres"
-          "Responsavel" = ""
         }        
         # Adicionando discos adicionais  
         data_disk = { }  
