@@ -14,7 +14,7 @@ locals {
 
 inputs = {
   vm = {
-    "tRoB" = {
+    "TROB" = {
         template          = "templateubuntu2204_ansible"
         instances         = 1
         vmstartcount      = 1
