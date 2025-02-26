@@ -21,9 +21,9 @@ inputs = {
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Storage_Purestorage"
         datastore         = "Storage_Purestorage"
-        resource_pool     = "Blade_Atreus/Resources"
-        vsphere_cluster   = "Blade_Atreus"
-        network           = {"PG_Atlas_Dominio_Recurso" = ["172.27.3.124"]}
+        resource_pool     = "Blade_Kratos/Resources"
+        vsphere_cluster   = "Blade_Kratos"
+        network           = {"PG_Gaia_Dominio_Recurso" = ["172.27.3.124"]}
         mask              = ["24"]
         gateway           = "172.27.3.1"
         cpu               = 2
