@@ -14,7 +14,7 @@ locals {
 
 inputs = {
   vm = {
-    "TROB" = {
+    "TAPA" = {
         template          = "templateubuntu2204_ansible"
         instances         = 1
         vmstartcount      = 1
@@ -38,7 +38,6 @@ inputs = {
           "Origem"    = "Terraform"
           "Ambiente"  = "Teste"
           "Aplicacao" = "Apache"
-          "Responsavel" = "Gabriel Miranda"
         }        
         # Adicionando discos adicionais  
         data_disk = { }  
