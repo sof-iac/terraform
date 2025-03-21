@@ -15,16 +15,16 @@ locals {
 inputs = {
   vm = {
     "LAPC" = {
-        template          = "templateubuntu2204_ansible"
-        instances         = 1
-        vmstartcount      = 6
+        template          = "templateubuntu_ansible_10092024"
+        instances         = 2
+        vmstartcount      = 7
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Storage_Purestorage"
         datastore         = "Storage_Purestorage"
         resource_pool     = "Blade_Kratos/Resources"
         vsphere_cluster   = "Blade_Kratos"
         domain            = "sof.intra"
-        network           = {"PG_Gaia_Teste" = ["192.168.30.94"]}
+        network           = {"PG_Gaia_Teste" = ["192.168.30.96"]}
         dns_server_list   = ["172.27.3.5", "172.27.3.6"]
         mask              = ["24"]
         gateway           = "192.168.30.1"
