@@ -41,7 +41,7 @@ inputs = {
         }        
         # Adicionando discos adicionais  
         data_disk = { }  
-    } 
+    }     
   } 
 }
 
