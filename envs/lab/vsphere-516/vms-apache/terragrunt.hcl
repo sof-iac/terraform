@@ -15,7 +15,7 @@ locals {
 inputs = {
   vm = {
     "TAPC" = {
-        template          = "templateubuntu2204_ansible"
+        template          = "templateubuntu2404"
         instances         = 2
         vmstartcount      = 3
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
