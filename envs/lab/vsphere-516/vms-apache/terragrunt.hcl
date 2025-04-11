@@ -16,7 +16,7 @@ inputs = {
   vm = {
     "TAPC" = {
         template          = "templateubuntu2404"
-        instances         = 4
+        instances         = 1
         vmstartcount      = 1
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Storage_Purestorage"
@@ -24,11 +24,11 @@ inputs = {
         resource_pool     = "Blade_Kratos/Resources"
         vsphere_cluster   = "Blade_Kratos"
         domain            = "sof.intra"
-        network           = {"PG_Gaia_Teste" = ["192.168.30.89","192.168.30.97","192.168.30.93","192.168.30.95"]}
+        network           = {"PG_Gaia_Teste" = ["192.168.30.89"]}
         dns_server_list   = ["172.27.3.5", "172.27.3.6"]
         mask              = ["24"]
         gateway           = "192.168.30.1"
-        cpu               = 2
+        cpu               = 4
         memory            = 8192
         local_adminpass   = "${local.TF_VAR_VM_PASS}"
         distro            = "${local.TF_VAR_DISTRO}"
