@@ -88,7 +88,7 @@ pipeline {
       stage('Terragrunt Plan') {
           steps {
               script {           
-                  dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
+                  {
                       // Definindo variáveis de ambiente adicionais
                       withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS"]) {  
                           // Comandos que usam as variáveis definidas  
