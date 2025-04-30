@@ -88,7 +88,6 @@ pipeline {
       stage('Terragrunt Plan') {
           steps {
               script {           
-                  {
                       // Definindo variáveis de ambiente adicionais
                       withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS"]) {  
                           // Comandos que usam as variáveis definidas  
@@ -102,8 +101,7 @@ pipeline {
                               export TF_VAR_backend_secret_key_lab=${env.TF_VAR_backend_secret_key_lab}
                               export AWS_VERIFY_SSL=false 
                              terraform init -backend-config="key=${Key}"
-                          """ 
-                      }     
+                          """     
                   }                       
               }          
           }
