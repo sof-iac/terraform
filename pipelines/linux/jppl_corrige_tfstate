@@ -2,6 +2,8 @@ pipeline {
     agent any
     parameters {
       // Nome da chave
+      password(name: 'GITEA_TOKEN', description: 'Token gitea')
+      text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo') 
       text(name: 'Key', defaultValue: 'lab/vsphere-516/linux-vms/terraform.tfstate', description: 'Key para init do terraform')     
     }
     environment {
