@@ -33,7 +33,6 @@ pipeline {
       stage('Retornando as chaves publica e certificados') {
         steps {
             script {
-              dir("${Diretorio}/${Ambiente}/${Site}") {
                 // Retorna a chave de conexao com o vcenter
                 def secrets_vcenter = [
                     [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
@@ -72,7 +71,6 @@ pipeline {
                   env.TF_VAR_backend_secret_key_lab = "$TF_VAR_secret_key_lab"
                   sh " echo '{\\n  \"TF_VAR_backend_access_key\": \"$TF_VAR_access_key_lab\",\\n  \"TF_VAR_backend_secret_key\": \"$TF_VAR_secret_key_lab\"\\n}' > bucket.json"
                 }
-            }
           }
         }
       }   
