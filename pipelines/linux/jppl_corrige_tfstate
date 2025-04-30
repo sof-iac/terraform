@@ -52,20 +52,12 @@ pipeline {
                     string(credentialsId: 'secret_key_lab', variable: 'TF_VAR_secret_key_lab'),
                     string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'VCENTER_HOST_516'),
                     string(credentialsId: 'TF_VAR_username_vcenter_516', variable: 'VCENTER_USER_516'),
-                    string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'VCENTER_PASS_516'),
-                    string(credentialsId: 'TF_VAR_hostname_vcenter_k', variable: 'VCENTER_HOST_K'),
-                    string(credentialsId: 'TF_VAR_username_vcenter_k', variable: 'VCENTER_USER_K'),
-                    string(credentialsId: 'TF_VAR_password_vcenter_k', variable: 'VCENTER_PASS_K')
+                    string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'VCENTER_PASS_516')
                 ]) {
-                if("${Site}" == 'vsphere-516') {
+ 
                     env.VCENTER_HOST = "$VCENTER_HOST_516"
                     env.VCENTER_USER = "$VCENTER_USER_516"
-                    env.VCENTER_PASS = "$VCENTER_PASS_516"
-                } else {
-                    env.VCENTER_HOST = "$VCENTER_HOST_K"
-                    env.VCENTER_USER = "$VCENTER_USER_K"
-                    env.VCENTER_PASS = "$VCENTER_PASS_K"
-                }                    
+                    env.VCENTER_PASS = "$VCENTER_PASS_516"                   
                   // Definindo variáveis de ambiente adicionais
                   env.TF_VAR_backend_access_key_lab = "$TF_VAR_access_key_lab"
                   env.TF_VAR_backend_secret_key_lab = "$TF_VAR_secret_key_lab"
