@@ -102,12 +102,6 @@ inputs = {
   }
   
   resource-pool = {
-    "Infra_BlocoK" = {
-      compute-cluster          = "Blade_DTI"
-      cpu-share-level          = "high"
-      memory-share-level       = "high"
-      scale-descendants-shares = "disabled"
-    }
     "VMware_BlocoK" = {
       compute-cluster          = "Blade_DTI"
       cpu-share-level          = "high"

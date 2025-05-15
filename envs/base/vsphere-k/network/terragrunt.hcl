@@ -44,26 +44,6 @@ inputs = {
   }
 
   pg = {
-    "DPortGroup" = {
-      vds                             = "VDS_BLK"
-      vlan-id                         = 0
-      block-override-allowed          = true
-      network-resource-pool-key       = null
-      port-config-reset-at-disconnect = true
-    }
-    "VDS_BLK-DVUplinks-3011" = {
-      vds                             = "VDS_BLK"
-      vlan-range                      = [
-        {
-          min-vlan = 0
-          max-vlan = 4094
-        }
-      ]
-      auto-expand                     = false
-      block-override-allowed          = true
-      network-resource-pool-key       = null
-      port-config-reset-at-disconnect = true
-    }  
     "VDS_GERENCIA" = {
       vds                             = "VDS_BLK"
       vlan-id                         = 2440
