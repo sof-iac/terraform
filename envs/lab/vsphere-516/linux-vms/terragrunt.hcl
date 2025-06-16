@@ -33,7 +33,7 @@ inputs = {
         local_adminpass   = "${local.TF_VAR_VM_PASS}"
         distro            = "${local.TF_VAR_DISTRO}"
         network_type      = ["vmxnet3"]
-        annotation        = "Servidor de Testes Apache - 20/03/2025 - Rogerio Vieira"
+        annotation        = "Servidor de Testes Apache - 16/06/2025 - Rogerio Vieira"
         #tags = { }        
         # Adicionando discos adicionais  
         data_disk = { }  
