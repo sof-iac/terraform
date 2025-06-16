@@ -34,11 +34,7 @@ inputs = {
         distro            = "${local.TF_VAR_DISTRO}"
         network_type      = ["vmxnet3"]
         annotation        = "Servidor de Testes Apache - 20/03/2025 - Rogerio Vieira"
-        tags = {
-          "Origem"    = "Terraform"
-          "Ambiente"  = "Teste"
-          "Aplicacao" = "Apache"
-        }        
+        #tags = { }        
         # Adicionando discos adicionais  
         data_disk = { }  
     }    
