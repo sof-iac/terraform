@@ -2,11 +2,11 @@ locals {
   parsed             = regex(".*/envs/(?P<env>.*?)/.*", get_terragrunt_dir())
   env                = local.parsed.env
   module-name        = get_terragrunt_dir()
-  vcenter-host       = get_env("VCENTER_HOST")
-  vcenter-user       = get_env("VCENTER_USER")
-  vcenter-pass       = get_env("VCENTER_PASS")
+  vcenter-host       = strcontains(local.module-name, "vsphere-516") == true ? get_env("TF_VAR_hostname_vcenter_516") : get_env("TF_VAR_hostname_vcenter_k")
+  vcenter-user       = strcontains(local.module-name, "vsphere-516") == true ? get_env("TF_VAR_username_vcenter_516") : get_env("TF_VAR_username_vcenter_k")
+  vcenter-pass       = strcontains(local.module-name, "vsphere-516") == true ? get_env("TF_VAR_password_vcenter_516") : get_env("TF_VAR_password_vcenter_k")
   backend-access-key = get_env("TF_VAR_backend_access_key_${local.env}")
-  backend-secret-key = get_env("TF_VAR_backend_secret_key_${local.env}")     
+  backend-secret-key = get_env("TF_VAR_backend_secret_key_${local.env}")
 }
 
 generate "provider" {
@@ -33,23 +33,23 @@ generate "backend" {
   contents = <<EOF
   terraform {
     backend "s3" {
-      bucket    = "tf-${local.env}"
+      bucket                  = "tf-${local.env}"
       endpoints = {
-        s3 = "https://sof-s3.sof.intra"   # Minio endpoint
-        dynamodb = "https://dynamodb.sof.intra"
+        s3 = "https://sof-s3.sof.intra" # Minio endpoint
       }
-      key            = "${path_relative_to_include()}/terraform.tfstate"
-      access_key     = "${local.backend-access-key}"
-      secret_key     = "${local.backend-secret-key}"
-      region         = "us-east-1"
+      key                     = "${path_relative_to_include()}/terraform.tfstate"
+      access_key              = "${local.backend-access-key}"
+      secret_key              = "${local.backend-secret-key}"
+      region                  = "us-east-1" # Região ainda é obrigatória, mesmo que não faça sentido para MinIO local.
       skip_credentials_validation = true  # Skip AWS related checks and validations
       skip_requesting_account_id = true
       skip_metadata_api_check = true
       skip_region_validation = true
-      use_path_style = true             # Enable path-style S3 URLs
+      use_path_style          = true      # Enable path-style S3 URLs
 
-      dynamodb_table = "sof-tfstate-${local.env}"
-      }
+      use_lockfile            = true      # Habilita o locking nativo baseado em arquivo
+      # dynamodb_table = "sof-tfstate-${local.env}" # <-- REMOVER ESTA LINHA
     }
+  }
   EOF
 }
