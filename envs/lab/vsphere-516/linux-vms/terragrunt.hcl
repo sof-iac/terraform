@@ -34,7 +34,7 @@ inputs = {
         distro            = "${local.TF_VAR_DISTRO}"
         network_type      = ["vmxnet3"]
         annotation        = "Servidor de Testes Apache - 16/06/2025 - Rogerio Vieira"
-        #tags = { }        
+        tags = { }        
         # Adicionando discos adicionais  
         data_disk = { }  
     }    
