@@ -6,9 +6,9 @@ include {
   path = find_in_parent_folders()
 }
 
-dependency "dc-config" {
-  config_path = "${path_relative_from_include()}/base/${local.vcenter}/datacenter-config"
-}
+#dependency "dc-config" {
+#  config_path = "${path_relative_from_include()}/base/${local.vcenter}/datacenter-config"
+#}
 
 locals {  
   vcenter        = basename(dirname(get_terragrunt_dir()))
