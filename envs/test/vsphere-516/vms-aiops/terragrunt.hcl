@@ -14,26 +14,26 @@ locals {
 
 inputs = {
   vm = {
-    "TROB" = {
-        template          = "templateubuntu2204_ansible"
-        instances         = 1
-        vmstartcount      = 1
+    "PAIOPS" = {
+        template          = "templateubuntu2404"
+        instances         = 4
+        vmstartcount      = 5
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Storage_Purestorage"
         datastore         = "Storage_Purestorage"
         resource_pool     = "Blade_Kratos/Resources"
         vsphere_cluster   = "Blade_Kratos"
         domain            = "sof.intra"
-        network           = {"PG_Gaia_Teste" = ["192.168.30.80"]}
+        network           = {"PG_Gaia_Teste" = ["192.168.30.12","192.168.30.15","192.168.30.16","192.168.30.18"]}
         dns_server_list   = ["172.27.3.5", "172.27.3.6"]
         mask              = ["24"]
         gateway           = "192.168.30.1"
-        cpu               = 2
+        cpu               = 4
         memory            = 8192
         local_adminpass   = "${local.TF_VAR_VM_PASS}"
         distro            = "${local.TF_VAR_DISTRO}"
         network_type      = ["vmxnet3"]
-        annotation        = "Servidor de Testes - 30/01/2025 - Robson Mendes"
+        annotation        = "Servidor para AIOPS"
         tags = {
           "Origem"    = "Terraform"
           "Ambiente"  = "Teste"
