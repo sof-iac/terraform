@@ -47,7 +47,7 @@ generate "backend" {
       skip_region_validation = true
       use_path_style          = true      # Enable path-style S3 URLs
 
-      #use_lockfile            = true      # Habilita o locking nativo baseado em arquivo
+      use_lockfile            = true      # Habilita o locking nativo baseado em arquivo
       # dynamodb_table = "sof-tfstate-${local.env}" # <-- REMOVER ESTA LINHA
     }
   }
