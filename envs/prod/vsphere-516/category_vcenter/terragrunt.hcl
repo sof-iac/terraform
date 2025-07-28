@@ -7,105 +7,43 @@ terraform {
 }
 
 inputs = {
-  categories = {
-    "Ambiente" = {
-      description = "Ambiente que contem o recurso"
-      cardinality = "MULTIPLE"
-      types       = [
-        "VirtualMachine"
-      ]    
-    }
-    "Aplicacao" = {
-      description = "A qual aplicacao se destina"
-      cardinality = "MULTIPLE"
-      types       = [
-        "VirtualMachine"
-      ]    
-    }
-    "Guest_OS" = {
-      description = "Qual o sistema operacional"
-      cardinality = "MULTIPLE"
-      types       = [
-        "VirtualMachine"
-      ]    
-    }
-    "k8s_region" = {
-      description = "Região Kubernetes"
-      cardinality = "SINGLE"
-      types       = [
-        "Datacenter"
-      ]    
-    }
-    "k8s_storage" = {
-      description = "Tipo Storage Kubernetes"
-      cardinality = "SINGLE"
-      types       = [
-        "Datacenter",
-        "Datastore",
-        "Folder"
-      ]    
-    }
-    "k8s_zone" = {
-      description = "Zona Kubernetes"
-      cardinality = "SINGLE"
-      types       = [
-        "Datastore",
-        "StoragePod",
-        "ClusterComputeResource"
-      ]    
-    }
-    "Origem" = {
-      description = "Via codigo ou Manual"
-      cardinality = "MULTIPLE"
-      types       = [
-        "VirtualMachine"
-      ]    
-    }
-    "Rancher" = {
-      description = ""
-      cardinality = "SINGLE"
-      types       = [
-        "VirtualMachine"
-      ]    
-    }
-    "Responsavel" = {
-      description = "Responsavel pelo recurso"
-      cardinality = "MULTIPLE"
-      types       = [
-        "VirtualMachine"
-      ]    
-    }
-    "Responsável" = {
-      description = "Responsável"
-      cardinality = "SINGLE"
-      types       = [
-        "VirtualMachine"
-      ]    
-    }
-    "snapshots_vrops" = {
-      description = "Tags referentes a snapshots (prazo, tamanho, etc) para serem usadas nas automações do vrops."
-      cardinality = "SINGLE"
-      types       = [
-        "VirtualMachine"
-      ]    
-    }
-    "VM-SOF" = {
-      description = "vcs-uncategorized-tag-description"
-      cardinality = "MULTIPLE"
-      types       = [
-        "DistributedVirtualSwitch",
-        "VmwareDistributedVirtualSwitch",
-        "VirtualMachine",
-        "DistributedVirtualPortgroup"
-      ]    
-    }
-    "vSANDirectStorage" = {
-      description = ""
-      cardinality = "MULTIPLE"
-      types       = [
-        "Datastore"
-      ]    
-    }
-  }   
+  category = {
+    "category_ambiente" = {
+      category_name        = "Ambiente"
+      category_description = "Ambiente que contem o recurso"
+      },
+    "category_Origem" = {
+      category_name        = "Origem"
+      category_description = "Via codigo ou Manual"
+      }, 
+    "category_guest_os" = {
+      category_name        = "Guest_OS"
+      category_description = "Qual o sistema operacional"
+      }, 
+    "category_aplicacao" = {
+      category_name        = "Aplicacao"
+      category_description = "A qual aplicacao se destina"
+      },
+    "category_k8s_region" = {
+      category_name        = "k8s_region"
+      category_description = "Região Kubernetes"
+      },
+    "category_k8s_storage" = {
+      category_name        = "k8s_storage"
+      category_description = "Tipo Storage Kubernetes"
+      },
+    "category_k8s_zone" = {
+      category_name        = "k8s_zone"
+      category_description = "Zona Kubernetess"
+      },
+    "category_origem" = {
+      category_name        = "origem"
+      category_description = "Via codigo ou Manual"
+      },
+    "category_Responsavel" = {
+      category_name        = "Responsavel"
+      category_description = "Responsavel pelo recurso"
+      }
+    }   
 }
 
