@@ -15,7 +15,7 @@ locals {
 inputs = {
   vm = {
     "ROBSON" = {
-        template          = "default-template-alma"
+        template          = "default-template-alma10-base"
         instances         = 1
         vmstartcount      = 1
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
