@@ -3,7 +3,7 @@ pipeline {
     parameters {
       // Nome do projeto no gitea
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
-      choice(name: 'Datacenter', choices: ['envs','aws'], description: 'Datacenter') 
+      choice(name: 'Diretorio', choices: ['envs','aws'], description: 'Diretorio raiz') 
       choice(name: 'Ambiente', choices: ['base','test','lab','prod'], description: 'Ambiente')
       choice(name: 'Site', choices: [ 'vsphere-516', 'vsphere-k'], description: 'Site')
       string(name: 'Grupo', defaultValue: 'nome_do_grupo', description: 'Nome do grupo das VMs')
@@ -11,17 +11,19 @@ pipeline {
       choice(name: 'lock', choices: ['true','false'], description: 'Lock do dynamodb')
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
       text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
-
     }
     environment {
+       TF_VAR_VM_PASS = credentials('ansible_pass_text') // Usando credenciais do ansible 
        VAULT_ADDR = 'https://vault.app.sof.intra' // URL do seu servidor Vault  
        VAULT_TOKEN = credentials('vault_token_text') // Usando credenciais do Jenkins  
-    }       
-    stages {       
+       TF_VAR_hostname_vcenter_516 = 'your_vcenter_516_hostname' // Substitua pelo valor real
+       TF_VAR_hostname_vcenter_k = 'your_vcenter_k_hostname' // Substitua pelo valor real
+    }
+    stages { 
       stage('Retornando as chaves publica e certificados') {
         steps {
             script {
-              dir("${Datacenter}/${Ambiente}/${Site}") {
+              dir("${Diretorio}/${Ambiente}/${Site}") {
                 // Retorna a chave de conexao com o vcenter
                 def secrets_vcenter = [
                     [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
@@ -35,48 +37,91 @@ pipeline {
 
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
                   sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"                   
-                  // sh 'echo $passwd_vcenter > secrets.txt'
                 }
-                withCredentials([ string(credentialsId: 'access_key_prod', variable: 'TF_VAR_access_key_prod'),
-                                  string(credentialsId: 'secret_key_prod', variable: 'TF_VAR_secret_key_prod') ]) { 
-                  sh " echo '{\\n  \"TF_VAR_backend_access_key\": \"$TF_VAR_access_key_prod\",\\n  \"TF_VAR_backend_secret_key\": \"$TF_VAR_secret_key_prod\"\\n}' > bucket.json"
-                }                
+                withCredentials([ 
+                    string(credentialsId: 'access_key_teste', variable: 'TF_VAR_access_key_test'),
+                    string(credentialsId: 'secret_key_teste', variable: 'TF_VAR_secret_key_test'),
+                    string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'VCENTER_HOST_516'),
+                    string(credentialsId: 'TF_VAR_username_vcenter_516', variable: 'VCENTER_USER_516'),
+                    string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'VCENTER_PASS_516'),
+                    string(credentialsId: 'TF_VAR_hostname_vcenter_k', variable: 'VCENTER_HOST_K'),
+                    string(credentialsId: 'TF_VAR_username_vcenter_k', variable: 'VCENTER_USER_K'),
+                    string(credentialsId: 'TF_VAR_password_vcenter_k', variable: 'VCENTER_PASS_K')
+                ]) {
+                if("${Site}" == 'vsphere-516') {
+                    env.VCENTER_HOST = "$VCENTER_HOST_516"
+                    env.VCENTER_USER = "$VCENTER_USER_516"
+                    env.VCENTER_PASS = "$VCENTER_PASS_516"
+                } else {
+                    env.VCENTER_HOST = "$VCENTER_HOST_K"
+                    env.VCENTER_USER = "$VCENTER_USER_K"
+                    env.VCENTER_PASS = "$VCENTER_PASS_K"
+                }                    
+                  // Definindo variáveis de ambiente adicionais
+                  env.TF_VAR_backend_access_key_test = "$TF_VAR_access_key_test"
+                  env.TF_VAR_backend_secret_key_test = "$TF_VAR_secret_key_test"
+                  sh " echo '{\\n  \"TF_VAR_backend_access_key\": \"$TF_VAR_access_key_test\",\\n  \"TF_VAR_backend_secret_key\": \"$TF_VAR_secret_key_test\"\\n}' > bucket.json"
+                }
             }
           }
         }
-      }         
-      stage('Copia Terragrunt.hcl') {
+      }   
+      stage('Copy terragrunt.hcl') {
           steps {
-            script {           
-              dir("${Datacenter}/${Ambiente}/${Site}/files") {    
-                sh 'cp terragrunt.hcl ../'   
+              script {
+                  sh '''
+                      cp pipelines/conf/terragrunt.hcl envs/
+                  '''
               }
-            }
           }
-      }                 
+      }                    
       stage('Terragrunt Plan') {
-        steps {
-            script {           
-              dir("${Datacenter}/${Ambiente}/${Site}/${Grupo}") {     
-                // Executa o comando init do terragrunt
-                if("${init}" != 'nao')
-                {
-                    sh """ terragrunt ${init}  """
-                }
-                sh """ terragrunt plan -lock=${lock} """ 
-                }                            
-            }          
+          steps {
+              script {           
+                  dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
+                      // Definindo variáveis de ambiente adicionais
+
+                      withEnv(["VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS"]) {  
+                          // Comandos que usam as variáveis definidas  
+
+                          sh """ 
+                              export TF_LOG=DEBUG  
+                              export VCENTER_HOST=${VCENTER_HOST}
+                              export VCENTER_PASS=${VCENTER_PASS}
+                              export VCENTER_USER=${VCENTER_USER}
+                              export TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}
+                              export TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}
+                              export AWS_VERIFY_SSL=false 
+                              terragrunt plan -lock=${lock} 
+                          """ 
+                      }     
+                  }                       
+              }          
           }
-      }
+      }  
       stage('Terragrunt Apply') {
           steps {
-            script {           
-              dir("${Datacenter}/${Ambiente}/${Site}/${Grupo}") {      
-                // export TF_LOG=DEBUG; 
-                sh """ terragrunt apply -auto-approve -lock=${lock} """                                            
-              }
-            }          
-          }                     
-        }               
+              script {           
+                  dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
+                      // Definindo variáveis de ambiente adicionais
+         
+                      withEnv(["VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS"]) {  
+                          // Comandos que usam as variáveis definidas  
+
+                          sh """ 
+                              export TF_LOG=DEBUG  
+                              export VCENTER_HOST=${VCENTER_HOST}
+                              export VCENTER_PASS=${VCENTER_PASS}
+                              export VCENTER_USER=${VCENTER_USER}
+                              export TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}
+                              export TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}
+                              export AWS_VERIFY_SSL=false 
+                              terragrunt apply -auto-approve -lock=${lock}
+                          """ 
+                      }     
+                  }                       
+              }          
+          }
+      }        
     }
 }
