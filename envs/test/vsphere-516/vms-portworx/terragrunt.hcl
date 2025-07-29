@@ -15,7 +15,7 @@ locals {
 inputs = {
   vm = {
     "TKBN" = {
-        template          = "default-template-2404-k8s"
+        template          = "default-template-ubuntu2404-k8s"
         instances         = 6
         vmstartcount      = 1
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
