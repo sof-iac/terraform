@@ -15,9 +15,9 @@ locals {
 inputs = {
   vm = {
     "ROBSON" = {
-        template          = "default-template-alma10-base"
+        template          = "default-template-alma10-k8s"
         instances         = 1
-        vmstartcount      = 2
+        vmstartcount      = 1
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Purestorage_Default"
         datastore         = "Purestorage_Default"
