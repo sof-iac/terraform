@@ -6,6 +6,7 @@ module "vsphere_linux_vm" {
   for_each = var.vm
 
   vmname        = each.key
+  staticvmname  = each.staticvmname
   vmtemp        = each.value.template
   instances     = each.value.instances
   vmstartcount  = each.value.vmstartcount

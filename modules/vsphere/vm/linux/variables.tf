@@ -4,6 +4,7 @@ variable vm {
       template          = string
       instances         = number
       vmstartcount      = number
+      staticvmname      = string
       datacenter        = string
       datastore_cluster = string
       vsphere_cluster   = string
