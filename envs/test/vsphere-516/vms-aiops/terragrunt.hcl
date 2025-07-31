@@ -52,7 +52,9 @@ inputs = {
             path                   = null  
           }
         }
-      },
+      }
+  },
+vm = {
     "PIAO" = {
         template          = "default_template_ubuntu_2404_base"
         instances         = 1
@@ -91,7 +93,8 @@ inputs = {
             path                   = null  
           }
         }
-      },
+      }
+},
     "PIAO" = {
         template          = "default_template_ubuntu_2404_base"
         instances         = 1
