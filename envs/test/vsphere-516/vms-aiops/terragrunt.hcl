@@ -1,21 +1,21 @@
 terraform {
   source = "../../../../modules/vsphere/vm/linux"  # Caminho relativo ao terragrunt.hcl
 }
- 
+
 include {
   path = find_in_parent_folders()
 }
- 
+
 locals {  
   vcenter        = basename(dirname(get_terragrunt_dir()))
   TF_VAR_VM_PASS = get_env("TF_VAR_VM_PASS")
   TF_VAR_DISTRO  = get_env("TF_VAR_DISTRO")
 }  
- 
+
 inputs = {
   vm = {
     "PIAO01" = {
-      template        = "default_template_ubuntu_2404_base"
+      template        = "default_template_almalinux_10_base"
       instances       = 1
       vmstartcount    = 1
       datacenter      = "SOF"
@@ -52,7 +52,7 @@ inputs = {
       }
     },
     "PIAO02" = {
-      template        = "default_template_ubuntu_2404_base"
+      template        = "default_template_almalinux_10_base"
       instances       = 1
       vmstartcount    = 2
       datacenter      = "SOF"
@@ -89,7 +89,7 @@ inputs = {
       }
     },
     "PIAO03" = {
-      template        = "default_template_ubuntu_2404_base"
+      template        = "default_template_almalinux_10_base"
       instances       = 1
       vmstartcount    = 3
       datacenter      = "SOF"
@@ -126,7 +126,7 @@ inputs = {
       }
     },
     "PIAO04" = {
-      template        = "default_template_ubuntu_2404_base"
+      template        = "default_template_almalinux_10_base"
       instances       = 1
       vmstartcount    = 4
       datacenter      = "SOF"
