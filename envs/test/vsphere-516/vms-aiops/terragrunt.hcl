@@ -16,6 +16,7 @@ inputs = {
   vm = {
     "PIAO01" = {
       template        = "default_template_almalinux_10_base"
+      staticvmname    = "PIAO01"
       instances       = 1
       vmstartcount    = 1
       datacenter      = "SOF"
@@ -53,6 +54,7 @@ inputs = {
     },
     "PIAO02" = {
       template        = "default_template_almalinux_10_base"
+      staticvmname    = "PIAO02"
       instances       = 1
       vmstartcount    = 2
       datacenter      = "SOF"
@@ -90,6 +92,7 @@ inputs = {
     },
     "PIAO03" = {
       template        = "default_template_almalinux_10_base"
+     staticvmname    = "PIAO03"
       instances       = 1
       vmstartcount    = 3
       datacenter      = "SOF"
@@ -127,6 +130,7 @@ inputs = {
     },
     "PIAO04" = {
       template        = "default_template_almalinux_10_base"
+      staticvmname    = "PIAO04"
       instances       = 1
       vmstartcount    = 4
       datacenter      = "SOF"
