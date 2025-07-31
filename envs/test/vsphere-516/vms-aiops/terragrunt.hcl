@@ -153,7 +153,7 @@ inputs = {
         # Adicionando discos adicionais  
         data_disk = {  
           "disk_A1" = {  
-            size_gb                = 1024
+            size_gb                = 500
             unit_number            = 3  
             thin_provisioned       = true  
             eagerly_scrub          = false  
