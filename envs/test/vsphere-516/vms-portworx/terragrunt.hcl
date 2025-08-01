@@ -18,6 +18,7 @@ inputs = {
         template          = "default-template-ubuntu2404_k8s_lab"
         instances         = 6
         vmstartcount      = 1
+        staticvmname      = null
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Purestorage_Default"
         datastore         = "Purestorage_Default"
