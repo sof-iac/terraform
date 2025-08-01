@@ -15,7 +15,7 @@ locals {
 inputs = {
   vm = {
     "TZAB" = {
-        template          = "templateubuntu2404"
+        template          = "default_template_almalinux_10_base"
         instances         = 1
         vmstartcount      = 1
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
@@ -24,7 +24,7 @@ inputs = {
         resource_pool     = "Blade_Kratos/Resources"
         vsphere_cluster   = "Blade_Kratos"
         domain            = "sof.intra"
-        network           = {"PG_Gaia_COINF_OPERACOES" = ["172.27.5.6"]}
+        network           = {"PG_Gaia_COINF_OPERACOES" = ["172.27.5.7"]}
         dns_server_list   = ["172.27.3.5", "172.27.3.6"]
         mask              = ["24"]
         gateway           = "172.27.5.1"
