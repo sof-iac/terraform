@@ -14,9 +14,9 @@ locals {
 
 inputs = {
   vm = {
-    "TZAB01" = {
+    "ROBALMA" = {
       template        = "default_template_almalinux_10_base"
-      staticvmname    = "TZAB01"
+      staticvmname    = "ROBALMA"
       instances       = 1
       vmstartcount    = 0
       datacenter      = "SOF"
@@ -34,7 +34,7 @@ inputs = {
       local_adminpass = "${local.TF_VAR_VM_PASS}"
       distro          = "${local.TF_VAR_DISTRO}"
       network_type    = ["vmxnet3"]
-      annotation      = "Zabbix"
+      annotation      = "TESTE ALMA ANSIBLE"
         tags = { }        
         # Adicionando discos adicionais  
         data_disk = { }  
