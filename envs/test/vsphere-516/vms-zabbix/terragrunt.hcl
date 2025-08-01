@@ -14,7 +14,7 @@ locals {
 
 inputs = {
   vm = {
-    "ROBSON_ALMA" = {
+    "TZAB01" = {
       template        = "default_template_almalinux_10_base"
       staticvmname    = "TZAB01"
       instances       = 1
@@ -29,40 +29,15 @@ inputs = {
       dns_server_list = ["172.27.3.5", "172.27.3.6"]
       mask            = ["24"]
       gateway         = "172.27.5.1"
-      cpu             = 4
-      memory          = 8192
+      cpu             = 8
+      memory          = 16384
       local_adminpass = "${local.TF_VAR_VM_PASS}"
       distro          = "${local.TF_VAR_DISTRO}"
       network_type    = ["vmxnet3"]
-      annotation      = "teste alma"
+      annotation      = "Zabbix"
         tags = { }        
         # Adicionando discos adicionais  
         data_disk = { }  
     } 
   }     
-},
-"ROBSON_UBUNTU" = {
-      template        = "default_template_ubuntu_2404_base"
-      staticvmname    = "TZAB01"
-      instances       = 1
-      vmstartcount    = 0
-      datacenter      = "SOF"
-      datastore_cluster = "Purestorage_Default"
-      datastore       = "Purestorage_Default"
-      resource_pool   = "Blade_Kratos/Resources"
-      vsphere_cluster = "Blade_Kratos"
-      domain          = "sof.intra"
-      network         = {"PG_Gaia_COINF_OPERACOES" = ["172.27.5.6"]}
-      dns_server_list = ["172.27.3.5", "172.27.3.6"]
-      mask            = ["24"]
-      gateway         = "172.27.5.1"
-      cpu             = 4
-      memory          = 8192
-      local_adminpass = "${local.TF_VAR_VM_PASS}"
-      distro          = "${local.TF_VAR_DISTRO}"
-      network_type    = ["vmxnet3"]
-      annotation      = "teste ubuntu"
-        tags = { }        
-        # Adicionando discos adicionais  
-        data_disk = { }  
-    }
+}
