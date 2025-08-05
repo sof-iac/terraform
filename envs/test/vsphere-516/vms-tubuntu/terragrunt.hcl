@@ -15,7 +15,7 @@ locals {
 inputs = {
   vm = {
     "ROBUNTU" = {
-      template        = "default_template_ubuntu_2404_base"
+      template        = "default-template-ubuntu2404-base"
       staticvmname    = "ROBUNTU"
       instances       = 1
       vmstartcount    = 0
