@@ -13,56 +13,5 @@ locals {
 }  
 
 inputs = {
-  vm = {
-    "TKBN" = {
-        template          = "default-template-ubuntu-2404-k8s"
-        instances         = 6
-        vmstartcount      = 1
-        staticvmname      = null
-        datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
-        datastore_cluster = "Purestorage_Default"
-        datastore         = "Purestorage_Default"
-        resource_pool     = "Blade_Kratos/Resources"
-        vsphere_cluster   = "Blade_Kratos"
-        domain            = "sof.intra"
-        network           = {"PG_Gaia_Teste" = ["192.168.30.164","192.168.30.165","192.168.30.166","192.168.30.167","192.168.30.168","192.168.30.160"]}
-        dns_server_list   = ["172.27.3.5", "172.27.3.6"]
-        mask              = ["24"]
-        gateway           = "192.168.30.1"
-        cpu               = 4
-        memory            = 8192
-        local_adminpass   = "${local.TF_VAR_VM_PASS}"
-        distro            = "${local.TF_VAR_DISTRO}"
-        network_type      = ["vmxnet3"]
-        annotation        = "Servidor Control Plane - 01 - Portworx - Rogerio Vieira Silva"
-        tags = { }        
-        # Adicionando discos adicionais  
-        data_disk = { }
-    },
-    "TKNB" = {
-        template          = "default-template-ubuntu2404-base"
-        instances         = 1
-        vmstartcount      = 1
-        staticvmname      = null
-        datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
-        datastore_cluster = "Purestorage_Default"
-        datastore         = "Purestorage_Default"
-        resource_pool     = "Blade_Kratos/Resources"
-        vsphere_cluster   = "Blade_Kratos"
-        domain            = "sof.intra"
-        network           = {"PG_Gaia_Teste" = ["192.168.30.103"]}
-        dns_server_list   = ["172.27.3.5", "172.27.3.6"]
-        mask              = ["24"]
-        gateway           = "192.168.30.1"
-        cpu               = 4
-        memory            = 8192
-        local_adminpass   = "${local.TF_VAR_VM_PASS}"
-        distro            = "${local.TF_VAR_DISTRO}"
-        network_type      = ["vmxnet3"]
-        annotation        = "Servidor Control Plane - 01 - Portworx - Rogerio Vieira Silva"
-        tags = { }        
-        # Adicionando discos adicionais  
-        data_disk = { }  
-    } 
-  }     
+  vm = {}     
 }
