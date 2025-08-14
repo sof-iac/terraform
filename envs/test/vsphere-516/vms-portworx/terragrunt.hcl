@@ -37,11 +37,10 @@ inputs = {
         annotation        = "Cluster testes - Portworx - Rogerio Vieira Silva"
         tags = { }        
         # Adicionando discos adicionais  
-              # Adicionando discos adicionais
         data_disk = {
           "disk_A1" = {
             size_gb                = 35
-            unit_number            = 3
+            unit_number            = 4
             thin_provisioned       = true
             eagerly_scrub          = false
             storage_policy_id      = null
