@@ -15,7 +15,7 @@ locals {
 inputs = {
   vm = {
     "ROBALMA" = {
-      template        = "default_template_almalinux_10_base"
+      template        = "default-template-alma10-base"
       staticvmname    = "ROBALMA"
       instances       = 1
       vmstartcount    = 0
