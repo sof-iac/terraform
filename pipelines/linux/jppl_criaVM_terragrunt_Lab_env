@@ -38,7 +38,7 @@ pipeline {
 
                 // optional configuration
                 def configuration = [vaultUrl: 'https://vault.app.sof.intra',
-                                      vaultCredentialId: 'token_vault',
+                                      vaultCredentialId: 'vault_approle_jenkins',
                                       engineVersion: 2]
 
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {

@@ -19,9 +19,6 @@ pipeline {
        VAULT_ADDR = 'https://vault.app.sof.intra' // URL do seu servidor Vault  
        VAULT_TOKEN = credentials('vault_token_text') // Usando credenciais do Jenkins  
        ANSIBLE_PASSWD = credentials('ansible_pass_text') // Usando credenciais do ansible 
-       //GITEA_TOKEN = credentials('GITEA_TOKEN') // Usando credenciais do gitea
-       //giteaacesstoken = credentials('giteaacesstoken') // Usando credenciais do gitea
-       //GITEA_CREDENTIALS = credentials('GITEA_TOKEN')
        TF_VAR_hostname_vcenter_516 = 'your_vcenter_516_hostname' // Substitua pelo valor real
        TF_VAR_hostname_vcenter_k = 'your_vcenter_k_hostname' // Substitua pelo valor real
     }
@@ -38,7 +35,7 @@ pipeline {
 
                 // optional configuration
                 def configuration = [vaultUrl: 'https://vault.app.sof.intra',
-                                      vaultCredentialId: 'token_vault',
+                                      vaultCredentialId: 'vault_approle_jenkins',
                                       engineVersion: 2]
 
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {

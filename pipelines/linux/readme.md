@@ -116,7 +116,7 @@ stage('Retornando as chaves publica e certificados') {
                 // Configuração opcional
                 def configuration = [
                     vaultUrl: 'https://vault.app.sof.intra',
-                    vaultCredentialId: 'token_vault',
+                    vaultCredentialId: 'vault_approle_jenkins',
                     engineVersion: 2
                 ]
 
