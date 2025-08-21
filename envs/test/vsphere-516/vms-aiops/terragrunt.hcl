@@ -15,7 +15,7 @@ locals {
 inputs = {
   vm = {
     "PIAO01" = {
-      template        = "default_template_almalinux_10_base"
+      template        = "default-template-ubuntu2404-base"
       staticvmname    = "PIAO01"
       instances       = 1
       vmstartcount    = 0
@@ -53,7 +53,7 @@ inputs = {
       }
     },
     "PIAO02" = {
-      template        = "default_template_almalinux_10_base"
+      template        = "default-template-ubuntu2404-base"
       staticvmname    = "PIAO02"
       instances       = 1
       vmstartcount    = 0
@@ -91,7 +91,7 @@ inputs = {
       }
     },
     "PIAO03" = {
-      template        = "default_template_almalinux_10_base"
+      template        = "default-template-ubuntu2404-base"
      staticvmname    = "PIAO03"
       instances       = 1
       vmstartcount    = 0
@@ -129,7 +129,7 @@ inputs = {
       }
     },
     "PIAO04" = {
-      template        = "default_template_almalinux_10_base"
+      template        = "default-template-ubuntu2404-base"
       staticvmname    = "PIAO04"
       instances       = 1
       vmstartcount    = 0
