@@ -13,45 +13,5 @@ locals {
 }  
 
 inputs = {
-  vm = {
-    "XKBN" = {
-        template          = "default-template-alma-10-k8s"
-        instances         = 3
-        vmstartcount      = 1
-        staticvmname      = null
-        datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
-        datastore_cluster = "Purestorage_Default"
-        datastore         = "Purestorage_Default"
-        resource_pool     = "Blade_Kratos/Resources"
-        vsphere_cluster   = "Blade_Kratos"
-        domain            = "sof.intra"
-        network           = {"PG_Gaia_Kubestag" = ["192.168.21.231","192.168.21.232","192.168.21.233","192.168.21.234"]}
-        dns_server_list   = ["172.27.3.5", "172.27.3.6"]
-        mask              = ["24"]
-        gateway           = "192.168.21.1"
-        cpu               = 4
-        memory            = 8192
-        local_adminpass   = "${local.TF_VAR_VM_PASS}"
-        distro            = "${local.TF_VAR_DISTRO}"
-        network_type      = ["vmxnet3"]
-        annotation        = "Cluster testes - Portworx - Rogerio Vieira Silva"
-        tags = { }        
-        # Adicionando discos adicionais  
-        data_disk = {
-          "disk_A1" = {
-            size_gb                = 35
-            unit_number            = 3
-            thin_provisioned       = true
-            eagerly_scrub          = false
-            storage_policy_id      = null
-            io_reservation         = null
-            io_share_level         = "normal"
-            disk_mode              = null
-            disk_sharing           = null
-            attach                 = null
-            path                   = null
-        }
-      }
-    }
-  }     
+  vm = {}     
 }
