@@ -16,7 +16,7 @@ inputs = {
   vm = {
     "TKBN" = {
         template          = "default-template-ubuntu-2404-k8s"
-        instances         = 6
+        instances         = 7
         vmstartcount      = 1
         staticvmname      = null
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
@@ -25,7 +25,7 @@ inputs = {
         resource_pool     = "Blade_Kratos/Resources"
         vsphere_cluster   = "Blade_Kratos"
         domain            = "sof.intra"
-        network           = {"PG_Gaia_Servico_Kubernets" = ["192.168.21.231","192.168.21.232","192.168.21.233","192.168.21.234","192.168.21.235","192.168.21.236"]}
+        network           = {"PG_Gaia_Servico_Kubernets" = ["192.168.21.231","192.168.21.232","192.168.21.233","192.168.21.234","192.168.21.235","192.168.21.236","192.168.30.164"]}
         dns_server_list   = ["172.27.3.5", "172.27.3.6"]
         mask              = ["24"]
         gateway           = "192.168.21.1"
