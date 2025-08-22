@@ -14,7 +14,7 @@ locals {
 
 inputs = {
   vm = {
-    "TKBN" = {
+    "XKBN" = {
         template          = "default-template-alma-10-k8s"
         instances         = 3
         vmstartcount      = 1
