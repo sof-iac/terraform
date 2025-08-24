@@ -3,7 +3,7 @@ include {
 }
 
 terraform {
-  source = "../../../../../modules/vsphere/category_vcenter"  # Caminho relativo ao terragrunt.hcl
+  source = "../../../../modules/vsphere/category_vcenter"  # Caminho relativo ao terragrunt.hcl
 }
 
 locals {  
