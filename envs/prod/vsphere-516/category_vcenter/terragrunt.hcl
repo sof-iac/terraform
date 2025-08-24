@@ -40,10 +40,6 @@ inputs = {
       category_name        = "k8s_zone"
       category_description = "Zona Kubernetess"
       },
-    "category_origem" = {
-      category_name        = "origem"
-      category_description = "Via codigo ou Manual"
-      },
     "category_Responsavel" = {
       category_name        = "Responsavel"
       category_description = "Responsavel pelo recurso"
