@@ -10,7 +10,7 @@ pipeline {
       choice(name: 'init', choices: [ 'nao', 'init', 'init -reconfigure','init -migrate-state'], description: 'Alterações no Tfsate')
       choice(name: 'lock', choices: ['true','false'], description: 'Lock do dynamodb')
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
-      text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
+      string(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
 
     }
     environment {
