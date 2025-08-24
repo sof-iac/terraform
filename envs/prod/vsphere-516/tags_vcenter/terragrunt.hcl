@@ -22,7 +22,17 @@ inputs = {
       category_name        = "Responsavel"
       tag_name             = "Ricardo Tadeu"
       tag_description      = "Owner do objeto/servico"
-      }             
+      },
+    "Tags_Jenkins" = {
+      category_name        = "Aplicacao"
+      tag_name             = "Jenkins"
+      tag_description      = "Jenkins de Producao"
+      },
+    "Tags_Postgres" = {
+      category_name        = "Aplicacao"
+      tag_name             = "Postgresql"
+      tag_description      = "Bancos de dados Postgresql"
+      }
     }   
 }
 
