@@ -17,6 +17,7 @@ inputs = {
         template          = "default-template-ubuntu2404-base"
         instances         = 1
         vmstartcount      = 4       
+        staticvmname      = null
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Purestorage_Default"
         datastore         = "Purestorage_Default"
@@ -41,7 +42,7 @@ inputs = {
         # Adicionando discos adicionais  
         data_disk = {  
           "disk_A1" = {  
-            size_gb                = 80  
+            size_gb                = 50  
             unit_number            = 3  
             thin_provisioned       = true  
             eagerly_scrub          = false  
