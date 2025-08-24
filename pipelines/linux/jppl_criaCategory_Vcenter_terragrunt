@@ -60,7 +60,7 @@ pipeline {
                   // Definindo variáveis de ambiente adicionais
                   env.TF_VAR_backend_access_key_prod = "$TF_VAR_access_key_prod"
                   env.TF_VAR_backend_secret_key_prod = "$TF_VAR_secret_key_prod"
-                  sh " echo '{\\n  \"TF_VAR_backend_access_key\": \"$TF_VAR_access_key_test\",\\n  \"TF_VAR_backend_secret_key\": \"$TF_VAR_secret_key_test\"\\n}' > bucket.json"
+                  sh " echo '{\\n  \"TF_VAR_backend_access_key\": \"$TF_VAR_access_key_prod\",\\n  \"TF_VAR_backend_secret_key\": \"$TF_VAR_secret_key_prod\"\\n}' > bucket.json"
                 }
             }
           }
@@ -89,8 +89,8 @@ pipeline {
                               export VCENTER_HOST=${VCENTER_HOST}
                               export VCENTER_PASS=${VCENTER_PASS}
                               export VCENTER_USER=${VCENTER_USER}
-                              export TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}
-                              export TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}
+                              export TF_VAR_backend_access_key_prod=${env.TF_VAR_backend_access_key_prod}
+                              export TF_VAR_backend_secret_key_prod=${env.TF_VAR_backend_secret_key_prod}
                               export AWS_VERIFY_SSL=false 
                               terragrunt plan -lock=${lock} 
                           """ 
@@ -113,8 +113,8 @@ pipeline {
                               export VCENTER_HOST=${VCENTER_HOST}
                               export VCENTER_PASS=${VCENTER_PASS}
                               export VCENTER_USER=${VCENTER_USER}
-                              export TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}
-                              export TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}
+                              export TF_VAR_backend_access_key_prod=${env.TF_VAR_backend_access_key_prod}
+                              export TF_VAR_backend_secret_key_prod=${env.TF_VAR_backend_secret_key_prod}
                               export AWS_VERIFY_SSL=false 
                               terragrunt apply -auto-approve -lock=${lock}
                           """ 

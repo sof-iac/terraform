@@ -6,6 +6,10 @@ terraform {
   source = "../../../../../modules/vsphere/category_vcenter"  # Caminho relativo ao terragrunt.hcl
 }
 
+locals {  
+  vcenter = basename(dirname(get_terragrunt_dir()))
+}
+
 inputs = {
   category = {
     "category_ambiente" = {
