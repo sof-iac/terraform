@@ -16,14 +16,14 @@ inputs = {
     "PJEN" = {
         template          = "default-template-ubuntu2404-base"
         instances         = 1
-        vmstartcount      = 4       
+        vmstartcount      = 2       
         staticvmname      = null
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Purestorage_Default"
         datastore         = "Purestorage_Default"
         resource_pool     = "Blade_Kratos/Resources"
         vsphere_cluster   = "Blade_Kratos"
-        network           = {"PG_Gaia_Dominio_Recurso" = ["172.27.3.126"]}
+        network           = {"PG_Gaia_Dominio_Recurso" = ["172.27.3.124"]}
         mask              = ["24"]
         gateway           = "172.27.3.1"
         cpu               = 2
@@ -42,7 +42,7 @@ inputs = {
         # Adicionando discos adicionais  
         data_disk = {  
           "disk_A1" = {  
-            size_gb                = 50  
+            size_gb                = 80  
             unit_number            = 3  
             thin_provisioned       = true  
             eagerly_scrub          = false  
