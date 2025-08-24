@@ -15,7 +15,7 @@ locals {
 inputs = {
   vm = {
     "PJEN" = {
-        template          = "templateubuntu2204_ansible"
+        template          = "default-template-ubuntu2404-base"
         instances         = 1
         vmstartcount      = 2       
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
