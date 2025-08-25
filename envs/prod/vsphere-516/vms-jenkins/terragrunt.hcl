@@ -15,12 +15,13 @@ locals {
 inputs = {
   vm = {
     "PJEN" = {
-        template          = "templateubuntu2204_ansible"
+        template          = "default-template-ubuntu2404-base"
         instances         = 1
         vmstartcount      = 2       
+        staticvmname      = null
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
-        datastore_cluster = "Storage_Purestorage"
-        datastore         = "Storage_Purestorage"
+        datastore_cluster = "Purestorage_Default"
+        datastore         = "Purestorage_Default"
         resource_pool     = "Blade_Kratos/Resources"
         vsphere_cluster   = "Blade_Kratos"
         network           = {"PG_Gaia_Dominio_Recurso" = ["172.27.3.124"]}
@@ -37,7 +38,7 @@ inputs = {
           "Origem"    = "Terraform"
           "Ambiente"  = "Prod"
           "Aplicacao" = "Jenkins"
-          "Responsavel" = "Rogerio_Vieira_Silva"
+          "Responsavel" = "Rogerio Vieira Silva"
         }
         # Adicionando discos adicionais  
         data_disk = {  

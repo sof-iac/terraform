@@ -10,7 +10,7 @@ pipeline {
       choice(name: 'init', choices: [ 'nao', 'init', 'init -reconfigure','init -migrate-state'], description: 'Alterações no Tfsate')
       choice(name: 'lock', choices: ['true','false'], description: 'Lock do dynamodb')
       password(name: 'GITEA_TOKEN', description: 'Token gitea')
-      text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
+      string(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
     }
     environment {
        TF_VAR_VM_PASS = credentials('ansible_pass_text') // Usando credenciais do ansible 
@@ -39,8 +39,8 @@ pipeline {
                   sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"                   
                 }
                 withCredentials([ 
-                    string(credentialsId: 'access_key_teste', variable: 'TF_VAR_access_key_test'),
-                    string(credentialsId: 'secret_key_teste', variable: 'TF_VAR_secret_key_test'),
+                    string(credentialsId: 'access_key_prod', variable: 'TF_VAR_access_key_prod'),
+                    string(credentialsId: 'secret_key_prod', variable: 'TF_VAR_secret_key_prod'),
                     string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'VCENTER_HOST_516'),
                     string(credentialsId: 'TF_VAR_username_vcenter_516', variable: 'VCENTER_USER_516'),
                     string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'VCENTER_PASS_516'),
@@ -58,9 +58,9 @@ pipeline {
                     env.VCENTER_PASS = "$VCENTER_PASS_K"
                 }                    
                   // Definindo variáveis de ambiente adicionais
-                  env.TF_VAR_backend_access_key_test = "$TF_VAR_access_key_test"
-                  env.TF_VAR_backend_secret_key_test = "$TF_VAR_secret_key_test"
-                  sh " echo '{\\n  \"TF_VAR_backend_access_key\": \"$TF_VAR_access_key_test\",\\n  \"TF_VAR_backend_secret_key\": \"$TF_VAR_secret_key_test\"\\n}' > bucket.json"
+                  env.TF_VAR_backend_access_key_prod = "$TF_VAR_access_key_prod"
+                  env.TF_VAR_backend_secret_key_prod = "$TF_VAR_secret_key_prod"
+                  sh " echo '{\\n  \"TF_VAR_backend_access_key\": \"$TF_VAR_access_key_prod\",\\n  \"TF_VAR_backend_secret_key\": \"$TF_VAR_secret_key_prod\"\\n}' > bucket.json"
                 }
             }
           }
@@ -89,8 +89,8 @@ pipeline {
                               export VCENTER_HOST=${VCENTER_HOST}
                               export VCENTER_PASS=${VCENTER_PASS}
                               export VCENTER_USER=${VCENTER_USER}
-                              export TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}
-                              export TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}
+                              export TF_VAR_backend_access_key_prod=${env.TF_VAR_backend_access_key_prod}
+                              export TF_VAR_backend_secret_key_prod=${env.TF_VAR_backend_secret_key_prod}
                               export AWS_VERIFY_SSL=false 
                               terragrunt plan -lock=${lock} 
                           """ 
@@ -113,8 +113,8 @@ pipeline {
                               export VCENTER_HOST=${VCENTER_HOST}
                               export VCENTER_PASS=${VCENTER_PASS}
                               export VCENTER_USER=${VCENTER_USER}
-                              export TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}
-                              export TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}
+                              export TF_VAR_backend_access_key_prod=${env.TF_VAR_backend_access_key_prod}
+                              export TF_VAR_backend_secret_key_prod=${env.TF_VAR_backend_secret_key_prod}
                               export AWS_VERIFY_SSL=false 
                               terragrunt apply -auto-approve -lock=${lock}
                           """ 

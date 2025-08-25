@@ -3,41 +3,36 @@ include {
 }
 
 terraform {
-  source = "../../../../../modules/vsphere/tags_vcenter"  # Caminho relativo ao terragrunt.hcl
+  source = "../../../../modules/vsphere/tags_vcenter"  # Caminho relativo ao terragrunt.hcl
 }
 
 inputs = {
   tag = {
-    "Tags_Origem" = {
-      category_name        = "Origem"
-      tag_name             = "Terraform"
-      tag_description      = "Recurso criados via Terraform"
+    "Tags_RVS" = {
+      category_name        = "Responsavel"
+      tag_name             = "Rogerio Vieira Silva"
+      tag_description      = "Owner do objeto/servico"
       },
-    "Tags_Env_Lab" = {
-      category_name        = "Ambiente"
-      tag_name             = "Lab"
-      tag_description      = "Ambiente dos recursos de Laboratorio"
+    "Tags_Sattler" = {
+      category_name        = "Responsavel"
+      tag_name             = "Nelson Sattler"
+      tag_description      = "Owner do objeto/servico"
       },
-    "Tags_Env_Testes" = {
-      category_name        = "Ambiente"
-      tag_name             = "Teste"
-      tag_description      = "Ambiente dos recursos de Teste"
+    "Tags_RT" = {
+      category_name        = "Responsavel"
+      tag_name             = "Ricardo Tadeu"
+      tag_description      = "Owner do objeto/servico"
       },
-    "Tags_Env_Prod" = {
-      category_name        = "Ambiente"
-      tag_name             = "Prod"
-      tag_description      = "Ambiente dos recursos de Producao"
-      },      
-    "Tags_Aplicacao_Mariadb" = {
+    "Tags_Jenkins" = {
       category_name        = "Aplicacao"
-      tag_name             = "Mariadb"
-      tag_description      = "Banco de dados MariaDB"
-      },  
-    "Tags_Aplicacao_Postgres" = {
+      tag_name             = "Jenkins"
+      tag_description      = "Jenkins de Producao"
+      },
+    "Tags_Postgres" = {
       category_name        = "Aplicacao"
-      tag_name             = "Postgres"
-      tag_description      = "Banco de dados Postgres"
-      }              
+      tag_name             = "Postgresql"
+      tag_description      = "Bancos de dados Postgresql"
+      }
     }   
 }
 

@@ -3,7 +3,11 @@ include {
 }
 
 terraform {
-  source = "../../../../../modules/vsphere/category_vcenter"  # Caminho relativo ao terragrunt.hcl
+  source = "../../../../modules/vsphere/category_vcenter"  # Caminho relativo ao terragrunt.hcl
+}
+
+locals {  
+  vcenter = basename(dirname(get_terragrunt_dir()))
 }
 
 inputs = {
@@ -35,10 +39,6 @@ inputs = {
     "category_k8s_zone" = {
       category_name        = "k8s_zone"
       category_description = "Zona Kubernetess"
-      },
-    "category_origem" = {
-      category_name        = "origem"
-      category_description = "Via codigo ou Manual"
       },
     "category_Responsavel" = {
       category_name        = "Responsavel"
