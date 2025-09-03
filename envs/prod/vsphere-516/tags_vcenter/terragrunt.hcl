@@ -15,12 +15,27 @@ inputs = {
       },
     "Tags_Sattler" = {
       category_name        = "Responsavel"
-      tag_name             = "Nelson Sattler"
+      tag_name             = "Nelson Sattler da Fonseca"
       tag_description      = "Owner do objeto/servico"
       },
     "Tags_RT" = {
       category_name        = "Responsavel"
-      tag_name             = "Ricardo Tadeu"
+      tag_name             = "Ricardo Tadeu A Peixoto"
+      tag_description      = "Owner do objeto/servico"
+      },
+    "Tags_Rjesus" = {
+      category_name        = "Responsavel"
+      tag_name             = "Robson Mendes de Jesus"
+      tag_description      = "Owner do objeto/servico"
+      },
+    "Tags_glmiranda" = {
+      category_name        = "Responsavel"
+      tag_name             = "Gabriel M Lima"
+      tag_description      = "Owner do objeto/servico"
+      },
+    "Tags_jhonfaria" = {
+      category_name        = "Responsavel"
+      tag_name             = "Jhon Allen M Faria"
       tag_description      = "Owner do objeto/servico"
       },
     "Tags_Jenkins" = {
@@ -32,6 +47,16 @@ inputs = {
       category_name        = "Aplicacao"
       tag_name             = "Postgresql"
       tag_description      = "Bancos de dados Postgresql"
+      },
+    "Tags_AIOPS" = {
+      category_name        = "Aplicacao"
+      tag_name             = "AIops"
+      tag_description      = "Aiops"
+      },
+    "Tags_k8sportworx" = {
+      category_name        = "Aplicacao"
+      tag_name             = "k8s_portworx"
+      tag_description      = "K8s Portworx"
       }
     }   
 }
