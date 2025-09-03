@@ -38,6 +38,16 @@ inputs = {
       tag_name             = "Jhon Allen M Faria"
       tag_description      = "Owner do objeto/servico"
       },
+    "Tags_jcesarbarreto" = {
+      category_name        = "Responsavel"
+      tag_name             = "Julio Cesar O Barreto"
+      tag_description      = "Owner do objeto/servico"
+      },
+    "Tags_alexismaior" = {
+      category_name        = "Responsavel"
+      tag_name             = "Alexis B S Maior"
+      tag_description      = "Owner do objeto/servico"
+      },
     "Tags_Jenkins" = {
       category_name        = "Aplicacao"
       tag_name             = "Jenkins"
