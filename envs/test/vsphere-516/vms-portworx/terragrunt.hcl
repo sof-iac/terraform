@@ -35,7 +35,12 @@ inputs = {
         distro            = "${local.TF_VAR_DISTRO}"
         network_type      = ["vmxnet3"]
         annotation        = "Cluster testes - Portworx - Rogerio Vieira Silva"
-        tags = { }        
+        tags = {
+          "Origem"    = "Terraform"
+          "Ambiente"  = "test"
+          "Aplicacao" = "Jenkins"
+          "Responsavel" = "Rogerio Vieira Silva"
+        }      
         # Adicionando discos extras  
         data_disk = {}
     }

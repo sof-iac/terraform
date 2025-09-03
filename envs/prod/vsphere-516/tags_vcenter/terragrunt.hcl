@@ -63,6 +63,16 @@ inputs = {
       tag_name             = "AIops"
       tag_description      = "Aiops"
       },
+    "Tags_ambientelab" = {
+      category_name        = "Ambiente"
+      tag_name             = "Lab"
+      tag_description      = "Ambiente de Laboratorio"
+      },
+    "Tags_ambienteTest" = {
+      category_name        = "Ambiente"
+      tag_name             = "Test"
+      tag_description      = "Ambiente de Testes"
+      },
     "Tags_k8sportworx" = {
       category_name        = "Aplicacao"
       tag_name             = "k8s_portworx"
