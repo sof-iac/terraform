@@ -13,6 +13,5 @@ locals {
 }  
 
 inputs = {
-  vm = {}
-  }     
+  vm = {}   
 }
