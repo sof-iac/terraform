@@ -34,11 +34,11 @@ inputs = {
         local_adminpass   = "${local.TF_VAR_VM_PASS}"
         distro            = "${local.TF_VAR_DISTRO}"
         network_type      = ["vmxnet3"]
-        annotation        = "Cluster testes - Portworx - Rogerio Vieira Silva"
+        annotation        = "Cluster Lab - Portworx - Rogerio Vieira Silva - 03/09/2025"
         tags = {
           "Origem"    = "Terraform"
-          "Ambiente"  = "test"
-          "Aplicacao" = "Jenkins"
+          "Ambiente"  = "Lab"
+          "Aplicacao" = "k8s_portworx"
           "Responsavel" = "Rogerio Vieira Silva"
         }      
         # Adicionando discos extras  
