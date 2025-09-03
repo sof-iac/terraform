@@ -15,9 +15,10 @@ locals {
 inputs = {
   vm = {
     "LAPD" = {
-        template          = "templateubuntu_ansible_10092024"
+        template          = "default-template-alma10-base"
         instances         = 1
         vmstartcount      = 6
+        staticvmname      = null
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Purestorage_Default"
         datastore         = "Purestorage_Default"
