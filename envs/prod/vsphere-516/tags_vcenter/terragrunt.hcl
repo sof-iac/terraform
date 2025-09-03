@@ -51,7 +51,17 @@ inputs = {
     "Tags_Jenkins" = {
       category_name        = "Aplicacao"
       tag_name             = "Jenkins"
-      tag_description      = "Jenkins de Producao"
+      tag_description      = "Jenkins Server"
+      },
+    "Tags_Apache" = {
+      category_name        = "Aplicacao"
+      tag_name             = "Apache"
+      tag_description      = "Servidor Apache"
+      },
+    "Tags_Jboss" = {
+      category_name        = "Aplicacao"
+      tag_name             = "Jboss"
+      tag_description      = "Servidor Jboss"
       },
     "Tags_Postgres" = {
       category_name        = "Aplicacao"
