@@ -1,114 +1,64 @@
-## Terraform
+## 🧰 Terraform e Terragrunt
 
-### Estrutura de trabalho
+### 🗂️ Estrutura de Trabalho (visão geral)
 
 ```
-1 - modules
-2 - aws
-3 - vsphere-sof
-  a - blocok
-  b - sof
+modules/
+aws/
+envs/
+pipelines/
 ```
 
-## Boas práticas
+- **modules**: módulos reutilizáveis (`aws`, `vsphere`, `minio` etc.)
+- **aws**: exemplos e ambientes com Terragrunt
+- **envs**: infraestrutura por ambiente e provider (vSphere, MinIO, etc.)
+- **pipelines**: scripts e configurações para CI/CD
 
-### Estrutura de Diretórios:
+### ✅ Boas Práticas
 
-Organize seus arquivos Terraform em uma estrutura de diretórios que reflita a hierarquia do seu datacenter. Por exemplo, você pode ter diretórios separados para cada ambiente (dev, staging, prod), e dentro de cada ambiente, diretórios para cada serviço (jenkins, bancos de dados, sistemas de controle, etc).
+- **Estrutura de diretórios**: reflita ambientes (dev, test, prod) e domínios (rede, vms, s3, dns).
+- **Módulos**: encapsule recursos relacionados; promova reuso e versionamento.
+- **Variáveis**: parametrize módulos para cenários diferentes sem duplicação.
+- **Estado remoto**: armazene o `tfstate` de forma centralizada e bloqueada.
+- **Workspaces**: separe estados por ambiente quando fizer sentido.
+- **Plan primeiro**: sempre rode `terraform plan`/`terragrunt plan` antes de `apply`.
+- **Git**: versionamento obrigatório; PRs, code review e tags de release.
 
-### Módulos:
-
-Use módulos para encapsular e reutilizar o código Terraform. Cada módulo deve ser responsável por criar um único recurso ou um conjunto de recursos relacionados. Por exemplo, você pode ter um módulo para criar uma VM, outro módulo para configurar o Jenkins, etc.
-
-### Variáveis:
-
-Use variáveis para tornar seus módulos mais flexíveis. Isso permite que você use o mesmo módulo para criar VMs com diferentes configurações.
-
-### Arquivos de Estado Remotos:
-
-Use arquivos de estado remotos para manter o estado do seu datacenter. Isso permite que várias pessoas trabalhem no mesmo datacenter sem conflitos.
-
-### Workspaces:
-
-Use workspaces do Terraform para separar o estado de diferentes ambientes. Por exemplo, você pode ter um workspace para dev, outro para staging e outro para prod.
-
-### Planos de Execução:
-
-Sempre execute terraform plan antes de terraform apply para verificar as alterações que serão feitas. Lembrando que estamos utilizando Terragrunt uma camada acima
-
-### Controle de Versão:
-
-Use um sistema de controle de versão como o Git para rastrear as alterações no seu código Terraform. Isso permite que você veja quem fez o quê e quando, e também permite que você reverta para uma versão anterior se algo der errado.
-
-### Exemplo da estrutura
+### 🧱 Exemplo de Estrutura (simplificada)
 
 ```
 modules
-    ├── aws
-    │   ├── main.tf
-    │   ├── variables.tf
-    │   └── outputs.tf
-    ├── vpshere
-        vm
-        ├── main.tf
-        ├── variables.tf
-        ├── outputs.tf
-        vlan
-        ├── main.tf
-        ├── variables.tf
-        └── outputs.tf
+  ├── aws
+  │   ├── network/
+  │   ├── ec2-instance/
+  │   ├── route-53/
+  │   └── s3-bucket/
+  └── vsphere
+      ├── datacenter-config/
+      ├── network/
+      ├── storage/
+      └── vm/
 
 aws
-├── env
-    ├── dev
-    │   ├── main.tf
-    │   ├── variables.tf
-    │   └── outputs.tf
-    ├── staging
-    │   ├── main.tf
-    │   ├── variables.tf
-    │   └── outputs.tf
-    └── prod
-        ├── main.tf
-        ├── variables.tf
-        └── outputs.tf
+  └── envs
+      ├── exemplos/
+      └── prod/
 
-vsphere-sof
-blocok
-├── env
-    ├── dev
-    │   ├── main.tf
-    │   ├── variables.tf
-    │   └── outputs.tf
-    ├── staging
-    │   ├── main.tf
-    │   ├── variables.tf
-    │   └── outputs.tf
-    └── prod
-        ├── main.tf
-        ├── variables.tf
-        └── outputs.tf
-sof
-├── envs
-    ├── dev
-    │   ├── main.tf
-    │   ├── variables.tf
-    │   └── outputs.tf
-    ├── staging
-    │   ├── main.tf
-    │   ├── variables.tf
-    │   └── outputs.tf
-    └── prod
-        ├── main.tf
-        ├── variables.tf
-        └── outputs.tf
+envs
+  ├── base/
+  ├── dev/
+  ├── lab/
+  └── prod/
+
+pipelines
+  ├── conf/
+  ├── linux/
+  └── windows/
 ```
 
-### Configurando o arquivo tfstate no Terragrunt no diretório /data local
+### 🗄️ Estado (tfstate) com Terragrunt (backend local em `/data`)
 
-No arquivo terragrunt.hcl, você pode especificar o local do arquivo tfstate usando o bloco remote_state com o backend local:
-
-```
+```hcl
 remote_state {
   backend = "local"
   generate = {
@@ -121,13 +71,11 @@ remote_state {
 }
 ```
 
-Este bloco de código instrui o Terragrunt a gerar um arquivo backend.tf no módulo Terraform que ele baixa no diretório .terragrunt-cache. A função get_terragrunt_dir() será substituída pelo caminho para o diretório que contém o terragrunt.hcl. Isso fará com que o Terraform coloque o arquivo de estado no mesmo diretório que o arquivo terragrunt.hcl.
+- O Terragrunt gera `backend.tf` no cache e aponta o Terraform para o caminho configurado.
 
-### Configurando o arquivo tfstate no Terraform no diretório /data local
+### 💾 Backend local com Terraform puro
 
-Para o Terraform, você pode especificar o local do arquivo tfstate usando o backend "local" no seu arquivo de configuração Terraform:
-
-```
+```hcl
 terraform {
   backend "local" {
     path = "/data/terraform.tfstate"
@@ -135,61 +83,90 @@ terraform {
 }
 ```
 
-Este bloco de código instrui o Terraform a armazenar o arquivo de estado tfstate no diretório /data.
+Também é possível definir no comando:
 
-Além disso, você pode especificar o local do arquivo tfstate ao executar os comandos terraform apply ou terraform plan usando a opção -state:
-
-```
+```bash
 terraform apply -state=/data/terraform.tfstate
 ```
 
-### Automatizar a aprovação
+### 🤖 Automatizar e aprovação (CI/CD)
 
-Para automatizar a aprovação em um comando terragrunt apply em um pipeline Jenkins, você pode usar a opção -auto-approve do Terragrunt. Isso evitará que o Terragrunt solicite a confirmação do usuário antes de fazer alterações.
+- **Terragrunt (não interativo)**:
 
-Aqui está um exemplo de como você pode fazer isso no seu pipeline Jenkins:
+```bash
+# Planejar (run-all opcional)
+terragrunt plan --terragrunt-non-interactive
+terragrunt run-all plan --terragrunt-non-interactive
 
+# Aplicar sem prompt
+terragrunt apply --terragrunt-non-interactive --auto-approve
+terragrunt run-all apply --terragrunt-non-interactive --auto-approve
 ```
-sh '''
-    terragrunt apply -auto-approve
-'''
+
+- **Terraform (não interativo)**:
+
+```bash
+terraform plan -out=plan.tfplan -input=false
+terraform apply -input=false -auto-approve plan.tfplan
 ```
 
-## Terraform: Módulos, Configuração DRY e Imutabilidade
+- **Terragrunt com planfile do Terraform** (encaminhando args após `--`):
 
-### Módulos no Terraform
-
-Os **módulos** no Terraform são usados para criar blocos de código reutilizáveis que podem ser usados em várias partes do seu código Terraform. Eles ajudam a organizar o código, tornando-o mais legível e manutenível.
-
-### Configuração DRY
-
-DRY significa "Don't Repeat Yourself" (Não se Repita). No contexto do Terraform, uma configuração **DRY** significa que você deve evitar a duplicação de código tanto quanto possível. Em vez disso, você deve usar módulos e variáveis para reutilizar o código.
-
-### Backend DRY
-
-Um **backend DRY** no Terraform é uma maneira de gerenciar o estado do Terraform de forma eficiente. Em vez de definir o backend em cada arquivo, você pode definir uma vez e reutilizá-lo em todos os seus arquivos Terraform.
-
-### Provider DRY
-
-Um **provider DRY** no Terraform é semelhante ao backend DRY. Em vez de definir o provider em cada arquivo, você pode definir uma vez e reutilizá-lo em todos os seus arquivos Terraform.
-
-### Imutabilidade dos Módulos Terraform
-
-A **imutabilidade** é um conceito importante no Terraform. Significa que, uma vez que um recurso é criado, ele não é alterado. Em vez disso, se uma mudança é necessária, o recurso antigo é destruído e um novo é criado. Isso é especialmente útil ao trabalhar com ambientes de trabalho no Terraform, pois garante que cada ambiente seja consistente e previsível.
-
-### Link para baixar a release a integrar no VRA e a chave SHA
-
-https://releases.hashicorp.com/terraform/
-
-### Guest OS Indentifier VM no Vsphere - Utilizado para identificar o Guestid a usar no Terraform
-
-https://vdc-download.vmware.com/vmwb-repository/dcr-public/b50dcbbf-051d-4204-a3e7-e1b618c1e384/538cf2ec-b34f-4bae-a332-3820ef9e7773/vim.vm.GuestOsDescriptor.GuestOsIdentifier.html
-
-### Tamanho de um disco específico no bloco dynamic "disk"
-
-Para determinar o tamanho de um disco específico no bloco dynamic "disk" do Ansible, você pode usar uma condição para verificar o rótulo (label) do disco:
-
+```bash
+terragrunt plan -- -out=plan.tfplan -input=false
+terragrunt apply -- -input=false -auto-approve plan.tfplan
 ```
+
+- **Jenkins (exemplo simples)**:
+
+```groovy
+pipeline {
+  agent any
+  environment { TF_IN_AUTOMATION = '1' }
+  stages {
+    stage('Plan') {
+      steps {
+        sh 'terragrunt plan -- -out=plan.tfplan -input=false'
+        archiveArtifacts artifacts: 'plan.tfplan', onlyIfSuccessful: true
+      }
+    }
+    stage('Apply (após aprovação)') {
+      when { beforeAgent true; expression { return params?.AUTO_APPLY == true } }
+      steps {
+        sh 'terragrunt apply -- -input=false -auto-approve plan.tfplan'
+      }
+    }
+  }
+  parameters {
+    booleanParam(name: 'AUTO_APPLY', defaultValue: false, description: 'Aplicar automaticamente sem prompt')
+  }
+}
+```
+
+- **Boas práticas**:
+  - Preferir aplicar a partir de um `plan.tfplan` gerado no mesmo commit.
+  - Usar `-lock-timeout` e evitar `-lock=false` em ambientes compartilhados.
+  - Reservar `--auto-approve` para ambientes não produtivos ou após revisão/aprovação explícita.
+
+### 🧩 DRY: Módulos, Backend e Providers
+
+- **Módulos**: reuso e padronização.
+- **Backend DRY**: defina uma vez via Terragrunt e gere para os módulos.
+- **Provider DRY**: centralize configuração (versões, credenciais, regiões) e herde por ambiente.
+
+### 🧱 Imutabilidade (Infra como Código)
+
+- Evite mutações manuais. Mudanças estruturais devem destruir/criar quando apropriado.
+- Garante reprodutibilidade, auditoria e previsibilidade entre ambientes.
+
+### 🔗 Referências úteis
+
+- **Download Terraform + SHA**: [releases.hashicorp.com/terraform](https://releases.hashicorp.com/terraform/)
+- **vSphere Guest OS Identifier**: [vim.vm.GuestOsDescriptor.GuestOsIdentifier](https://vdc-download.vmware.com/vmwb-repository/dcr-public/b50dcbbf-051d-4204-a3e7-e1b618c1e384/538cf2ec-b34f-4bae-a332-3820ef9e7773/vim.vm.GuestOsDescriptor.GuestOsIdentifier.html)
+
+### 💡 Dica: escolher tamanho de disco em bloco `dynamic "disk"` (vSphere)
+
+```hcl
 dynamic "disk" {
   for_each = data.vsphere_virtual_machine.template.disks
   content {
@@ -197,8 +174,29 @@ dynamic "disk" {
     unit_number      = disk.value["unit_number"]
     thin_provisioned = disk.value["thin_provisioned"]
 
-    # Verifique o rótulo do disco e defina o tamanho de acordo
+    # Define tamanho condicional por rótulo
     size = disk.value["label"] == "nome_do_disco" ? "tamanho_desejado" : disk.value["size"]
   }
 }
 ```
+
+### 🚀 Como começar (exemplo rápido)
+
+```bash
+# 1) Entre no diretório do ambiente/módulo
+cd aws/envs/exemplos/exemplo_02/networking
+
+# 2) Visualize mudanças
+terragrunt plan
+
+# 3) Aplique quando aprovado
+terragrunt apply
+```
+
+### ✍️ Autor
+
+Rogerio Vieira Silva
+
+—
+
+Se precisar, posso adicionar badges, fluxos de pipeline e exemplos por provider (AWS, vSphere, MinIO) em seções separadas.
