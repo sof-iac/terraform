@@ -4,5 +4,8 @@ terraform {
     vsphere = {
       source = "hashicorp/vsphere"
     }
+    null = {
+      source = "hashicorp/null"
+    }
   }
 }
