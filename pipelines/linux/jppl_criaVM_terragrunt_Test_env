@@ -7,10 +7,8 @@ pipeline {
       choice(name: 'Ambiente', choices: ['base','test','lab','prod'], description: 'Ambiente')
       choice(name: 'Site', choices: [ 'vsphere-516', 'vsphere-k'], description: 'Site')
       string(name: 'Grupo', defaultValue: 'nome_do_grupo', description: 'Nome do grupo das VMs')
-      choice(name: 'init', choices: [ 'nao', 'init', 'init -reconfigure','init -migrate-state'], description: 'Alterações no Tfsate')
-      choice(name: 'lock', choices: ['true','false'], description: 'Lock do dynamodb')
-      password(name: 'GITEA_TOKEN', description: 'Token gitea')
-      text(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
+      choice(name: 'init', choices: [ 'nao', 'init', 'init -reconfigure','init -migrate-state','init -upgrade'], description: 'Alterações no Tfsate')
+      choice(name: 'lock', choices: ['true','false'], description: 'Lock do dynamodb')    
       choice(name: 'distro', choices: ['ubuntu','alma', 'centos', 'orcl','rocklinux'], description: 'Distribuição Linux')  
       //password(name: 'VM_PASS', description: 'Senha para a máquina virtual')
     }
