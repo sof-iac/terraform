@@ -284,7 +284,7 @@ resource "vsphere_virtual_machine" "vm" {
   force_power_off       = var.force_power_off
   
 }
-Itera sobre cada rede e cada IP dentro da rede
+# Itera sobre cada rede e cada IP dentro da rede
 resource "null_resource" "ansible" {  
   for_each = { for idx, ip in local.all_ips : idx => ip }
   
