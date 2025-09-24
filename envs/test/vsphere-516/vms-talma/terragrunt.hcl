@@ -38,6 +38,36 @@ inputs = {
         tags = { }        
         # Adicionando discos adicionais  
         data_disk = { }  
+    },
+    "TALMA01" = {
+      template        = "default-template-alma-10-ssh"
+      staticvmname    = "TALMA01"
+      instances       = 1
+      vmstartcount    = 0
+      datacenter      = "SOF"
+      datastore_cluster = "Purestorage_Default"
+      datastore       = "Purestorage_Default"
+      resource_pool   = "Blade_Kratos/Resources"
+      vsphere_cluster = "Blade_Kratos"
+      domain          = "sof.intra"
+      network         = {"PG_Gaia_Kubestag" = ["192.168.21.237"]}
+      dns_server_list = ["172.27.3.5", "172.27.3.6"]
+      mask            = ["24"]
+      gateway         = "192.168.21.1"
+      cpu             = 2
+      memory          = 8192
+      local_adminpass = "${local.TF_VAR_VM_PASS}"
+      distro          = "${local.TF_VAR_DISTRO}"
+      network_type    = ["vmxnet3"]
+      annotation      = "TESTE ALMA ANSIBLE - 24/09/2025 - Rogerio Vieira Silva"
+        tags = {
+          "Origem"    = "Terraform"
+          "Ambiente"  = "Test"
+          "Aplicacao" = "Jenkins"
+          "Responsavel" = "Rogerio Vieira Silva"
+        }        
+        # Adicionando discos adicionais  
+        data_disk = { }  
     }
   }       
 }
