@@ -62,7 +62,7 @@ inputs = {
       annotation      = "TESTE ALMA ANSIBLE - 24/09/2025 - Rogerio Vieira Silva"
         tags = {
           "Origem"    = "Terraform"
-          "Ambiente"  = "Teste"
+          "Ambiente"  = "Test"
           "Aplicacao" = "ALMA"
           "Responsavel" = "Rogerio Vieira Silva"
         }        
