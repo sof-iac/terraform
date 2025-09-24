@@ -63,7 +63,7 @@ inputs = {
         tags = {
           "Origem"    = "Terraform"
           "Ambiente"  = "Test"
-          "Aplicacao" = "ALMA"
+          "Aplicacao" = "Jenkins"
           "Responsavel" = "Rogerio Vieira Silva"
         }        
         # Adicionando discos adicionais  
