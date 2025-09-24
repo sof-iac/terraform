@@ -504,3 +504,23 @@ variable "distro" {
   type        = string  
   default     = ""  # Você pode definir um valor padrão ou deixar vazio  
 }
+
+# Variáveis para configuração de bastion host (opcionais)
+variable "bastion_host" {
+  description = "Bastion host para conexão SSH"
+  type        = string
+  default     = null
+}
+
+variable "bastion_user" {
+  description = "Usuário para conexão com bastion host"
+  type        = string
+  default     = null
+}
+
+variable "bastion_password" {
+  description = "Senha para conexão com bastion host"
+  type        = string
+  default     = null
+  sensitive   = true
+}
