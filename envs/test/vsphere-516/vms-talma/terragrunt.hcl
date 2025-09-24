@@ -50,7 +50,7 @@ inputs = {
       resource_pool   = "Blade_Kratos/Resources"
       vsphere_cluster = "Blade_Kratos"
       domain          = "sof.intra"
-      network         = {"PG_Gaia_COINF_OPERACOES" = ["192.168.21.237"]}
+      network         = {"PG_Gaia_Kubestag" = ["192.168.21.237"]}
       dns_server_list = ["172.27.3.5", "172.27.3.6"]
       mask            = ["24"]
       gateway         = "192.168.21.1"
