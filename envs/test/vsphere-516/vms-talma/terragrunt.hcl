@@ -39,18 +39,18 @@ inputs = {
         # Adicionando discos adicionais  
         data_disk = { }  
     },
-    "TALMA01" = {
+    "TALMA" = {
       template        = "default-template-alma-10-ssh"
-      staticvmname    = "TALMA01"
-      instances       = 1
-      vmstartcount    = 0
+      staticvmname    = null
+      instances       = 2
+      vmstartcount    = 1
       datacenter      = "SOF"
       datastore_cluster = "Purestorage_Default"
       datastore       = "Purestorage_Default"
       resource_pool   = "Blade_Kratos/Resources"
       vsphere_cluster = "Blade_Kratos"
       domain          = "sof.intra"
-      network         = {"PG_Gaia_Kubestag" = ["192.168.21.237"]}
+      network         = {"PG_Gaia_Kubestag" = ["192.168.21.237","192.168.21.238"]}
       dns_server_list = ["172.27.3.5", "172.27.3.6"]
       mask            = ["24"]
       gateway         = "192.168.21.1"
