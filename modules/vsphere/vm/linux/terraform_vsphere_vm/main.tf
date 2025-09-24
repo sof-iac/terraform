@@ -285,76 +285,76 @@ resource "vsphere_virtual_machine" "vm" {
   
 }
 # Itera sobre cada rede e cada IP dentro da rede
-resource "null_resource" "ansible" {  
-  for_each = { for idx, ip in local.all_ips : idx => ip }
+# resource "null_resource" "ansible" {  
+#   for_each = { for idx, ip in local.all_ips : idx => ip }
   
-  # Dependência explícita para aguardar a criação das VMs
-  depends_on = [vsphere_virtual_machine.vm]
+#   # Dependência explícita para aguardar a criação das VMs
+#   depends_on = [vsphere_virtual_machine.vm]
   
-  # Triggers para evitar execuções desnecessárias
-  triggers = {
-    vm_ips = join(",", local.all_ips)
-    vm_count = var.instances
-  }
+#   # Triggers para evitar execuções desnecessárias
+#   triggers = {
+#     vm_ips = join(",", local.all_ips)
+#     vm_count = var.instances
+#   }
 
-  connection {
-    type        = "ssh"
-    user        = "ansible"  
-    password    = var.local_adminpass  
-    host        = each.value
-    timeout     = "5m"
-    agent       = false
-    # Configurações adicionais para melhor estabilidade
-    bastion_host = var.bastion_host != null ? var.bastion_host : null
-    bastion_user = var.bastion_user != null ? var.bastion_user : null
-    bastion_password = var.bastion_password != null ? var.bastion_password : null
-  }
-  # Apaga a chave privada se existir
-  provisioner "remote-exec" {
-    inline = [
-      "rm -f /home/ansible/.ssh/id_ed25519"
-    ]
-    on_failure = continue
-  }
-  # Copia a chave publica para a VM a ser criada
-  provisioner "file" {
-    source      = "${path.module}/templates/id_ed25519.pub"
-    destination = "/tmp/"
-    on_failure = continue
-  }  
-  # Shel script para criação do usuario ansible, caso nao exista
-  provisioner "file" {
-    source      = "${path.module}/templates/setup_ansible_user.sh"
-    destination = "/tmp/setup_ansible_user.sh"
-    on_failure = continue
-  }
-  # Shell script para configurar o dns e o sudoers
-  provisioner "file" {
-    source      = "${path.module}/templates/config_dns.sh"
-    destination = "/tmp/config_dns.sh"
-    on_failure = continue
-  }  
-  # Shell script para configurar os discos
-  provisioner "file" {
-    source      = "${path.module}/templates/format_discos_extras.sh"
-    destination = "/tmp/format_discos_extras.sh"
-    on_failure = continue
-  }  
-  # Executa os script de usuario e permissoes para GC
-  provisioner "remote-exec" {
-    inline = [
-      "chmod +x /tmp/setup_ansible_user.sh",
-      "/tmp/setup_ansible_user.sh ${var.local_adminpass}",
-      "chmod +x /tmp/config_dns.sh",
-      "/tmp/config_dns.sh ${var.distro}",
-      "chmod +x /tmp/format_discos_extras.sh",
-      "/tmp/format_discos_extras.sh"
-    ]
-    on_failure = continue
-  }    
-  provisioner "file" {  
-    source      = "${path.module}/templates/ansible.sh"
-    destination = "/tmp/ansible.sh"
-    on_failure = continue
-  }
-}
+#   connection {
+#     type        = "ssh"
+#     user        = "ansible"  
+#     password    = var.local_adminpass  
+#     host        = each.value
+#     timeout     = "5m"
+#     agent       = false
+#     # Configurações adicionais para melhor estabilidade
+#     bastion_host = var.bastion_host != null ? var.bastion_host : null
+#     bastion_user = var.bastion_user != null ? var.bastion_user : null
+#     bastion_password = var.bastion_password != null ? var.bastion_password : null
+#   }
+#   # Apaga a chave privada se existir
+#   provisioner "remote-exec" {
+#     inline = [
+#       "rm -f /home/ansible/.ssh/id_ed25519"
+#     ]
+#     on_failure = continue
+#   }
+#   # Copia a chave publica para a VM a ser criada
+#   provisioner "file" {
+#     source      = "${path.module}/templates/id_ed25519.pub"
+#     destination = "/tmp/"
+#     on_failure = continue
+#   }  
+#   # Shel script para criação do usuario ansible, caso nao exista
+#   provisioner "file" {
+#     source      = "${path.module}/templates/setup_ansible_user.sh"
+#     destination = "/tmp/setup_ansible_user.sh"
+#     on_failure = continue
+#   }
+#   # Shell script para configurar o dns e o sudoers
+#   provisioner "file" {
+#     source      = "${path.module}/templates/config_dns.sh"
+#     destination = "/tmp/config_dns.sh"
+#     on_failure = continue
+#   }  
+#   # Shell script para configurar os discos
+#   provisioner "file" {
+#     source      = "${path.module}/templates/format_discos_extras.sh"
+#     destination = "/tmp/format_discos_extras.sh"
+#     on_failure = continue
+#   }  
+#   # Executa os script de usuario e permissoes para GC
+#   provisioner "remote-exec" {
+#     inline = [
+#       "chmod +x /tmp/setup_ansible_user.sh",
+#       "/tmp/setup_ansible_user.sh ${var.local_adminpass}",
+#       "chmod +x /tmp/config_dns.sh",
+#       "/tmp/config_dns.sh ${var.distro}",
+#       "chmod +x /tmp/format_discos_extras.sh",
+#       "/tmp/format_discos_extras.sh"
+#     ]
+#     on_failure = continue
+#   }    
+#   provisioner "file" {  
+#     source      = "${path.module}/templates/ansible.sh"
+#     destination = "/tmp/ansible.sh"
+#     on_failure = continue
+#   }
+# }
