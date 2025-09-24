@@ -75,7 +75,19 @@ pipeline {
                   '''
               }
           }
-      }                    
+      }            
+      stage('Executa Terraform Init') {
+          when {
+              not { equals expected: 'nao', actual: params.init }
+          }
+          steps {
+              script {
+                  sh '''
+                      terragrunt ${init}
+                  '''
+              }
+          }
+      }        
       stage('Terragrunt Plan') {
           steps {
               script {           
