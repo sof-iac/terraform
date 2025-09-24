@@ -82,6 +82,7 @@ pipeline {
           }
           steps {
               script {
+                  dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
                   sh '''
                       terragrunt ${init}
                   '''
