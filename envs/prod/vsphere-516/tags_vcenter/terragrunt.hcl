@@ -73,6 +73,16 @@ inputs = {
       tag_name             = "AIops"
       tag_description      = "Aiops"
       },
+    "Tags_repoalma" = {
+      category_name        = "Aplicacao"
+      tag_name             = "repoalma"
+      tag_description      = "Repositorio Alma Linux"
+      },
+    "Tags_POC" = {
+      category_name        = "Aplicacao"
+      tag_name             = "POC"
+      tag_description      = "Prova de Conceito"
+      },
     "Tags_ambientelab" = {
       category_name        = "Ambiente"
       tag_name             = "Lab"
