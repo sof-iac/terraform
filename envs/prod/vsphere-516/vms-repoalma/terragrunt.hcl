@@ -14,17 +14,17 @@ locals {
 
 inputs = {
   vm = {    
-    "PREP" = {
+    "PREP05" = {
         template          = "default-template-alma-9.6"
         instances         = 1
-        vmstartcount      = 3        
-        staticvmname      = "PREP04"
+        vmstartcount      = 5        
+        staticvmname      = "PREP05"
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Purestorage_Default"
         datastore         = "Purestorage_Default"
         resource_pool     = "Blade_Kratos/Resources"
         vsphere_cluster   = "Blade_Kratos"
-        network           = {"PG_Gaia_Dominio_Recurso" = ["172.27.3.125"]}
+        network           = {"PG_Gaia_Dominio_Recurso" = ["172.27.3.127"]}
         mask              = ["24"]
         gateway           = "172.27.3.1"
         domain            = "sof.intra"
