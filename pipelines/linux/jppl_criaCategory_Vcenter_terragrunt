@@ -9,8 +9,6 @@ pipeline {
       string(name: 'Grupo', defaultValue: 'nome_do_grupo', description: 'Nome do grupo das VMs')
       choice(name: 'init', choices: [ 'nao', 'init', 'init -reconfigure','init -migrate-state'], description: 'Alterações no Tfsate')
       choice(name: 'lock', choices: ['true','false'], description: 'Lock do dynamodb')
-      password(name: 'GITEA_TOKEN', description: 'Token gitea')
-      string(name: 'URL', defaultValue: 'https://${GITEA_TOKEN}@gitea.app.sof.intra', description: 'URL do Repo')     
     }
     environment {
        TF_VAR_VM_PASS = credentials('ansible_pass_text') // Usando credenciais do ansible 
