@@ -22,6 +22,7 @@ inputs = {
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Storage_EMC"
         datastore         = "SE_D01"
+        resource_pool     = "Blade_HPE-Legado/Resources"
         vsphere_cluster   = "Blade_HPE-Legado"
 		    domain            = "sof.intra"
         network           = {"PG_Gaia_Servico_Kubernetes" = ["192.168.22.230","192.168.22.231","192.168.22.232","192.168.22.233"]}
