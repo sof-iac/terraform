@@ -37,9 +37,7 @@ inputs = {
         annotation        = "Cluster k8s Test Restore - Responsável: João Francisco Neiva de Carvalho"
         tags = {
           "Origem"    = "Terraform"
-          "Ambiente"  = "Lab"
-          "Aplicacao" = "k8s_test_restore"
-          "Responsavel" = "João Francisco Neiva de Carvalho"
+          "Ambiente"  = "Test"
         }      
         # Adicionando discos extras  
         data_disk = {}
