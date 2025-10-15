@@ -20,11 +20,10 @@ inputs = {
         vmstartcount      = 1
         staticvmname      = null
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
-        datastore_cluster = "Purestorage_Default"
-        datastore         = "Purestorage_Default"
-        resource_pool     = "Blade_Kratos/Resources"
-        vsphere_cluster   = "Blade_Kratos"
-        domain            = "sof.intra"
+        datastore_cluster = "Storage_EMC"
+        datastore         = "SE_D01"
+        vsphere_cluster   = "Blade_HPE-Legado"
+		    domain            = "sof.intra"
         network           = {"PG_Gaia_Servico_Kubernetes" = ["192.168.22.230","192.168.22.231","192.168.22.232","192.168.22.233"]}
         dns_server_list   = ["172.27.3.5", "172.27.3.6"]
         mask              = ["24"]
