@@ -25,7 +25,7 @@ inputs = {
         resource_pool     = "Blade_HPE-Legado/Resources"
         vsphere_cluster   = "Blade_HPE-Legado"
 		    domain            = "sof.intra"
-        network           = {"PG_Gaia_Servico_Kubernetes" = ["192.168.22.230","192.168.22.231","192.168.22.232","192.168.22.233"]}
+        network           = {"PG_Atlas_Servico_Kubernets" = ["192.168.22.230","192.168.22.231","192.168.22.232","192.168.22.233"]}
         dns_server_list   = ["172.27.3.5", "172.27.3.6"]
         mask              = ["24"]
         gateway           = "192.168.22.1"
