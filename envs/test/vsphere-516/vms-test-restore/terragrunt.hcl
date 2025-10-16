@@ -15,7 +15,7 @@ locals {
 inputs = {
   vm = {
     "RKBN" = {
-        template          = "default-template-ubuntu-2404-k8s"
+        template          = "K8s Worker Template 2023 (Secure Boot)"
         instances         = 4
         vmstartcount      = 1
         staticvmname      = null
