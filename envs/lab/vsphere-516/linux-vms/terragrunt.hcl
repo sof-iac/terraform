@@ -39,7 +39,7 @@ inputs = {
           "Origem"    = "Terraform"
           "Ambiente"  = "Lab"
           "Aplicacao" = "Apache"
-          "Responsavel" = "Rogerio Vieira Silva"
+          #"Responsavel" = "Rogerio Vieira Silva"
         }     
         # Adicionando discos adicionais  
         data_disk = { }  
