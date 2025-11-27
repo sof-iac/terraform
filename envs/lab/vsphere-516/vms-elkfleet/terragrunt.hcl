@@ -39,8 +39,7 @@ inputs = {
         tags = {
           "Origem"    = "Terraform"
           "Ambiente"  = "Lab"
-          "Aplicacao" = "ELK Security"
-          
+          "Aplicacao" = "ELK"          
         }     
         # Adicionando discos adicionais  
         data_disk = { }  
