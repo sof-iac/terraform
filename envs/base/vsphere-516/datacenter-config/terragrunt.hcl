@@ -168,6 +168,10 @@ inputs = {
       description = "Servidores do Jenkins"
       category    = "Aplicacao"
     }
+    "NetBackup" = {
+      description = "Servidores relacionados ao NetBackup"
+      category    = "Aplicacao"
+    }
     "k8s_region_SOF" = {
       description = ""
       category    = "k8s_region"
