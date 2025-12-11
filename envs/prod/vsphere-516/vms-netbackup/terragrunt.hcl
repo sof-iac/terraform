@@ -15,7 +15,7 @@ inputs = {
   vm = {
     # Definição VM para acesso aos NFS utilizados pelo NetBackup
     "PNBP" = {
-      template          = "templateoraclelinux810"
+      template          = "default-template-alma-9.6-base"
       staticvmname      = "PNBP01"
       instances         = 1
       vmstartcount      = 1
