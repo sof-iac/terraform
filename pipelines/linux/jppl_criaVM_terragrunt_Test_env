@@ -114,16 +114,22 @@ pipeline {
                     // Construindo o nome correto da variável de ambiente que o Terragrunt espera
                     def backend_access_key_var = "TF_VAR_backend_access_key_${Ambiente}"
                     def backend_secret_key_var = "TF_VAR_backend_secret_key_${Ambiente}"
-                    withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS", "${backend_access_key_var}=${env.TF_VAR_backend_access_key_test}", "${backend_secret_key_var}=${env.TF_VAR_backend_secret_key_test}"]) {  
+                    // Verificando se os valores não estão vazios
+                    def backend_access_key_value = env.TF_VAR_backend_access_key_test ?: ""
+                    def backend_secret_key_value = env.TF_VAR_backend_secret_key_test ?: ""
+                    if (!backend_access_key_value || !backend_secret_key_value) {
+                        error("Erro: Variáveis de backend estão vazias. Access Key: ${backend_access_key_value ? 'definida' : 'VAZIA'}, Secret Key: ${backend_secret_key_value ? 'definida' : 'VAZIA'}")
+                    }
+                    withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS", "${backend_access_key_var}=${backend_access_key_value}", "${backend_secret_key_var}=${backend_secret_key_value}"]) {  
                           // Comandos que usam as variáveis definidas  
                           // set +x desabilita o modo verbose para não expor senhas nos logs
                           // Usando aspas simples triplas para evitar interpolação do Groovy
-                          sh ''' 
+                          sh """ 
                               set +x
                               export TF_LOG=INFO
                               export AWS_VERIFY_SSL=false 
-                              terragrunt ''' + init + ''' 
-                          ''' 
+                              terragrunt ${init} 
+                          """  
                       }         
                 }
              }
@@ -140,21 +146,27 @@ pipeline {
                       // Construindo o nome correto da variável de ambiente que o Terragrunt espera
                       def backend_access_key_var = "TF_VAR_backend_access_key_${Ambiente}"
                       def backend_secret_key_var = "TF_VAR_backend_secret_key_${Ambiente}"
+                      // Verificando se os valores não estão vazios
+                      def backend_access_key_value = env.TF_VAR_backend_access_key_test ?: ""
+                      def backend_secret_key_value = env.TF_VAR_backend_secret_key_test ?: ""
+                      if (!backend_access_key_value || !backend_secret_key_value) {
+                          error("Erro: Variáveis de backend estão vazias. Access Key: ${backend_access_key_value ? 'definida' : 'VAZIA'}, Secret Key: ${backend_secret_key_value ? 'definida' : 'VAZIA'}")
+                      }
                       // Definindo variáveis de ambiente adicionais
                       // env.TF_VAR_backend_access_key = credentials("TF_VAR_backend_access_key_${env}")
                      // env.TF_VAR_backend_secret_key = credentials("TF_VAR_backend_secret_key_${env}")
 
-                      withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS", "${backend_access_key_var}=${env.TF_VAR_backend_access_key_test}", "${backend_secret_key_var}=${env.TF_VAR_backend_secret_key_test}"]) {  
+                      withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS", "${backend_access_key_var}=${backend_access_key_value}", "${backend_secret_key_var}=${backend_secret_key_value}"]) {
                           // Comandos que usam as variáveis definidas  
                           // set +x desabilita o modo verbose para não expor senhas nos logs
                           // Usando aspas simples triplas para evitar interpolação do Groovy
-                          sh ''' 
+                          sh """ 
                               set +x
                               export TF_LOG=INFO
                               export AWS_VERIFY_SSL=false 
-                              terragrunt plan -lock=''' + lock + ''' 
-                          ''' 
-                      }     
+                              terragrunt plan -lock=${lock} 
+                          """  
+                      }
                   }                       
               }          
           }
@@ -170,21 +182,27 @@ pipeline {
                       // Construindo o nome correto da variável de ambiente que o Terragrunt espera
                       def backend_access_key_var = "TF_VAR_backend_access_key_${Ambiente}"
                       def backend_secret_key_var = "TF_VAR_backend_secret_key_${Ambiente}"
+                      // Verificando se os valores não estão vazios
+                      def backend_access_key_value = env.TF_VAR_backend_access_key_test ?: ""
+                      def backend_secret_key_value = env.TF_VAR_backend_secret_key_test ?: ""
+                      if (!backend_access_key_value || !backend_secret_key_value) {
+                          error("Erro: Variáveis de backend estão vazias. Access Key: ${backend_access_key_value ? 'definida' : 'VAZIA'}, Secret Key: ${backend_secret_key_value ? 'definida' : 'VAZIA'}")
+                      }
                       // Definindo variáveis de ambiente adicionais
                       // env.TF_VAR_backend_access_key = credentials("TF_VAR_backend_access_key_${env}")
                      // env.TF_VAR_backend_secret_key = credentials("TF_VAR_backend_secret_key_${env}")
 
-                      withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS", "${backend_access_key_var}=${env.TF_VAR_backend_access_key_test}", "${backend_secret_key_var}=${env.TF_VAR_backend_secret_key_test}"]) {  
+                      withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS", "${backend_access_key_var}=${backend_access_key_value}", "${backend_secret_key_var}=${backend_secret_key_value}"]) {
                           // Comandos que usam as variáveis definidas  
                           // set +x desabilita o modo verbose para não expor senhas nos logs
                           // Usando aspas simples triplas para evitar interpolação do Groovy
-                          sh ''' 
+                          sh """ 
                               set +x
                               export TF_LOG=INFO
                               export AWS_VERIFY_SSL=false 
-                              terragrunt apply -auto-approve -lock=''' + lock + ''' 
-                          ''' 
-                      }     
+                              terragrunt apply -auto-approve -lock=${lock} 
+                          """  
+                      }
                   }                       
               }          
           }
