@@ -15,7 +15,7 @@ locals {
 inputs = {
   vm = {
     "ROBALMA" = {
-      template        = "default-template-alma10-base"
+      template        = "default-template-alma-9.6-base"
       staticvmname    = "ROBALMA"
       instances       = 1
       vmstartcount    = 0
@@ -40,7 +40,7 @@ inputs = {
         data_disk = { }  
     },
     "TALMA" = {
-      template        = "default-template-alma-9.6"
+      template        = "default-template-alma-9.6-base"
       staticvmname    = null
       instances       = 1
       vmstartcount    = 1
