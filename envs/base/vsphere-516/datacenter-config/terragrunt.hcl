@@ -172,6 +172,10 @@ inputs = {
       description = "Servidores relacionados ao NetBackup"
       category    = "Aplicacao"
     }
+    "Sofex" = {
+      description = "Servidores relacionados ao extrator de eventos das máquinas Windows"
+      category    = "Aplicacao"
+    }
     "k8s_region_SOF" = {
       description = ""
       category    = "k8s_region"
@@ -225,6 +229,10 @@ inputs = {
       category    = "Rancher"
     }
     "Rogerio_Vieira_Silva" = {
+      description = "Responsável pela criacao"
+      category    = "Responsavel"
+    }
+    "Joao_Francisco" = {
       description = "Responsável pela criacao"
       category    = "Responsavel"
     }
