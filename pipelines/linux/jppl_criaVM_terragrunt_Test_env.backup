@@ -37,18 +37,7 @@ pipeline {
                                       engineVersion: 2]
 
                 withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
-                  // Criando secrets.json sem expor senha nos logs
-                  // set +x desabilita o modo verbose
-                  sh '''
-                    set +x
-                    cat > secrets.json << SECRETS_EOF
-                    {
-                      "username_vcenter": "user_svc_jenkins",
-                      "passwd_vcenter": "$passwd_vcenter"
-                    }
-                    SECRETS_EOF
-                    chmod 600 secrets.json
-                  '''                   
+                  sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"                   
                 }
                 withCredentials([ 
                     string(credentialsId: 'access_key_teste', variable: 'TF_VAR_access_key_test'),
@@ -60,32 +49,19 @@ pipeline {
                     string(credentialsId: 'TF_VAR_username_vcenter_k', variable: 'VCENTER_USER_K'),
                     string(credentialsId: 'TF_VAR_password_vcenter_k', variable: 'VCENTER_PASS_K')
                 ]) {
-                // Definindo variáveis locais (não env.*) para evitar log automático
-                def vcenter_host = "${Site}" == 'vsphere-516' ? "$VCENTER_HOST_516" : "$VCENTER_HOST_K"
-                def vcenter_user = "${Site}" == 'vsphere-516' ? "$VCENTER_USER_516" : "$VCENTER_USER_K"
-                def vcenter_pass = "${Site}" == 'vsphere-516' ? "$VCENTER_PASS_516" : "$VCENTER_PASS_K"
-                
-                // Armazenando em variáveis de ambiente apenas quando necessário, dentro do escopo withCredentials
-                env.VCENTER_HOST = vcenter_host
-                env.VCENTER_USER = vcenter_user
-                env.VCENTER_PASS = vcenter_pass
-                    
-                // Definindo variáveis de ambiente adicionais
-                env.TF_VAR_backend_access_key_test = "$TF_VAR_access_key_test"
-                env.TF_VAR_backend_secret_key_test = "$TF_VAR_secret_key_test"
-                
-                // Criando bucket.json sem expor credenciais nos logs
-                // set +x desabilita o modo verbose
-                sh '''
-                  set +x
-                  cat > bucket.json << BUCKET_EOF
-                  {
-                    "TF_VAR_backend_access_key": "$TF_VAR_access_key_test",
-                    "TF_VAR_backend_secret_key": "$TF_VAR_secret_key_test"
-                  }
-                  BUCKET_EOF
-                  chmod 600 bucket.json
-                '''
+                if("${Site}" == 'vsphere-516') {
+                    env.VCENTER_HOST = "$VCENTER_HOST_516"
+                    env.VCENTER_USER = "$VCENTER_USER_516"
+                    env.VCENTER_PASS = "$VCENTER_PASS_516"
+                } else {
+                    env.VCENTER_HOST = "$VCENTER_HOST_K"
+                    env.VCENTER_USER = "$VCENTER_USER_K"
+                    env.VCENTER_PASS = "$VCENTER_PASS_K"
+                }                    
+                  // Definindo variáveis de ambiente adicionais
+                  env.TF_VAR_backend_access_key_test = "$TF_VAR_access_key_test"
+                  env.TF_VAR_backend_secret_key_test = "$TF_VAR_secret_key_test"
+                  sh " echo '{\\n  \"TF_VAR_backend_access_key\": \"$TF_VAR_access_key_test\",\\n  \"TF_VAR_backend_secret_key\": \"$TF_VAR_secret_key_test\"\\n}' > bucket.json"
                 }
             }
           }
@@ -107,16 +83,21 @@ pipeline {
           steps {
               script {
                   dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
-                    withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS", "TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}", "TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}"]) {  
+                    withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS"]) {  
                           // Comandos que usam as variáveis definidas  
-                          // set +x desabilita o modo verbose para não expor senhas nos logs
-                          // Usando aspas simples triplas para evitar interpolação do Groovy
-                          sh ''' 
-                              set +x
-                              export TF_LOG=INFO
+
+                          sh """ 
+                              export TF_LOG=DEBUG  
+                              export TF_VAR_VM_PASS=${ANSIBLE_PASSWD}
+                              export TF_VAR_DISTRO=${Distro}  
+                              export VCENTER_HOST=${VCENTER_HOST}
+                              export VCENTER_PASS=${VCENTER_PASS}
+                              export VCENTER_USER=${VCENTER_USER}
+                              export TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}
+                              export TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}
                               export AWS_VERIFY_SSL=false 
-                              terragrunt ''' + init + ''' 
-                          ''' 
+                              terragrunt ${init} 
+                          """ 
                       }         
                 }
              }
@@ -130,16 +111,21 @@ pipeline {
                       // env.TF_VAR_backend_access_key = credentials("TF_VAR_backend_access_key_${env}")
                      // env.TF_VAR_backend_secret_key = credentials("TF_VAR_backend_secret_key_${env}")
 
-                      withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS", "TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}", "TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}"]) {  
+                      withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS"]) {  
                           // Comandos que usam as variáveis definidas  
-                          // set +x desabilita o modo verbose para não expor senhas nos logs
-                          // Usando aspas simples triplas para evitar interpolação do Groovy
-                          sh ''' 
-                              set +x
-                              export TF_LOG=INFO
+
+                          sh """ 
+                              export TF_LOG=DEBUG  
+                              export TF_VAR_VM_PASS=${ANSIBLE_PASSWD}
+                              export TF_VAR_DISTRO=${Distro}  
+                              export VCENTER_HOST=${VCENTER_HOST}
+                              export VCENTER_PASS=${VCENTER_PASS}
+                              export VCENTER_USER=${VCENTER_USER}
+                              export TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}
+                              export TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}
                               export AWS_VERIFY_SSL=false 
-                              terragrunt plan -lock=''' + lock + ''' 
-                          ''' 
+                              terragrunt plan -lock=${lock} 
+                          """ 
                       }     
                   }                       
               }          
@@ -153,16 +139,21 @@ pipeline {
                       // env.TF_VAR_backend_access_key = credentials("TF_VAR_backend_access_key_${env}")
                      // env.TF_VAR_backend_secret_key = credentials("TF_VAR_backend_secret_key_${env}")
 
-                      withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS", "TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}", "TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}"]) {  
+                      withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS"]) {  
                           // Comandos que usam as variáveis definidas  
-                          // set +x desabilita o modo verbose para não expor senhas nos logs
-                          // Usando aspas simples triplas para evitar interpolação do Groovy
-                          sh ''' 
-                              set +x
-                              export TF_LOG=INFO
+
+                          sh """ 
+                              export TF_LOG=DEBUG  
+                              export TF_VAR_VM_PASS=${ANSIBLE_PASSWD}
+                              export TF_VAR_DISTRO=${Distro}  
+                              export VCENTER_HOST=${VCENTER_HOST}
+                              export VCENTER_PASS=${VCENTER_PASS}
+                              export VCENTER_USER=${VCENTER_USER}
+                              export TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}
+                              export TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}
                               export AWS_VERIFY_SSL=false 
-                              terragrunt apply -auto-approve -lock=''' + lock + ''' 
-                          ''' 
+                              terragrunt apply -auto-approve -lock=${lock}
+                          """ 
                       }     
                   }                       
               }          
