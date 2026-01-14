@@ -107,7 +107,11 @@ pipeline {
           steps {
               script {
                   dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
-                    withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS", "TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}", "TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}"]) {  
+                    // Verificando se as variáveis de backend estão definidas
+                    if (!env.TF_VAR_backend_access_key_test || !env.TF_VAR_backend_secret_key_test) {
+                        error("Variáveis de backend não foram definidas corretamente. TF_VAR_backend_access_key_test ou TF_VAR_backend_secret_key_test estão vazias.")
+                    }
+                    withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS", "TF_VAR_backend_access_key_${Ambiente}=${env.TF_VAR_backend_access_key_test}", "TF_VAR_backend_secret_key_${Ambiente}=${env.TF_VAR_backend_secret_key_test}"]) {  
                           // Comandos que usam as variáveis definidas  
                           // set +x desabilita o modo verbose para não expor senhas nos logs
                           // Usando aspas simples triplas para evitar interpolação do Groovy
@@ -126,11 +130,15 @@ pipeline {
           steps {
               script {           
                   dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
+                      // Verificando se as variáveis de backend estão definidas
+                      if (!env.TF_VAR_backend_access_key_test || !env.TF_VAR_backend_secret_key_test) {
+                          error("Variáveis de backend não foram definidas corretamente. TF_VAR_backend_access_key_test ou TF_VAR_backend_secret_key_test estão vazias.")
+                      }
                       // Definindo variáveis de ambiente adicionais
                       // env.TF_VAR_backend_access_key = credentials("TF_VAR_backend_access_key_${env}")
                      // env.TF_VAR_backend_secret_key = credentials("TF_VAR_backend_secret_key_${env}")
 
-                      withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS", "TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}", "TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}"]) {  
+                      withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS", "TF_VAR_backend_access_key_${Ambiente}=${env.TF_VAR_backend_access_key_test}", "TF_VAR_backend_secret_key_${Ambiente}=${env.TF_VAR_backend_secret_key_test}"]) {  
                           // Comandos que usam as variáveis definidas  
                           // set +x desabilita o modo verbose para não expor senhas nos logs
                           // Usando aspas simples triplas para evitar interpolação do Groovy
@@ -149,11 +157,15 @@ pipeline {
           steps {
               script {           
                   dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
+                      // Verificando se as variáveis de backend estão definidas
+                      if (!env.TF_VAR_backend_access_key_test || !env.TF_VAR_backend_secret_key_test) {
+                          error("Variáveis de backend não foram definidas corretamente. TF_VAR_backend_access_key_test ou TF_VAR_backend_secret_key_test estão vazias.")
+                      }
                       // Definindo variáveis de ambiente adicionais
                       // env.TF_VAR_backend_access_key = credentials("TF_VAR_backend_access_key_${env}")
                      // env.TF_VAR_backend_secret_key = credentials("TF_VAR_backend_secret_key_${env}")
 
-                      withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS", "TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}", "TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}"]) {  
+                      withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS", "TF_VAR_backend_access_key_${Ambiente}=${env.TF_VAR_backend_access_key_test}", "TF_VAR_backend_secret_key_${Ambiente}=${env.TF_VAR_backend_secret_key_test}"]) {  
                           // Comandos que usam as variáveis definidas  
                           // set +x desabilita o modo verbose para não expor senhas nos logs
                           // Usando aspas simples triplas para evitar interpolação do Groovy
