@@ -15,7 +15,7 @@ locals {
 inputs = {
   vm = {
     "TAPC" = {
-        template          = "templateubuntu2404"
+        template          = "default-template-alma-9.6-base"
         instances         = 1
         vmstartcount      = 1
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
