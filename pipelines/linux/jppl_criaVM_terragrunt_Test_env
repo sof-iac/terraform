@@ -58,6 +58,7 @@ pipeline {
                             env.VSPHERE_SERVER   = (params.Site == 'vsphere-516') ? env.VCENTER_HOST_516 : env.VCENTER_HOST_K
                             env.VSPHERE_USER    = (params.Site == 'vsphere-516') ? env.VCENTER_USER_516 : env.VCENTER_USER_K
                             env.VSPHERE_PASSWORD = (params.Site == 'vsphere-516') ? env.VCENTER_PASS_516 : env.VCENTER_PASS_K
+                            env.TF_VAR_DISTRO   = params.distro
                             // Force-unlock do state quando o lock ficou travado (ex.: após erro ao liberar lock no MinIO)
                             if (params.ForceUnlockLockId?.trim()) {
                                 echo "Executando force-unlock com Lock ID: ${params.ForceUnlockLockId.trim()}"
@@ -73,9 +74,9 @@ pipeline {
                                 echo "DEBUG TF_VAR_VM_PASS: set=${TF_VAR_VM_PASS:+yes} length=${#TF_VAR_VM_PASS}"
                             '''
                             if (params.init != 'nao') {
-                                sh "TF_VAR_DISTRO=${params.distro} terragrunt ${params.init}"
+                                sh "terragrunt ${params.init}"
                             }
-                            sh "TF_VAR_DISTRO=${params.distro} terragrunt plan -lock=${params.lock}"
+                            sh "terragrunt plan -lock=${params.lock}"
                         }
                     }
                 }
@@ -101,7 +102,8 @@ pipeline {
                             env.VSPHERE_SERVER   = (params.Site == 'vsphere-516') ? env.VCENTER_HOST_516 : env.VCENTER_HOST_K
                             env.VSPHERE_USER     = (params.Site == 'vsphere-516') ? env.VCENTER_USER_516 : env.VCENTER_USER_K
                             env.VSPHERE_PASSWORD = (params.Site == 'vsphere-516') ? env.VCENTER_PASS_516 : env.VCENTER_PASS_K
-                            sh "TF_VAR_DISTRO=${params.distro} terragrunt apply -auto-approve -lock=${params.lock}"
+                            env.TF_VAR_DISTRO    = params.distro
+                            sh "terragrunt apply -auto-approve -lock=${params.lock}"
                         }
                     }
                 }
