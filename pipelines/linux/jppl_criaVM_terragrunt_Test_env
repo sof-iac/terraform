@@ -61,7 +61,7 @@ pipeline {
                         ]) {
                             // Executa Init se solicitado
                             if (params.init != 'nao') {
-                                sh "terragrunt ${params.init}"
+                                sh "TF_VAR_DISTRO=${params.distro} terragrunt ${params.init}"
                             }
 
                             // Executa Plan
