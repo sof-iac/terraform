@@ -40,7 +40,10 @@ pipeline {
                     
                     // 2. Define qual credencial do MinIO usar (aqui usando uma lógica baseada no Ambiente)
                     // Ex: se Ambiente for 'test', busca 'minio-creds-test'. Ajuste conforme seus IDs reais.
-                    def minioCredId = "minio-creds-${params.Ambiente}" 
+                    def minioCredId = "minio-creds-${params.Ambiente}"
+
+                    // DEBUG: IDs das credenciais selecionadas
+                    echo "DEBUG Credentials IDs: minioCredId=${minioCredId} | vcenterCredId=${vcenterCredId} | ambiente=${params.Ambiente}"
 
                     dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
                         
@@ -59,6 +62,14 @@ pipeline {
                             // Senha da VM (Ansible/Cloud-init) - Injetada como TF_VAR
                             string(credentialsId: 'ansible_pass_text', variable: 'TF_VAR_VM_PASS')
                         ]) {
+                            // DEBUG: Verificar se as variáveis de credenciais estão definidas (sem exibir valores)
+                            sh '''
+                                echo "DEBUG AWS_ACCESS_KEY_ID: set=${AWS_ACCESS_KEY_ID:+yes} length=${#AWS_ACCESS_KEY_ID}"
+                                echo "DEBUG AWS_SECRET_ACCESS_KEY: set=${AWS_SECRET_ACCESS_KEY:+yes} length=${#AWS_SECRET_ACCESS_KEY}"
+                                echo "DEBUG VSPHERE_USER: set=${VSPHERE_USER:+yes} length=${#VSPHERE_USER}"
+                                echo "DEBUG VSPHERE_PASSWORD: set=${VSPHERE_PASSWORD:+yes} length=${#VSPHERE_PASSWORD}"
+                                echo "DEBUG TF_VAR_VM_PASS: set=${TF_VAR_VM_PASS:+yes} length=${#TF_VAR_VM_PASS}"
+                            '''
                             // Executa Init se solicitado
                             if (params.init != 'nao') {
                                 sh "TF_VAR_DISTRO=${params.distro} terragrunt ${params.init}"

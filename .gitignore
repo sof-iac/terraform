@@ -24,3 +24,4 @@ terragrunt
 mocks/
 .go-version
 envs/minio.pem
+terragrunt_copy.hcl
