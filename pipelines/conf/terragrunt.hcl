@@ -3,6 +3,9 @@ locals {
   module_name  = get_terragrunt_dir()
   # Se o nome do diretorio tiver "516", usa o host do 516, senão usa o K
   vcenter_host = strcontains(local.module_name, "vsphere-516") ? "hostname-do-vcenter-516.intra" : "hostname-do-vcenter-k.intra"
+  # Backend S3/MinIO: bucket SEM barras (ex: tf-test), path completo na key
+  path_rel     = path_relative_to_include()
+  backend_env  = split("/", local.path_rel)[0]  # ex: "test", "prod"
 }
 
 # Gera o provider.tf
@@ -25,9 +28,9 @@ generate "backend" {
   contents  = <<EOF
 terraform {
   backend "s3" {
-    bucket                      = "tf-${path_relative_to_include()}" # Ex: tf-envs-test-vsphere-516
+    bucket                      = "tf-${local.backend_env}"
     endpoints                   = { s3 = "https://sof-s3.sof.intra" }
-    key                         = "terraform.tfstate"
+    key                         = "${local.path_rel}/terraform.tfstate"
     
     # NÃO defina access_key/secret_key aqui. O Terraform lerá AWS_ACCESS_KEY_ID e AWS_SECRET_ACCESS_KEY.
     
