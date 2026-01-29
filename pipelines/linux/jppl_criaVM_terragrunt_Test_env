@@ -9,7 +9,8 @@ pipeline {
         string(name: 'Grupo', defaultValue: 'nome_do_grupo', description: 'Nome do grupo das VMs')
         choice(name: 'init', choices: [ 'nao', 'init', 'init -reconfigure','init -upgrade'], description: 'Comando Init')
         choice(name: 'lock', choices: ['true','false'], description: 'Lock do state')    
-        choice(name: 'distro', choices: ['ubuntu','alma', 'centos', 'orcl','rocklinux'], description: 'Distribuição Linux')  
+        choice(name: 'distro', choices: ['ubuntu','alma', 'centos', 'orcl','rocklinux'], description: 'Distribuição Linux')
+        string(name: 'ForceUnlockLockId', defaultValue: '', description: 'Se preenchido, executa terragrunt force-unlock com este ID (ex: 6551fe26-be77-3a8c-38ea-465056314a0c). Use quando o state ficar travado.')
     }
 
     environment {
@@ -57,6 +58,11 @@ pipeline {
                             env.VSPHERE_SERVER   = (params.Site == 'vsphere-516') ? env.VCENTER_HOST_516 : env.VCENTER_HOST_K
                             env.VSPHERE_USER    = (params.Site == 'vsphere-516') ? env.VCENTER_USER_516 : env.VCENTER_USER_K
                             env.VSPHERE_PASSWORD = (params.Site == 'vsphere-516') ? env.VCENTER_PASS_516 : env.VCENTER_PASS_K
+                            // Force-unlock do state quando o lock ficou travado (ex.: após erro ao liberar lock no MinIO)
+                            if (params.ForceUnlockLockId?.trim()) {
+                                echo "Executando force-unlock com Lock ID: ${params.ForceUnlockLockId.trim()}"
+                                sh "terragrunt force-unlock -force ${params.ForceUnlockLockId.trim()}"
+                            }
                             // DEBUG (sem exibir valores)
                             sh '''
                                 echo "DEBUG AWS_ACCESS_KEY_ID: set=${AWS_ACCESS_KEY_ID:+yes} length=${#AWS_ACCESS_KEY_ID}"
