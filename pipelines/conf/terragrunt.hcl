@@ -1,8 +1,7 @@
 locals {
-  # Lógica simples apenas para definir o HOST, já que user/pass vem via ENV
+  # Host do vCenter: vem de VSPHERE_SERVER (export no Jenkins). Fallback só se não setado.
   module_name  = get_terragrunt_dir()
-  # Se o nome do diretorio tiver "516", usa o host do 516, senão usa o K
-  vcenter_host = strcontains(local.module_name, "vsphere-516") ? "hostname-do-vcenter-516.intra" : "hostname-do-vcenter-k.intra"
+  vcenter_host = get_env("VSPHERE_SERVER", strcontains(local.module_name, "vsphere-516") ? "hostname-do-vcenter-516.intra" : "hostname-do-vcenter-k.intra")
   # Backend S3/MinIO: bucket SEM barras (ex: tf-test), path completo na key
   path_rel     = path_relative_to_include()
   backend_env  = split("/", local.path_rel)[0]  # ex: "test", "prod"
