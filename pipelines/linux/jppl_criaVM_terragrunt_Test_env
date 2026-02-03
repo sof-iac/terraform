@@ -62,7 +62,7 @@ pipeline {
                             // Force-unlock do state quando o lock ficou travado (ex.: após erro ao liberar lock no MinIO)
                             if (params.ForceUnlockLockId?.trim()) {
                                 echo "Executando force-unlock com Lock ID: ${params.ForceUnlockLockId.trim()}"
-                                sh "env AWS_ACCESS_KEY_ID=\$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=\$AWS_SECRET_ACCESS_KEY terragrunt force-unlock -force ${params.ForceUnlockLockId.trim()}"
+                                sh "env AWS_ACCESS_KEY_ID=\"\$AWS_ACCESS_KEY_ID\" AWS_SECRET_ACCESS_KEY=\"\$AWS_SECRET_ACCESS_KEY\" terragrunt force-unlock -force ${params.ForceUnlockLockId.trim()}"
                             }
                             // DEBUG (sem exibir valores)
                             sh '''
@@ -75,9 +75,9 @@ pipeline {
                             '''
                             // export/env garante que terragrunt (processo filho) receba as credenciais MinIO
                             if (params.init != 'nao') {
-                                sh "env AWS_ACCESS_KEY_ID=\$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=\$AWS_SECRET_ACCESS_KEY terragrunt ${params.init}"
+                                sh "env AWS_ACCESS_KEY_ID=\"\$AWS_ACCESS_KEY_ID\" AWS_SECRET_ACCESS_KEY=\"\$AWS_SECRET_ACCESS_KEY\" terragrunt ${params.init}"
                             }
-                            sh "env AWS_ACCESS_KEY_ID=\$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=\$AWS_SECRET_ACCESS_KEY terragrunt plan -lock=${params.lock}"
+                            sh "env AWS_ACCESS_KEY_ID=\"\$AWS_ACCESS_KEY_ID\" AWS_SECRET_ACCESS_KEY=\"\$AWS_SECRET_ACCESS_KEY\" terragrunt plan -lock=${params.lock}"
                         }
                     }
                 }
@@ -104,7 +104,7 @@ pipeline {
                             env.VSPHERE_USER     = (params.Site == 'vsphere-516') ? env.VCENTER_USER_516 : env.VCENTER_USER_K
                             env.VSPHERE_PASSWORD = (params.Site == 'vsphere-516') ? env.VCENTER_PASS_516 : env.VCENTER_PASS_K
                             env.TF_VAR_DISTRO    = params.distro
-                            sh "env AWS_ACCESS_KEY_ID=\$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=\$AWS_SECRET_ACCESS_KEY terragrunt apply -auto-approve -lock=${params.lock}"
+                            sh "env AWS_ACCESS_KEY_ID=\"\$AWS_ACCESS_KEY_ID\" AWS_SECRET_ACCESS_KEY=\"\$AWS_SECRET_ACCESS_KEY\" terragrunt apply -auto-approve -lock=${params.lock}"
                         }
                     }
                 }
