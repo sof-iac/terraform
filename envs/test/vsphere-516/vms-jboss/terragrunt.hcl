@@ -37,7 +37,7 @@ inputs = {
       annotation      = "TESTE Jboss novo ambiente"
         tags = {
           "Origem"    = "Terraform"
-          "Ambiente"  = "Teste"
+          "Ambiente"  = "Test"
           "Aplicacao" = "Apache"
           "Responsavel" = "Robson Mendes de Jesus"
          }        
