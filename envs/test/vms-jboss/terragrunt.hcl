@@ -35,7 +35,12 @@ inputs = {
       distro          = "${local.TF_VAR_DISTRO}"
       network_type    = ["vmxnet3"]
       annotation      = "TESTE Jboss novo ambiente"
-        tags = { }        
+        tags = {
+          "Origem"    = "Terraform"
+          "Ambiente"  = "Teste"
+          "Aplicacao" = "Apache"
+          "Responsavel" = "Robson Mendes de Jesus"
+         }        
         # Adicionando discos adicionais  
         data_disk = { }   
     }
