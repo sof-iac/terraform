@@ -4,12 +4,12 @@ pipeline {
       // Nome do projeto no gitea
       choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf','siop'], description: 'Organização Gitea')
       choice(name: 'Diretorio', choices: ['envs','aws'], description: 'Diretorio raiz') 
-      choice(name: 'Ambiente', choices: ['base','test','lab','prod'], description: 'Ambiente')
+      choice(name: 'Ambiente', choices: ['lab','base','test','prod'], description: 'Ambiente')
       choice(name: 'Site', choices: [ 'vsphere-516', 'vsphere-k'], description: 'Site')
       string(name: 'Grupo', defaultValue: 'nome_do_grupo', description: 'Nome do grupo das VMs')
-      choice(name: 'init', choices: [ 'nao', 'init', 'init -reconfigure','init -migrate-state','init -upgrade'], description: 'Alterações no Tfsate')
-      choice(name: 'lock', choices: ['true','false'], description: 'Lock do dynamodb')    
-      choice(name: 'distro', choices: ['ubuntu','alma', 'centos', 'orcl','rocklinux'], description: 'Distribuição Linux')  
+      choice(name: 'init', choices: [ 'nao', 'init', 'init -reconfigure','init -migrate-state'], description: 'Alterações no Tfsate')
+      choice(name: 'lock', choices: ['true','false'], description: 'Lock do dynamodb')
+      choice(name: 'distro', choices: ['ubuntu', 'alma','centos', 'orcl','rocklinux'], description: 'Distribuição Linux')  
       //password(name: 'VM_PASS', description: 'Senha para a máquina virtual')
     }
     environment {
@@ -17,10 +17,13 @@ pipeline {
        VAULT_ADDR = 'https://vault.app.sof.intra' // URL do seu servidor Vault  
        VAULT_TOKEN = credentials('vault_token_text') // Usando credenciais do Jenkins  
        ANSIBLE_PASSWD = credentials('ansible_pass_text') // Usando credenciais do ansible 
+       //GITEA_TOKEN = credentials('GITEA_TOKEN') // Usando credenciais do gitea
+       //giteaacesstoken = credentials('giteaacesstoken') // Usando credenciais do gitea
+       //GITEA_CREDENTIALS = credentials('GITEA_TOKEN')
        TF_VAR_hostname_vcenter_516 = 'your_vcenter_516_hostname' // Substitua pelo valor real
        TF_VAR_hostname_vcenter_k = 'your_vcenter_k_hostname' // Substitua pelo valor real
     }
-    stages { 
+    stages {
       stage('Retornando as chaves publica e certificados') {
         steps {
             script {
@@ -40,8 +43,8 @@ pipeline {
                   sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"                   
                 }
                 withCredentials([ 
-                    string(credentialsId: 'access_key_teste', variable: 'TF_VAR_access_key_test'),
-                    string(credentialsId: 'secret_key_teste', variable: 'TF_VAR_secret_key_test'),
+                    string(credentialsId: 'access_key_lab', variable: 'TF_VAR_access_key_lab'),
+                    string(credentialsId: 'secret_key_lab', variable: 'TF_VAR_secret_key_lab'),
                     string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'VCENTER_HOST_516'),
                     string(credentialsId: 'TF_VAR_username_vcenter_516', variable: 'VCENTER_USER_516'),
                     string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'VCENTER_PASS_516'),
@@ -59,9 +62,9 @@ pipeline {
                     env.VCENTER_PASS = "$VCENTER_PASS_K"
                 }                    
                   // Definindo variáveis de ambiente adicionais
-                  env.TF_VAR_backend_access_key_test = "$TF_VAR_access_key_test"
-                  env.TF_VAR_backend_secret_key_test = "$TF_VAR_secret_key_test"
-                  sh " echo '{\\n  \"TF_VAR_backend_access_key\": \"$TF_VAR_access_key_test\",\\n  \"TF_VAR_backend_secret_key\": \"$TF_VAR_secret_key_test\"\\n}' > bucket.json"
+                  env.TF_VAR_backend_access_key_lab = "$TF_VAR_access_key_lab"
+                  env.TF_VAR_backend_secret_key_lab = "$TF_VAR_secret_key_lab"
+                  sh " echo '{\\n  \"TF_VAR_backend_access_key\": \"$TF_VAR_access_key_lab\",\\n  \"TF_VAR_backend_secret_key\": \"$TF_VAR_secret_key_lab\"\\n}' > bucket.json"
                 }
             }
           }
@@ -75,34 +78,7 @@ pipeline {
                   '''
               }
           }
-      }            
-      stage('Executa Terraform Init') {
-          when {
-              not { equals expected: 'nao', actual: params.init }
-          }
-          steps {
-              script {
-                  dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
-                    withEnv(["TF_VAR_VM_PASS=$ANSIBLE_PASSWD", "TF_VAR_DISTRO=$Distro", "VCENTER_HOST=$VCENTER_HOST", "VCENTER_USER=$VCENTER_USER", "VCENTER_PASS=$VCENTER_PASS"]) {  
-                          // Comandos que usam as variáveis definidas  
-
-                          sh """ 
-                              export TF_LOG=DEBUG  
-                              export TF_VAR_VM_PASS=${ANSIBLE_PASSWD}
-                              export TF_VAR_DISTRO=${Distro}  
-                              export VCENTER_HOST=${VCENTER_HOST}
-                              export VCENTER_PASS=${VCENTER_PASS}
-                              export VCENTER_USER=${VCENTER_USER}
-                              export TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}
-                              export TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}
-                              export AWS_VERIFY_SSL=false 
-                              terragrunt ${init} 
-                          """ 
-                      }         
-                }
-             }
-          }
-        }        
+      }                    
       stage('Terragrunt Plan') {
           steps {
               script {           
@@ -121,8 +97,8 @@ pipeline {
                               export VCENTER_HOST=${VCENTER_HOST}
                               export VCENTER_PASS=${VCENTER_PASS}
                               export VCENTER_USER=${VCENTER_USER}
-                              export TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}
-                              export TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}
+                              export TF_VAR_backend_access_key_lab=${env.TF_VAR_backend_access_key_lab}
+                              export TF_VAR_backend_secret_key_lab=${env.TF_VAR_backend_secret_key_lab}
                               export AWS_VERIFY_SSL=false 
                               terragrunt plan -lock=${lock} 
                           """ 
@@ -149,8 +125,8 @@ pipeline {
                               export VCENTER_HOST=${VCENTER_HOST}
                               export VCENTER_PASS=${VCENTER_PASS}
                               export VCENTER_USER=${VCENTER_USER}
-                              export TF_VAR_backend_access_key_test=${env.TF_VAR_backend_access_key_test}
-                              export TF_VAR_backend_secret_key_test=${env.TF_VAR_backend_secret_key_test}
+                              export TF_VAR_backend_access_key_lab=${env.TF_VAR_backend_access_key_lab}
+                              export TF_VAR_backend_secret_key_lab=${env.TF_VAR_backend_secret_key_lab}
                               export AWS_VERIFY_SSL=false 
                               terragrunt apply -auto-approve -lock=${lock}
                           """ 
