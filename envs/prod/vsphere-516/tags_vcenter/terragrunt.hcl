@@ -97,7 +97,17 @@ inputs = {
       category_name        = "Aplicacao"
       tag_name             = "k8s_portworx"
       tag_description      = "K8s Portworx"
-      }
+      },
+    "Tags_jfneiva" = {
+      category_name        = "Responsavel"
+      tag_name             = "João Francisco Neiva"
+      tag_description      = "Owner do objeto/servico"
+      },
+    "Tags_wildfly" = {
+      category_name        = "Aplicacao"
+      tag_name             = "Wildfly"
+      tag_description      = "Servidor Wildfly"
+      } 
     }   
 }
 
