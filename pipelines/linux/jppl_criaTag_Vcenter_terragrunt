@@ -14,7 +14,7 @@ pipeline {
     environment {
        TF_VAR_VM_PASS = credentials('ansible_pass_text') // Usando credenciais do ansible 
        VAULT_ADDR = 'https://vault.app.sof.intra' // URL do seu servidor Vault  
-       VAULT_TOKEN = credentials('vault_token_text') // Usando credenciais do Jenkins  
+       #VAULT_TOKEN = credentials('vault_token_text') // Usando credenciais do Jenkins  
        TF_VAR_hostname_vcenter_516 = 'your_vcenter_516_hostname' // Substitua pelo valor real
        TF_VAR_hostname_vcenter_k = 'your_vcenter_k_hostname' // Substitua pelo valor real
     }
