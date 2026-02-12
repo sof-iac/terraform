@@ -108,6 +108,6 @@ inputs = {
       tag_name             = "Wildfly"
       tag_description      = "Servidor Wildfly"
       } 
-    }   
+  }   
 }
 
