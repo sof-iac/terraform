@@ -15,7 +15,7 @@ locals {
 inputs = {
   vm = {
     "LWIL" = {
-        template          = "default-template-alma10-base"
+        template          = "default-template-alma-9.6-base"
         instances         = 1
         vmstartcount      = 1
         staticvmname      = null
