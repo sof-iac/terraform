@@ -1,56 +1,46 @@
 locals {
-  parsed             = regex(".*/envs/(?P<env>.*?)/.*", get_terragrunt_dir())
-  env                = local.parsed.env
-  module-name        = get_terragrunt_dir()
-  vcenter-host       = get_env("VCENTER_HOST")
-  vcenter-user       = get_env("VCENTER_USER")
-  vcenter-pass       = get_env("VCENTER_PASS")
-  backend-access-key = get_env("TF_VAR_backend_access_key_${local.env}")
-  backend-secret-key = get_env("TF_VAR_backend_secret_key_${local.env}")     
+  # Host do vCenter: vem de VSPHERE_SERVER (export no Jenkins). Fallback só se não setado.
+  module_name  = get_terragrunt_dir()
+  vcenter_host = get_env("VSPHERE_SERVER", strcontains(local.module_name, "vsphere-516") ? "hostname-do-vcenter-516.intra" : "hostname-do-vcenter-k.intra")
+  # Backend S3/MinIO: bucket SEM barras (ex: tf-test), path completo na key
+  path_rel     = path_relative_to_include()
+  backend_env  = split("/", local.path_rel)[0]  # ex: "test", "prod"
 }
 
+# Gera o provider.tf
 generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
-
-%{if strcontains(local.module-name, "vsphere")}
 provider "vsphere" {
-  user           = "${local.vcenter-user}"
-  password       = "${local.vcenter-pass}"
-  vsphere_server = "${local.vcenter-host}"
-
-  # if you have a self-signed cert
+  # NÃO defina user/password aqui. O Terraform lerá VSPHERE_USER e VSPHERE_PASSWORD do ambiente.
+  vsphere_server       = "${local.vcenter_host}"
   allow_unverified_ssl = true
 }
-%{endif}
 EOF
 }
 
+# Gera o backend.tf
 generate "backend" {
-  path = "backend.tf"
+  path      = "backend.tf"
   if_exists = "overwrite_terragrunt"
-  contents = <<EOF
-  terraform {
-    backend "s3" {
-      bucket    = "tf-${local.env}"
-      endpoints = {
-        s3 = "https://sof-s3.sof.intra"   # Minio endpoint
-        # dynamodb = "https://dynamodb.sof.intra"
-      }
-      key            = "${path_relative_to_include()}/terraform.tfstate"
-      access_key     = "${local.backend-access-key}"
-      secret_key     = "${local.backend-secret-key}"
-      region         = "us-east-1"
-      skip_credentials_validation = true  # Skip AWS related checks and validations
-      skip_requesting_account_id = true
-      skip_metadata_api_check = true
-      skip_region_validation = true
-      use_path_style = true             # Enable path-style S3 URLs
-
-      #use_lockfile            = true      # Habilita o locking nativo baseado em arquivo
-      # dynamodb_table = "sof-tfstate-${local.env}" # <-- REMOVER ESTA LINHA
-      }
-    }
-  EOF
+  contents  = <<EOF
+terraform {
+  backend "s3" {
+    bucket                      = "tf-${local.backend_env}"
+    endpoints                   = { s3 = "https://sof-s3.sof.intra" }
+    key                         = "${local.path_rel}/terraform.tfstate"
+    
+    # NÃO defina access_key/secret_key aqui. O Terraform lerá AWS_ACCESS_KEY_ID e AWS_SECRET_ACCESS_KEY.
+    
+    region                      = "us-east-1"
+    skip_credentials_validation = true
+    skip_requesting_account_id  = true
+    skip_metadata_api_check     = true
+    skip_region_validation      = true
+    use_path_style              = true
+    use_lockfile                = true
+  }
+}
+EOF
 }

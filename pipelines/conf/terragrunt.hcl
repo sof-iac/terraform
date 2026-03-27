@@ -2,9 +2,12 @@ locals {
   # Host do vCenter: vem de VSPHERE_SERVER (export no Jenkins). Fallback só se não setado.
   module_name  = get_terragrunt_dir()
   vcenter_host = get_env("VSPHERE_SERVER", strcontains(local.module_name, "vsphere-516") ? "hostname-do-vcenter-516.intra" : "hostname-do-vcenter-k.intra")
-  # Backend S3/MinIO: bucket SEM barras (ex: tf-test), path completo na key
-  path_rel     = path_relative_to_include()
-  backend_env  = split("/", local.path_rel)[0]  # ex: "test", "prod"
+  # Backend PostgreSQL (mesmo padrão que envs/terragrunt.hcl — TF_VAR_* injetados no Jenkins)
+  backend-pg-user   = get_env("TF_VAR_backend_pg_user")
+  backend-pg-passwd = get_env("TF_VAR_backend_pg_passwd")
+  backend-pg-host   = "psbd02.sof.intra"
+  backend-pg-port   = 5432
+  backend-pg-dbname = "terraform"
 }
 
 # Gera o provider.tf
@@ -26,20 +29,9 @@ generate "backend" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 terraform {
-  backend "s3" {
-    bucket                      = "tf-${local.backend_env}"
-    endpoints                   = { s3 = "https://sof-s3.sof.intra" }
-    key                         = "${local.path_rel}/terraform.tfstate"
-    
-    # NÃO defina access_key/secret_key aqui. O Terraform lerá AWS_ACCESS_KEY_ID e AWS_SECRET_ACCESS_KEY.
-    
-    region                      = "us-east-1"
-    skip_credentials_validation = true
-    skip_requesting_account_id  = true
-    skip_metadata_api_check     = true
-    skip_region_validation      = true
-    use_path_style              = true
-    use_lockfile                = true
+  backend "pg" {
+    conn_str    = "postgres://${local.backend-pg-user}:${local.backend-pg-passwd}@${local.backend-pg-host}:${local.backend-pg-port}/${local.backend-pg-dbname}?sslmode=disable"
+    schema_name = "terraform_${path_relative_to_include()}"
   }
 }
 EOF
