@@ -1,30 +1,33 @@
 pipeline {
     agent any
+
     parameters {
         choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf', 'siop'], description: 'Organização Gitea')
         choice(name: 'Diretorio', choices: ['envs', 'aws'], description: 'Diretorio raiz')
-        choice(name: 'Ambiente', choices: ['prod', 'test', 'lab', 'base'], description: 'Ambiente')
+        choice(name: 'Ambiente', choices: ['lab', 'base', 'test', 'prod'], description: 'Ambiente')
         choice(name: 'Site', choices: ['vsphere-516', 'vsphere-k'], description: 'Site')
         string(name: 'Grupo', defaultValue: 'nome_do_grupo', description: 'Nome do grupo das VMs')
         choice(name: 'init', choices: ['nao', 'init', 'init -reconfigure', 'init -migrate-state', 'init -upgrade'], description: 'Comando Init')
         choice(name: 'lock', choices: ['true', 'false'], description: 'Lock do state')
         choice(name: 'distro', choices: ['ubuntu', 'alma', 'centos', 'orcl', 'rocklinux'], description: 'Distribuição Linux')
         string(name: 'ForceUnlockLockId', defaultValue: '', description: 'Se preenchido, executa terragrunt force-unlock com este ID. Use quando o state ficar travado.')
-        booleanParam(name: 'ClearCache', defaultValue: false, description: 'Se true, remove .terragrunt-cache antes do init/plan.')
-        string(name: 'PG_BACKEND_CREDENTIAL_ID', defaultValue: 'terraform-pg-backend', description: 'ID da credencial Jenkins (Username with password) para backend PostgreSQL do Terraform.')
-        choice(name: 'PG_SSLMODE', choices: ['disable', 'require', 'prefer'], description: 'sslmode do backend PostgreSQL. Use require se o servidor exigir TLS.')
+        booleanParam(name: 'ClearCache', defaultValue: false, description: 'Se true, remove .terragrunt-cache antes do init/plan. Use quando houver erro estranho ou após mudar backend.')
     }
+
     environment {
         VAULT_ADDR = 'https://vault.app.sof.intra'
         VAULT_TOKEN = credentials('vault_token_text')
         ANSIBLE_PASSWD = credentials('ansible_pass_text')
         TF_IN_AUTOMATION = 'true'
+        // Credencial Jenkins "Username with password" - mesmo PostgreSQL de state (ID fixo no Jenkins).
+        PG_BACKEND_CREDENTIAL_ID = 'terraform-pg-backend'
     }
+
     stages {
         stage('Retornando as chaves publica e certificados') {
             steps {
                 script {
-                    dir("${params.Diretorio}/${params.Ambiente}/${params.Site}") {
+                    dir("${Diretorio}/${Ambiente}/${Site}") {
                         def secrets_vcenter = [
                             [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
                                 [envVar: 'passwd_vcenter', vaultKey: 'password']]]
@@ -39,20 +42,23 @@ pipeline {
                 }
             }
         }
-        stage('Copy terragrunt.hcl') {
+
+        stage('Prepare Environment') {
             steps {
                 script {
                     sh 'cp pipelines/conf/terragrunt.hcl envs/ || true'
                 }
             }
         }
+
         stage('Terragrunt Plan') {
             steps {
                 script {
-                    echo "DEBUG Credentials: PG_BACKEND_CREDENTIAL_ID=${params.PG_BACKEND_CREDENTIAL_ID} | ambiente=${params.Ambiente} | site=${params.Site}"
-                    dir("${params.Diretorio}/${params.Ambiente}/${params.Site}/${params.Grupo}") {
+                    echo "DEBUG Credentials: PG_BACKEND_CREDENTIAL_ID=${env.PG_BACKEND_CREDENTIAL_ID} | ambiente=${params.Ambiente} | site=${params.Site}"
+
+                    dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
                         withCredentials([
-                            usernamePassword(credentialsId: params.PG_BACKEND_CREDENTIAL_ID,
+                            usernamePassword(credentialsId: env.PG_BACKEND_CREDENTIAL_ID,
                                 usernameVariable: 'TF_VAR_backend_pg_user',
                                 passwordVariable: 'TF_VAR_backend_pg_passwd'),
                             string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'VCENTER_HOST_516'),
@@ -67,7 +73,6 @@ pipeline {
                             env.VSPHERE_USER = (params.Site == 'vsphere-516') ? env.VCENTER_USER_516 : env.VCENTER_USER_K
                             env.VSPHERE_PASSWORD = (params.Site == 'vsphere-516') ? env.VCENTER_PASS_516 : env.VCENTER_PASS_K
                             env.TF_VAR_DISTRO = params.distro
-                            env.TF_VAR_backend_pg_sslmode = params.PG_SSLMODE
                             if (params.ClearCache) {
                                 echo 'Limpando .terragrunt-cache...'
                                 sh 'rm -rf .terragrunt-cache'
@@ -93,12 +98,13 @@ pipeline {
                 }
             }
         }
+
         stage('Terragrunt Apply') {
             steps {
                 script {
-                    dir("${params.Diretorio}/${params.Ambiente}/${params.Site}/${params.Grupo}") {
+                    dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
                         withCredentials([
-                            usernamePassword(credentialsId: params.PG_BACKEND_CREDENTIAL_ID,
+                            usernamePassword(credentialsId: env.PG_BACKEND_CREDENTIAL_ID,
                                 usernameVariable: 'TF_VAR_backend_pg_user',
                                 passwordVariable: 'TF_VAR_backend_pg_passwd'),
                             string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'VCENTER_HOST_516'),
@@ -113,7 +119,6 @@ pipeline {
                             env.VSPHERE_USER = (params.Site == 'vsphere-516') ? env.VCENTER_USER_516 : env.VCENTER_USER_K
                             env.VSPHERE_PASSWORD = (params.Site == 'vsphere-516') ? env.VCENTER_PASS_516 : env.VCENTER_PASS_K
                             env.TF_VAR_DISTRO = params.distro
-                            env.TF_VAR_backend_pg_sslmode = params.PG_SSLMODE
                             if (params.ClearCache) {
                                 echo 'Limpando .terragrunt-cache...'
                                 sh 'rm -rf .terragrunt-cache'
