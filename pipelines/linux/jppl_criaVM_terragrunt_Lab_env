@@ -16,7 +16,8 @@ pipeline {
 
     environment {
         TF_IN_AUTOMATION = 'true'
-        AWS_VERIFY_SSL   = 'false'
+        // Credencial Jenkins "Username with password" — mesmo PostgreSQL de state para lab/base/test/prod.
+        PG_BACKEND_CREDENTIAL_ID = 'terraform-pg-backend'
     }
 
     stages {
@@ -31,15 +32,13 @@ pipeline {
         stage('Terragrunt Plan') {
             steps {
                 script {
-                    def minioCredId = "minio-creds-${params.Ambiente}"
-
-                    echo "DEBUG Credentials: minioCredId=${minioCredId} | ambiente=${params.Ambiente} | site=${params.Site}"
+                    echo "DEBUG Credentials: PG_BACKEND_CREDENTIAL_ID=${env.PG_BACKEND_CREDENTIAL_ID} | ambiente=${params.Ambiente} | site=${params.Site}"
 
                     dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
                         withCredentials([
-                            usernamePassword(credentialsId: minioCredId,
-                                           usernameVariable: 'AWS_ACCESS_KEY_ID',
-                                           passwordVariable: 'AWS_SECRET_ACCESS_KEY'),
+                            usernamePassword(credentialsId: env.PG_BACKEND_CREDENTIAL_ID,
+                                           usernameVariable: 'TF_VAR_backend_pg_user',
+                                           passwordVariable: 'TF_VAR_backend_pg_passwd'),
                             string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'VCENTER_HOST_516'),
                             string(credentialsId: 'TF_VAR_username_vcenter_516', variable: 'VCENTER_USER_516'),
                             string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'VCENTER_PASS_516'),
@@ -58,20 +57,20 @@ pipeline {
                             }
                             if (params.ForceUnlockLockId?.trim()) {
                                 echo "Executando force-unlock com Lock ID: ${params.ForceUnlockLockId.trim()}"
-                                sh "env AWS_ACCESS_KEY_ID=\"\$AWS_ACCESS_KEY_ID\" AWS_SECRET_ACCESS_KEY=\"\$AWS_SECRET_ACCESS_KEY\" terragrunt force-unlock -force ${params.ForceUnlockLockId.trim()}"
+                                sh "terragrunt force-unlock -force ${params.ForceUnlockLockId.trim()}"
                             }
                             sh '''
-                                echo "DEBUG AWS_ACCESS_KEY_ID: set=${AWS_ACCESS_KEY_ID:+yes} length=${#AWS_ACCESS_KEY_ID}"
-                                echo "DEBUG AWS_SECRET_ACCESS_KEY: set=${AWS_SECRET_ACCESS_KEY:+yes} length=${#AWS_SECRET_ACCESS_KEY}"
+                                echo "DEBUG TF_VAR_backend_pg_user: set=${TF_VAR_backend_pg_user:+yes} length=${#TF_VAR_backend_pg_user}"
+                                echo "DEBUG TF_VAR_backend_pg_passwd: set=${TF_VAR_backend_pg_passwd:+yes} length=${#TF_VAR_backend_pg_passwd}"
                                 echo "DEBUG VSPHERE_SERVER: set=${VSPHERE_SERVER:+yes} length=${#VSPHERE_SERVER}"
                                 echo "DEBUG VSPHERE_USER: set=${VSPHERE_USER:+yes} length=${#VSPHERE_USER}"
                                 echo "DEBUG VSPHERE_PASSWORD: set=${VSPHERE_PASSWORD:+yes} length=${#VSPHERE_PASSWORD}"
                                 echo "DEBUG TF_VAR_VM_PASS: set=${TF_VAR_VM_PASS:+yes} length=${#TF_VAR_VM_PASS}"
                             '''
                             if (params.init != 'nao') {
-                                sh "env AWS_ACCESS_KEY_ID=\"\$AWS_ACCESS_KEY_ID\" AWS_SECRET_ACCESS_KEY=\"\$AWS_SECRET_ACCESS_KEY\" terragrunt ${params.init}"
+                                sh "terragrunt ${params.init}"
                             }
-                            sh "env AWS_ACCESS_KEY_ID=\"\$AWS_ACCESS_KEY_ID\" AWS_SECRET_ACCESS_KEY=\"\$AWS_SECRET_ACCESS_KEY\" terragrunt plan -lock=${params.lock}"
+                            sh "terragrunt plan -lock=${params.lock}"
                         }
                     }
                 }
@@ -81,11 +80,9 @@ pipeline {
         stage('Terragrunt Apply') {
             steps {
                 script {
-                    def minioCredId = "minio-creds-${params.Ambiente}"
-
                     dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
                         withCredentials([
-                            usernamePassword(credentialsId: minioCredId, usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY'),
+                            usernamePassword(credentialsId: env.PG_BACKEND_CREDENTIAL_ID, usernameVariable: 'TF_VAR_backend_pg_user', passwordVariable: 'TF_VAR_backend_pg_passwd'),
                             string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'VCENTER_HOST_516'),
                             string(credentialsId: 'TF_VAR_username_vcenter_516', variable: 'VCENTER_USER_516'),
                             string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'VCENTER_PASS_516'),
@@ -102,7 +99,7 @@ pipeline {
                                 echo "Limpando .terragrunt-cache..."
                                 sh 'rm -rf .terragrunt-cache'
                             }
-                            sh "env AWS_ACCESS_KEY_ID=\"\$AWS_ACCESS_KEY_ID\" AWS_SECRET_ACCESS_KEY=\"\$AWS_SECRET_ACCESS_KEY\" terragrunt apply -auto-approve -lock=${params.lock}"
+                            sh "terragrunt apply -auto-approve -lock=${params.lock}"
                         }
                     }
                 }
