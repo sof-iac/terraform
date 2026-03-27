@@ -15,8 +15,8 @@ pipeline {
     }
 
     environment {
+        // withVault autentica com vaultCredentialId: vault_approle_jenkins (sem credentials('vault_token_text') no environment).
         VAULT_ADDR = 'https://vault.app.sof.intra'
-        VAULT_TOKEN = credentials('vault_token_text')
         ANSIBLE_PASSWD = credentials('ansible_pass_text')
         TF_IN_AUTOMATION = 'true'
         // Credencial Jenkins "Username with password" - mesmo PostgreSQL de state (ID fixo no Jenkins).
