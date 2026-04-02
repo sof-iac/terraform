@@ -15,33 +15,34 @@ locals {
 inputs = {
   vm = {
     "TCER" = {
-      template        = "default-template-ubuntu2404-base"
-      instances       = 1
-      vmstartcount      = 1
-      datacenter      = "SOF"
-      datastore_cluster = "Purestorage_Default"
-      datastore       = "Purestorage_Default"
-      resource_pool   = "Blade_Kratos/Resources"
-      vsphere_cluster = "Blade_Kratos"
-      domain          = "sof.intra"
-      network         = {"PG_Gaia_Teste" = ["192.168.30.10"]}
-      dns_server_list = ["172.27.3.5", "172.27.3.6"]
-      mask            = ["24"]
-      gateway         = "172.27.5.1"
-      cpu             = 1
-      memory          = 2048
-      local_adminpass = "${local.TF_VAR_VM_PASS}"
-      distro          = "${local.TF_VAR_DISTRO}"
-      network_type    = ["vmxnet3"]
-      annotation      = "Teste de CA Raiz"
-      tags = {
+        template          = "default-template-ubuntu2404-base"
+        instances         = 1
+        vmstartcount      = 4
+        staticvmname      = null
+        datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
+        datastore_cluster = "Purestorage_Default"
+        datastore         = "Purestorage_Default"
+        resource_pool     = "Blade_Kratos/Resources"
+        vsphere_cluster   = "Blade_Kratos"
+        domain            = "sof.intra"
+        network           = {"PG_Gaia_Teste" = ["192.168.30.11"]}
+        dns_server_list   = ["172.27.3.5", "172.27.3.6"]
+        mask              = ["24"]
+        gateway           = "192.168.30.1"
+        cpu               = 1
+        memory            = 2018
+        local_adminpass   = "${local.TF_VAR_VM_PASS}"
+        distro            = "${local.TF_VAR_DISTRO}"
+        network_type      = ["vmxnet3"]
+        annotation        = "Nova PKI"
+        tags = {
           "Origem"    = "Terraform"
-          "Ambiente"  = "Teste"
+          "Ambiente"  = "Test"
           "Aplicacao" = "Nova PKI"
           "Responsavel" = "Wertiz Dantas da Silva Junior"
-        }        
-        # Adicionando discos adicionais  
-        data_disk = { }  
-    } 
+        }      
+        # Adicionando discos extras  
+        data_disk = {}
+    }
   }     
 }
