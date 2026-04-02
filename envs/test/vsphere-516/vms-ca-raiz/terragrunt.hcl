@@ -14,7 +14,7 @@ locals {
 
 inputs = {
   vm = {
-    "TCER04" = {
+    "TCER" = {
       template        = "default-template-ubuntu2404-base"
       instances       = 1
       vmstartcount      = 1
