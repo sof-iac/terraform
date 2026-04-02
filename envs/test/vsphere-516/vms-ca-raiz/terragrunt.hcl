@@ -38,8 +38,6 @@ inputs = {
         tags = {
           "Origem"    = "Terraform"
           "Ambiente"  = "Test"
-          "Aplicacao" = "Nova PKI"
-          "Responsavel" = "Wertiz Dantas da Silva Junior"
         }      
         # Adicionando discos extras  
         data_disk = {}
