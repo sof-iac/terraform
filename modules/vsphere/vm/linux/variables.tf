@@ -59,6 +59,10 @@ variable "vm" {
     domain       = string           # DNS domain for the VM hostname
     hw_clock_utc = optional(bool, true)
 
+    # IANA timezone string for the guest OS (e.g. "America/Sao_Paulo", "Europe/Lisbon", "UTC").
+    # Leave null to let the template's default timezone apply.
+    time_zone    = optional(string)
+
     # ── Additional data disks ───────────────────────────────────────
     # Map of disk-label → disk attributes. Omit or set to {} for no extra disks.
     # Supported per-disk keys:
@@ -72,6 +76,11 @@ variable "vm" {
     #   io_share_level           (string, default "normal")
     #   io_share_count           (number, required when io_share_level = "custom")
     #   disk_mode                (string, default null)
+    # IO reservation in IOPS for each template disk, one value per disk.
+    # Example for a template with 2 disks: [0, 1000]
+    # Leave null to apply no reservation (default).
+    template_disk_io_reservation = optional(list(number))
+
     data_disk = optional(map(map(string)), {})
 
     # ── Miscellaneous ───────────────────────────────────────────────

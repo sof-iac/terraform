@@ -174,6 +174,11 @@ resource "vsphere_virtual_machine" "vm" {
       thin_provisioned = template_disks.value.thin_provisioned
       eagerly_scrub    = template_disks.value.eagerly_scrub
       io_share_level   = "normal"
+      io_reservation   = (
+        each.value.v.template_disk_io_reservation != null
+        ? each.value.v.template_disk_io_reservation[template_disks.key]
+        : null
+      )
     }
   }
 
@@ -217,8 +222,8 @@ resource "vsphere_virtual_machine" "vm" {
       linux_options {
         host_name    = each.key
         domain       = each.value.v.domain
-        time_zone    = lookup(each.value.v, "hw_clock_utc", true) ? "UTC" : "local"
         hw_clock_utc = lookup(each.value.v, "hw_clock_utc", true)
+        time_zone    = lookup(each.value.v, "time_zone", null)
       }
 
       dynamic "network_interface" {
