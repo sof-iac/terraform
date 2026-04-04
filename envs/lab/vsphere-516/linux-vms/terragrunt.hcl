@@ -25,7 +25,7 @@ inputs = {
         vsphere_cluster   = "Blade_Kratos"
         domain            = "sof.intra"
         network           = {"PG_Gaia_Teste" = ["192.168.30.93"]}
-        dns_server_list   = ["172.27.3.5", "172.27.3.6"]
+        dns_server_list   = []
         mask              = ["24"]
         gateway           = "192.168.30.1"
         cpu               = 2
@@ -54,7 +54,7 @@ inputs = {
         vsphere_cluster   = "Blade_Kratos"
         domain            = "sof.intra"
         network           = {"PG_Gaia_Teste" = ["192.168.30.253"]}
-        dns_server_list   = ["172.27.3.5", "172.27.3.6"]
+        dns_server_list   = []
         mask              = ["24"]
         gateway           = "192.168.30.1"
         cpu               = 2
