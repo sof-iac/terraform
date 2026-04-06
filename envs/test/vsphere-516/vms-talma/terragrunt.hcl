@@ -15,59 +15,29 @@ locals {
 inputs = {
   vm = {
     "ROBALMA" = {
-      template        = "default-template-alma-9.6-base"
-      staticvmname    = "ROBALMA"
-      instances       = 1
-      vmstartcount    = 0
-      datacenter      = "SOF"
+      template          = "default-template-alma-9.6-base"
+      staticvmname      = "ROBALMA"
+      instances         = 1
+      vmstartcount      = 0
+      datacenter        = "SOF"
       datastore_cluster = "Purestorage_Default"
-      datastore       = "Purestorage_Default"
-      resource_pool   = "Blade_Kratos/Resources"
-      vsphere_cluster = "Blade_Kratos"
-      domain          = "sof.intra"
-      network         = {"PG_Gaia_COINF_OPERACOES" = ["172.27.5.7"]}
-      dns_server_list = ["172.27.3.5", "172.27.3.6"]
-      mask            = ["24"]
-      gateway         = "172.27.5.1"
-      cpu             = 8
-      memory          = 16384
-      local_adminpass = "${local.TF_VAR_VM_PASS}"
-      distro          = "${local.TF_VAR_DISTRO}"
-      network_type    = ["vmxnet3"]
-      annotation      = "TESTE ALMA ANSIBLE"
+      resource_pool     = "Blade_Kratos/Resources"
+      vsphere_cluster   = "Blade_Kratos"
+      domain            = "sof.intra"
+      network           = {"PG_Gaia_COINF_OPERACOES" = ["172.27.5.7"]}
+      dns_server_list   = ["172.27.3.5", "172.27.3.6"]
+      mask              = ["24"]
+      gateway           = "172.27.5.1"
+      cpu               = 8
+      memory            = 16384
+      local_adminpass   = "${local.TF_VAR_VM_PASS}"
+      distro            = "${local.TF_VAR_DISTRO}"
+      network_type      = ["vmxnet3"]
+      annotation        = "TESTE ALMA ANSIBLE"
         tags = { }        
-        # Adicionando discos adicionais  
-        data_disk = { }  
-    },
-    "TALMA" = {
-      template        = "default-template-alma-9.6-base"
-      staticvmname    = null
-      instances       = 1
-      vmstartcount    = 1
-      datacenter      = "SOF"
-      datastore_cluster = "Purestorage_Default"
-      datastore       = "Purestorage_Default"
-      resource_pool   = "Blade_Kratos/Resources"
-      vsphere_cluster = "Blade_Kratos"
-      domain          = "sof.intra"
-      network         = {"PG_Gaia_Kubestag" = ["192.168.21.237"]}
-      dns_server_list = ["172.27.3.5", "172.27.3.6"]
-      mask            = ["24"]
-      gateway         = "192.168.21.1"
-      cpu             = 2
-      memory          = 8192
-      local_adminpass = "${local.TF_VAR_VM_PASS}"
-      distro          = "${local.TF_VAR_DISTRO}"
-      network_type    = ["vmxnet3"]
-      annotation      = "TESTE ALMA ANSIBLE - 25/09/2025 - Rogerio Vieira Silva"
-        tags = {
-          "Origem"    = "Terraform"
-          "Ambiente"  = "Test"
-          "Aplicacao" = "Jenkins"
-          "Responsavel" = "Rogerio Vieira Silva"
-        }        
-        # Adicionando discos adicionais  
-        data_disk = { }  
+      # Adicionando discos adicionais  
+      template_disk_io_reservation = [1,1,1] 
+      data_disk                    = { }  
     }
   }       
 }
