@@ -41,6 +41,7 @@ inputs = {
           "Responsavel" = "Rogerio Vieira Silva"
         }     
         # Adicionando discos adicionais  
+        template_disk_io_reservation = [1,1,1]
         data_disk = { }  
     }           
   } 
