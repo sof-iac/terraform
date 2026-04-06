@@ -20,12 +20,11 @@ inputs = {
       vmstartcount      = 1
       datacenter        = "SOF"
       datastore_cluster = "Purestorage_Default"
-      datastore         = "Purestorage_Default"
       resource_pool     = "Blade_Kratos/Resources"
       vsphere_cluster   = "Blade_Kratos"
       domain            = "sof.intra"
       network           = {"PG_Gaia_Teste" = ["192.168.30.85"]}
-      dns_server_list   = ["172.27.3.5", "172.27.3.6"]
+      dns_server_list   = []
       mask              = ["24"]
       gateway           = "192.168.30.1"
       cpu               = 4
@@ -40,6 +39,8 @@ inputs = {
         "Aplicacao" = "Gitlab"
       }
       # Adicionando discos adicionais
+      template_disk_sizes = [21, 51, 20] 
+      template_disk_io_reservation = [0, 0, 1]
       data_disk = {
         "disk_A1" = {
           size_gb                = 20
@@ -48,7 +49,7 @@ inputs = {
           eagerly_scrub          = false
           #datastore_id           = "Storage_Purestorage"
           storage_policy_id      = null
-          io_reservation         = null
+          io_reservation         = 1
           io_share_level         = "normal"
           disk_mode              = null
           disk_sharing           = null

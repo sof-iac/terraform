@@ -3,24 +3,24 @@ variable "vm" {
   type = map(object({
 
     # ── vSphere placement ───────────────────────────────────────────
-    datacenter        = string           # vSphere datacenter name
-    resource_pool     = string           # Resource pool full path (e.g. "cluster/Resources/pool")
-    datastore_cluster = optional(string, "") # Datastore cluster name; leave empty to skip
+    datacenter        = string              # vSphere datacenter name
+    resource_pool     = string              # Resource pool full path (e.g. "Cluster/Resources/pool")
+    datastore_cluster = optional(string, "") # Datastore cluster name; leave empty when using datastore instead
+    datastore         = optional(string, "") # Specific datastore name; leave empty when using datastore_cluster instead
     vmfolder          = optional(string)    # VM folder path relative to datacenter
-    datastore         = optional(string, "") # Specific datastore name; used when not using a datastore cluster
-    vsphere_cluster   = optional(string)    # vSphere cluster name (informational; used for resource pool resolution in some setups)
+    vsphere_cluster   = optional(string)    # vSphere cluster name (informational)
 
     # ── Template ────────────────────────────────────────────────────
     template = string # Name of the VM template to clone from
 
     # ── Naming ──────────────────────────────────────────────────────
-    instances    = number           # Number of VMs to create from this entry
+    instances    = number              # Number of VMs to create from this entry
     vmstartcount = optional(number, 1) # Index of the first VM (e.g. 1 → PSBD01)
     staticvmname = optional(string)    # Override generated name with a fixed name (single VM only)
 
-    # ── Credentials & provisioning ─────────────────────────────────
-    local_adminpass = optional(string)  # Guest OS admin password (passed to customization and provisioners)
-    distro          = optional(string)  # Linux distro identifier (e.g. "alma", "rhel") used by provisioning scripts
+    # ── Credentials & provisioning ──────────────────────────────────
+    local_adminpass = optional(string) # Guest OS admin password
+    distro          = optional(string) # Linux distro identifier used by provisioning scripts
 
     # ── Compute ─────────────────────────────────────────────────────
     cpu    = number # Number of vCPUs
@@ -51,36 +51,45 @@ variable "vm" {
     # Supply a single value to apply to all interfaces, or one per interface.
     mask = list(string)
 
-    gateway         = string        # Default IPv4 gateway
+    gateway         = string                    # Default IPv4 gateway
     dns_server_list = optional(list(string), [])
     dns_suffix_list = optional(list(string), [])
 
     # ── Guest customization ─────────────────────────────────────────
-    domain       = string           # DNS domain for the VM hostname
+    domain       = string              # DNS domain for the VM hostname
     hw_clock_utc = optional(bool, true)
 
     # IANA timezone string for the guest OS (e.g. "America/Sao_Paulo", "Europe/Lisbon", "UTC").
     # Leave null to let the template's default timezone apply.
-    time_zone    = optional(string)
+    time_zone = optional(string)
 
-    # ── Additional data disks ───────────────────────────────────────
-    # Map of disk-label → disk attributes. Omit or set to {} for no extra disks.
-    # Supported per-disk keys:
-    #   size_gb                  (number, required)
-    #   thin_provisioned         (bool,   default true)
-    #   eagerly_scrub            (bool,   default false)
-    #   unit_number              (number, default auto)
-    #   data_disk_scsi_controller (number, default 0)
-    #   datastore_id             (string, default null)
-    #   storage_policy_id        (string, default null)
-    #   io_share_level           (string, default "normal")
-    #   io_share_count           (number, required when io_share_level = "custom")
-    #   disk_mode                (string, default null)
-    # IO reservation in IOPS for each template disk, one value per disk.
+    # ── Template disk overrides ─────────────────────────────────────
+    # Size override in GB per template disk, one value per disk index.
+    # Use when a template disk was manually expanded in vSphere after VM creation,
+    # causing drift between the template size and the actual disk size.
+    # Also use to expand a disk going forward — just increase the value and apply.
+    # Example — template has 2 disks, first expanded to 20 GB: [20, 40]
+    # Leave null to use the size reported by the template (default).
+    template_disk_sizes = optional(list(number))
+
+    # IO reservation in IOPS per template disk, one value per disk index.
     # Example for a template with 2 disks: [0, 1000]
     # Leave null to apply no reservation (default).
     template_disk_io_reservation = optional(list(number))
 
+    # ── Additional data disks ───────────────────────────────────────
+    # Map of disk-label → disk attributes. Omit or set to {} for no extra disks.
+    # Supported per-disk keys:
+    #   size_gb                   (number, required)
+    #   thin_provisioned          (bool,   default true)
+    #   eagerly_scrub             (bool,   default false)
+    #   unit_number               (number, default auto)
+    #   data_disk_scsi_controller (number, default 0)
+    #   datastore_id              (string, default null)
+    #   storage_policy_id         (string, default null)
+    #   io_share_level            (string, default "normal")
+    #   io_share_count            (number, required when io_share_level = "custom")
+    #   disk_mode                 (string, default null)
     data_disk = optional(map(map(string)), {})
 
     # ── Miscellaneous ───────────────────────────────────────────────

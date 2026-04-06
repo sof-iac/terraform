@@ -20,11 +20,22 @@ inputs = {
   vm = {
     "TELK" = {
         template          = "templateubuntu2204_ansible"
+        template_override = {
+                              firmware             = "bios"
+                              efi_secure_boot      = false
+                              enable_disk_uuid     = false
+                              guest_id             = "ubuntu64Guest"
+                              scsi_type            = "lsilogic"
+                              network_adapter_type = "vmxnet3"
+                              disk_count           = 3
+                              disk_sizes           = [16, 4, 4]
+                              template_uuid        = "placeholder"  # non-empty, ignored for existing VMs
+                              disk_labels          = ["Hard disk 1", "Hard disk 2", "Hard disk 3", "disk_A1", "disk_A2"]  
+                            }
         instances         = 6
         vmstartcount      = 1
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
-        datastore_cluster = "Storage_Purestorage"
-        datastore         = "Storage_Purestorage"
+        datastore_cluster = "Purestorage_Default"
         resource_pool     = "Blade_Kratos/Resources"
         vmfolder          = "Aplicações"
         vsphere_cluster   = "Blade_Kratos"
@@ -41,9 +52,9 @@ inputs = {
         annotation        = "Servidor de ELK da rede de Testes - 07/10/2024 - Rogerio Vieira Silva"
         tags = {
           "Origem"    = "Terraform"
-          "Ambiente"  = "Teste"
+          "Ambiente"  = "Test"
           "Aplicacao" = "ELK"
-          "Responsavel" = "Rogerio_Vieira_Silva"
+          "Responsavel" = "Rogerio Vieira Silva"
         }        
         # Adicionando discos adicionais  
         data_disk = {  

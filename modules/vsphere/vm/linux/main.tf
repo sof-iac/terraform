@@ -4,7 +4,7 @@
 # -------------------------------------------------------------------
 
 locals {
-  # Number of disks per template, keyed by VM name (each.key in var.vm)
+  # Number of disks per template, keyed by VM key.
   template_disk_count = {
     for k, v in data.vsphere_virtual_machine.template : k => length(v.disks)
   }
@@ -36,7 +36,7 @@ data "vsphere_resource_pool" "pool" {
 }
 
 data "vsphere_network" "network" {
-  for_each      = { for pair in flatten([
+  for_each = { for pair in flatten([
     for vm_key, v in var.vm : [
       for net_key in keys(v.network) : {
         id     = "${vm_key}__${net_key}"
@@ -127,9 +127,9 @@ resource "vsphere_virtual_machine" "vm" {
     : null
   )
 
-  num_cpus             = each.value.v.cpu
-  memory               = each.value.v.memory
-  cpu_hot_add_enabled  = lookup(each.value.v, "cpu_hot_add_enabled", false)
+  num_cpus               = each.value.v.cpu
+  memory                 = each.value.v.memory
+  cpu_hot_add_enabled    = lookup(each.value.v, "cpu_hot_add_enabled", false)
   memory_hot_add_enabled = lookup(each.value.v, "memory_hot_add_enabled", false)
 
   scsi_controller_count = max(
@@ -169,7 +169,11 @@ resource "vsphere_virtual_machine" "vm" {
     iterator = template_disks
     content {
       label            = "disk${template_disks.key}"
-      size             = template_disks.value.size
+      size             = (
+        each.value.v.template_disk_sizes != null
+        ? each.value.v.template_disk_sizes[template_disks.key]
+        : template_disks.value.size
+      )
       unit_number      = template_disks.key
       thin_provisioned = template_disks.value.thin_provisioned
       eagerly_scrub    = template_disks.value.eagerly_scrub
