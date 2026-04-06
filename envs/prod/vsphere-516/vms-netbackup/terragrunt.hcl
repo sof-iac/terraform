@@ -16,17 +16,15 @@ inputs = {
     # Definição VM para acesso aos NFS utilizados pelo NetBackup
     "PNBP" = {
       template          = "default-template-alma-9.6-base"
-      staticvmname      = "PNBP01"
       instances         = 1
       vmstartcount      = 1
       datacenter        = "SOF"
       datastore_cluster = "Purestorage_Default"
-      datastore         = "Purestorage_Default"
       resource_pool     = "Blade_Kratos/Resources"
       vsphere_cluster   = "Blade_Kratos"
       domain            = "sof.intra"
       network           = {"PG_Gaia_Apl_Internas" = ["192.168.50.222"]}
-      dns_server_list   = ["172.27.3.5", "172.27.3.6"]
+      dns_server_list   = []
       mask              = ["24"]
       gateway           = "192.168.50.1"
       cpu               = 2

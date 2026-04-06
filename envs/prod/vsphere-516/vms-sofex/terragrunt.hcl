@@ -20,13 +20,13 @@ inputs = {
       instances         = 1
       vmstartcount      = 1
       datacenter        = "SOF"
+      vmfolder          = "Banco de Dados"
       datastore_cluster = "Purestorage_Default"
-      datastore         = "Purestorage_Default"
       resource_pool     = "Blade_Kratos/Resources"
       vsphere_cluster   = "Blade_Kratos"
       domain            = "sof.intra"
       network           = {"PG_Gaia_Apl_Internas" = ["192.168.50.177"]}
-      dns_server_list   = ["172.27.3.5", "172.27.3.6"]
+      dns_server_list   = []
       mask              = ["24"]
       gateway           = "192.168.50.1"
       cpu               = 16
@@ -41,6 +41,7 @@ inputs = {
         "Aplicacao"   = "Sofex"
         "Responsavel" = "Joao_Francisco"
       }
+      template_disk_io_reservation = [1,1,1]
       # Adicionando discos adicionais
       data_disk = { 
           "disk_A1" = {  
@@ -50,7 +51,7 @@ inputs = {
             eagerly_scrub          = false  
             #datastore_id           = "Storage_Purestorage"  
             storage_policy_id      = null  
-            io_reservation         = null  
+            io_reservation         = 1  
             io_share_level         = "normal"  
             disk_mode              = null  
             disk_sharing           = null  
