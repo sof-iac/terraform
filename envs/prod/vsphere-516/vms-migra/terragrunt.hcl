@@ -21,7 +21,6 @@ inputs = {
         staticvmname      = null
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Purestorage_Default"
-        datastore         = "Purestorage_Default"
         resource_pool     = "Blade_Kratos/Resources"
         vsphere_cluster   = "Blade_Kratos"
         domain            = "sof.intra"
@@ -42,6 +41,7 @@ inputs = {
           "Responsavel" = "Rogerio Vieira Silva"
         }     
         # Adicionando discos adicionais  
+        template_disk_io_reservation = [1,1,1]
         data_disk = { }  
     }           
   } 
