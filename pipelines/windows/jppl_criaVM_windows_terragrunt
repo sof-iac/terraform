@@ -110,6 +110,7 @@ pipeline {
             steps {
                 script {
                     dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
+                        sh '[ -f terragrunt.hcl ] || { echo "ERRO: falta terragrunt.hcl (mesmo diretório do plan)."; ls -la; exit 1; }'
                         withCredentials([
                             usernamePassword(credentialsId: env.PG_BACKEND_CREDENTIAL_ID,
                                 usernameVariable: 'TF_VAR_backend_pg_user',
