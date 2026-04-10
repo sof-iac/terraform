@@ -1,5 +1,5 @@
 terraform {
-  source = "../../../../modules/vsphere/vm/windows"  # Caminho relativo ao terragrunt.hcl
+  source = "../../../../../modules/vsphere/vm/windows"  # Caminho relativo ao terragrunt.hcl
 }
 
 include {
