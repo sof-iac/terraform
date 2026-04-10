@@ -7,8 +7,6 @@ pipeline {
         choice(name: 'Ambiente', choices: ['prod', 'base', 'test', 'lab'], description: 'Ambiente')
         choice(name: 'Site', choices: ['vsphere-516', 'vsphere-k'], description: 'Site')
         string(name: 'Grupo', defaultValue: 'nome_do_grupo', description: 'Nome do grupo das VMs')
-        choice(name: 'init', choices: ['nao', 'init', 'init -reconfigure', 'init -migrate-state', 'init -upgrade'], description: 'Comando Init')
-        choice(name: 'lock', choices: ['true', 'false'], description: 'Lock do state')
         choice(name: 'distro', choices: ['windows server'], description: 'Distribuição Windows')
         booleanParam(name: 'PularAprovacao', defaultValue: false, description: 'Se true, não pede confirmação entre plan e apply (use só com cautela ou job automatizado).')
     }
@@ -78,10 +76,7 @@ pipeline {
                                 echo "DEBUG VSPHERE_PASSWORD: set=${VSPHERE_PASSWORD:+yes} length=${#VSPHERE_PASSWORD}"
                                 echo "DEBUG TF_VAR_VM_PASS: set=${TF_VAR_VM_PASS:+yes} length=${#TF_VAR_VM_PASS}"
                             '''
-                            if (params.init != 'nao') {
-                                sh "terragrunt ${params.init}"
-                            }
-                            sh "terragrunt plan -lock=${params.lock}"
+                            sh 'terragrunt plan -lock=true'
                         }
                     }
                 }
@@ -127,7 +122,7 @@ pipeline {
                             env.VSPHERE_USER = (params.Site == 'vsphere-516') ? env.VCENTER_USER_516 : env.VCENTER_USER_K
                             env.VSPHERE_PASSWORD = (params.Site == 'vsphere-516') ? env.VCENTER_PASS_516 : env.VCENTER_PASS_K
                             env.TF_VAR_DISTRO = params.distro
-                            sh "terragrunt apply -auto-approve -lock=${params.lock}"
+                            sh 'terragrunt apply -auto-approve -lock=true'
                         }
                     }
                 }
