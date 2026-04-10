@@ -4,7 +4,7 @@ pipeline {
     parameters {
         choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf', 'siop'], description: 'Organização Gitea')
         choice(name: 'Diretorio', choices: ['envs', 'aws'], description: 'Diretorio raiz')
-        choice(name: 'Ambiente', choices: ['lab', 'base', 'test', 'prod'], description: 'Ambiente')
+        choice(name: 'Ambiente', choices: ['prod','base', 'test', 'lab'], description: 'Ambiente')
         choice(name: 'Site', choices: ['vsphere-516', 'vsphere-k'], description: 'Site')
         string(name: 'Grupo', defaultValue: 'nome_do_grupo', description: 'Nome do grupo das VMs')
         choice(name: 'init', choices: ['nao', 'init', 'init -reconfigure', 'init -migrate-state', 'init -upgrade'], description: 'Comando Init')
