@@ -1,0 +1,138 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(name: 'Projeto', choices: ['infra', 'devops', 'labcoinf', 'siop'], description: 'Organização Gitea')
+        choice(name: 'Diretorio', choices: ['envs', 'aws'], description: 'Diretorio raiz')
+        choice(name: 'Ambiente', choices: ['lab', 'base', 'test', 'prod'], description: 'Ambiente')
+        choice(name: 'Site', choices: ['vsphere-516', 'vsphere-k'], description: 'Site')
+        string(name: 'Grupo', defaultValue: 'nome_do_grupo', description: 'Nome do grupo das VMs')
+        choice(name: 'init', choices: ['nao', 'init', 'init -reconfigure', 'init -migrate-state', 'init -upgrade'], description: 'Comando Init')
+        choice(name: 'lock', choices: ['true', 'false'], description: 'Lock do state')
+        choice(name: 'distro', choices: ['ubuntu', 'alma', 'centos', 'orcl', 'rocklinux'], description: 'Distribuição Linux')
+        booleanParam(name: 'PularAprovacao', defaultValue: false, description: 'Se true, não pede confirmação entre plan e apply (use só com cautela ou job automatizado).')
+    }
+
+    environment {
+        // withVault autentica com vaultCredentialId: vault_approle_jenkins (sem credentials('vault_token_text') no environment).
+        VAULT_ADDR = 'https://vault.app.sof.intra'
+        ANSIBLE_PASSWD = credentials('ansible_pass_text')
+        TF_IN_AUTOMATION = 'true'
+        // Credencial Jenkins "Username with password" - mesmo PostgreSQL de state (ID fixo no Jenkins).
+        PG_BACKEND_CREDENTIAL_ID = 'terraform-pg-backend'
+    }
+
+    stages {
+        stage('Retornando as chaves publica e certificados') {
+            steps {
+                script {
+                    dir("${Diretorio}/${Ambiente}/${Site}") {
+                        def secrets_vcenter = [
+                            [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
+                                [envVar: 'passwd_vcenter', vaultKey: 'password']]]
+                        ]
+                        def configuration = [vaultUrl: 'https://vault.app.sof.intra',
+                            vaultCredentialId: 'vault_approle_jenkins',
+                            engineVersion: 2]
+                        withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
+                            sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Prepare Environment') {
+            steps {
+                script {
+                    sh 'cp pipelines/conf/terragrunt.hcl envs/ || true'
+                }
+            }
+        }
+
+        stage('Terragrunt Plan') {
+            steps {
+                script {
+                    echo "DEBUG Credentials: PG_BACKEND_CREDENTIAL_ID=${env.PG_BACKEND_CREDENTIAL_ID} | ambiente=${params.Ambiente} | site=${params.Site}"
+
+                    dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
+                        withCredentials([
+                            usernamePassword(credentialsId: env.PG_BACKEND_CREDENTIAL_ID,
+                                usernameVariable: 'TF_VAR_backend_pg_user',
+                                passwordVariable: 'TF_VAR_backend_pg_passwd'),
+                            string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'VCENTER_HOST_516'),
+                            string(credentialsId: 'TF_VAR_username_vcenter_516', variable: 'VCENTER_USER_516'),
+                            string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'VCENTER_PASS_516'),
+                            string(credentialsId: 'TF_VAR_hostname_vcenter_k', variable: 'VCENTER_HOST_K'),
+                            string(credentialsId: 'TF_VAR_username_vcenter_k', variable: 'VCENTER_USER_K'),
+                            string(credentialsId: 'TF_VAR_password_vcenter_k', variable: 'VCENTER_PASS_K'),
+                            string(credentialsId: 'ansible_pass_text', variable: 'TF_VAR_VM_PASS')
+                        ]) {
+                            env.VSPHERE_SERVER = (params.Site == 'vsphere-516') ? env.VCENTER_HOST_516 : env.VCENTER_HOST_K
+                            env.VSPHERE_USER = (params.Site == 'vsphere-516') ? env.VCENTER_USER_516 : env.VCENTER_USER_K
+                            env.VSPHERE_PASSWORD = (params.Site == 'vsphere-516') ? env.VCENTER_PASS_516 : env.VCENTER_PASS_K
+                            env.TF_VAR_DISTRO = params.distro
+                            sh '''
+                                echo "DEBUG TF_VAR_backend_pg_user: set=${TF_VAR_backend_pg_user:+yes} length=${#TF_VAR_backend_pg_user}"
+                                echo "DEBUG TF_VAR_backend_pg_passwd: set=${TF_VAR_backend_pg_passwd:+yes} length=${#TF_VAR_backend_pg_passwd}"
+                                echo "DEBUG VSPHERE_SERVER: set=${VSPHERE_SERVER:+yes} length=${#VSPHERE_SERVER}"
+                                echo "DEBUG VSPHERE_USER: set=${VSPHERE_USER:+yes} length=${#VSPHERE_USER}"
+                                echo "DEBUG VSPHERE_PASSWORD: set=${VSPHERE_PASSWORD:+yes} length=${#VSPHERE_PASSWORD}"
+                                echo "DEBUG TF_VAR_VM_PASS: set=${TF_VAR_VM_PASS:+yes} length=${#TF_VAR_VM_PASS}"
+                            '''
+                            if (params.init != 'nao') {
+                                sh "terragrunt ${params.init}"
+                            }
+                            sh "terragrunt plan -lock=${params.lock}"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Aprovação do apply') {
+            when {
+                expression { return !params.PularAprovacao }
+            }
+            steps {
+                script {
+                    timeout(time: 120, unit: 'MINUTES') {
+                        input(
+                            message: "Revise o output do Terragrunt Plan acima.\n\nAmbiente: ${params.Ambiente} | Site: ${params.Site} | Grupo: ${params.Grupo}\n\nConfirma a execução do terragrunt apply em PRODUÇÃO?",
+                            ok: 'Aprovar e executar apply',
+                            submitterParameter: 'APROVADO_POR'
+                        )
+                    }
+                    echo "Apply autorizado (submitter: ${params.APROVADO_POR ?: '—'}). Prosseguindo."
+                }
+            }
+        }
+
+        stage('Terragrunt Apply') {
+            steps {
+                script {
+                    dir("${Diretorio}/${Ambiente}/${Site}/${Grupo}") {
+                        withCredentials([
+                            usernamePassword(credentialsId: env.PG_BACKEND_CREDENTIAL_ID,
+                                usernameVariable: 'TF_VAR_backend_pg_user',
+                                passwordVariable: 'TF_VAR_backend_pg_passwd'),
+                            string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'VCENTER_HOST_516'),
+                            string(credentialsId: 'TF_VAR_username_vcenter_516', variable: 'VCENTER_USER_516'),
+                            string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'VCENTER_PASS_516'),
+                            string(credentialsId: 'TF_VAR_hostname_vcenter_k', variable: 'VCENTER_HOST_K'),
+                            string(credentialsId: 'TF_VAR_username_vcenter_k', variable: 'VCENTER_USER_K'),
+                            string(credentialsId: 'TF_VAR_password_vcenter_k', variable: 'VCENTER_PASS_K'),
+                            string(credentialsId: 'ansible_pass_text', variable: 'TF_VAR_VM_PASS')
+                        ]) {
+                            env.VSPHERE_SERVER = (params.Site == 'vsphere-516') ? env.VCENTER_HOST_516 : env.VCENTER_HOST_K
+                            env.VSPHERE_USER = (params.Site == 'vsphere-516') ? env.VCENTER_USER_516 : env.VCENTER_USER_K
+                            env.VSPHERE_PASSWORD = (params.Site == 'vsphere-516') ? env.VCENTER_PASS_516 : env.VCENTER_PASS_K
+                            env.TF_VAR_DISTRO = params.distro
+                            sh "terragrunt apply -auto-approve -lock=${params.lock}"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
