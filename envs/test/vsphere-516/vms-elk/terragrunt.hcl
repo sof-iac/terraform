@@ -14,7 +14,7 @@ locals {
 
 inputs = {
   vm = {
-    "TELK" = {
+    "PELK" = {
         template          = "default-template-ubuntu2404-base"
         instances         = 1
         vmstartcount      = 7
