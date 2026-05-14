@@ -177,7 +177,7 @@ inputs = {
       resource_pool     = "Blade_Kratos/Resources"
       vsphere_cluster   = "Blade_Kratos"
       domain            = "sof.intra"
-      network           = { "PG_Gaia_DMZ_Servico_Homolocacao" = ["192.168.40.20"] }
+      network           = { "PG_Gaia_DMZ_Servico_Homologacao" = ["192.168.40.20"] }
       dns_server_list   = []
       mask              = ["24"]
       gateway           = "192.168.20.1"
