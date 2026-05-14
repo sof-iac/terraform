@@ -37,7 +37,7 @@ inputs = {
       annotation        = "Servidor de Producao Wildfly - 14/05/2026 - Rogerio Vieira"
       tags = {
         "Origem"       = "Terraform"
-        "Ambiente"     = "Production"
+        "Ambiente"     = "Prod"
         "Aplicacao"    = "Wildfly"
         "Responsavel"  = "Rogerio Vieira Silva"
       }
@@ -67,7 +67,7 @@ inputs = {
       annotation        = "Servidor de Producao Wildfly - 14/05/2026 - Rogerio Vieira"
       tags = {
         "Origem"       = "Terraform"
-        "Ambiente"     = "Production"
+        "Ambiente"     = "Prod"
         "Aplicacao"    = "Wildfly"
         "Responsavel"  = "Rogerio Vieira Silva"
       }
@@ -97,7 +97,7 @@ inputs = {
       annotation        = "Servidor de Producao Wildfly - 14/05/2026 - Rogerio Vieira"
       tags = {
         "Origem"       = "Terraform"
-        "Ambiente"     = "Production"
+        "Ambiente"     = "Prod"
         "Aplicacao"    = "Wildfly"
         "Responsavel"  = "Rogerio Vieira Silva"
       }
@@ -127,7 +127,7 @@ inputs = {
       annotation        = "Servidor de Producao Wildfly - 14/05/2026 - Rogerio Vieira"
       tags = {
         "Origem"       = "Terraform"
-        "Ambiente"     = "Production"
+        "Ambiente"     = "Prod"
         "Aplicacao"    = "Wildfly"
         "Responsavel"  = "Rogerio Vieira Silva"
       }
@@ -158,7 +158,7 @@ inputs = {
       annotation        = "Servidor de Producao Wildfly - 14/05/2026 - Rogerio Vieira"
       tags = {
         "Origem"       = "Terraform"
-        "Ambiente"     = "Production"
+        "Ambiente"     = "Prod"
         "Aplicacao"    = "Wildfly"
         "Responsavel"  = "Rogerio Vieira Silva"
       }
@@ -189,7 +189,7 @@ inputs = {
       annotation        = "Servidor de Producao Wildfly - 14/05/2026 - Rogerio Vieira"
       tags = {
         "Origem"       = "Terraform"
-        "Ambiente"     = "Production"
+        "Ambiente"     = "Prod"
         "Aplicacao"    = "Wildfly"
         "Responsavel"  = "Rogerio Vieira Silva"
       }
