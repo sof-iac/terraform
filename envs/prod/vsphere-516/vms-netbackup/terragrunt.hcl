@@ -37,9 +37,11 @@ inputs = {
         "Origem"    = "Terraform"
         "Ambiente"  = "Prod"
         "Aplicacao" = "NetBackup"
+        "Responsavel" = "Joao Francisco"
       }
-      # Adicionando discos adicionais
-      data_disk = { }
+      # Discos adicionais
+      data_disk = { 
+      }
     }
   }
 }

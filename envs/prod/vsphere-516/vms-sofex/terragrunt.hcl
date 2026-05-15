@@ -39,10 +39,10 @@ inputs = {
         "Origem"      = "Terraform"
         "Ambiente"    = "Prod"
         "Aplicacao"   = "Sofex"
-        "Responsavel" = "Joao_Francisco"
+        "Responsavel" = "Joao Francisco"
       }
       template_disk_io_reservation = [1,1,1]
-      # Adicionando discos adicionais
+      # Discos adicionais
       data_disk = { 
           "disk_A1" = {  
             size_gb                = 1024
