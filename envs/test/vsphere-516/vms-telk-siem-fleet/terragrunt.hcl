@@ -15,35 +15,6 @@ locals {
 
 inputs = {
   vm = {
-    "TELK" = {
-        template          = "default-template-ubuntu2404-base"
-        instances         = 1
-        vmstartcount      = 10
-        datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
-        datastore_cluster = "Purestorage_Default"
-        resource_pool     = "Blade_Kratos/Resources"
-        vsphere_cluster   = "Blade_Kratos"
-        domain            = "sof.intra"
-        network           = {"PG_Gaia_Teste" = ["192.168.30.240"]}
-        dns_server_list   = ["172.27.3.5", "172.27.3.6"]
-        mask              = ["24"]
-        gateway           = "192.168.30.1"
-        cpu               = 2
-        memory            = 4096
-        local_adminpass   = "${local.TF_VAR_VM_PASS}"
-        distro            = "${local.TF_VAR_DISTRO}"
-        network_type      = ["vmxnet3"]
-        annotation        = "Fleet Server do ELK Security (SIEM) da rede de Testes | João Francisco, COINF | 2026-05-15"
-        tags = {
-          "Origem"    = "Terraform"
-          "Ambiente"  = "Test"
-          "Aplicacao" = "ELK"
-          "Responsavel" = "Joao Francisco"
-        }        
-        # Discos adicionais 
-        data_disk = {  
-        }
-    }   
   }     
 }
 
