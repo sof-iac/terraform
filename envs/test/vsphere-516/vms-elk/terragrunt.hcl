@@ -37,9 +37,24 @@ inputs = {
         tags = {
           "Origem"    = "Terraform"
           "Ambiente"  = "Test"
-        }      
-        # Adicionando discos extras  
-        data_disk = {}
+        }
+
+        # Sobrescrevendo o disk1 do template para 100GB
+        data_disk = {
+          "disk1" = {  
+            size_gb                = 100
+            unit_number            = 1
+            thin_provisioned       = true  
+            eagerly_scrub          = false  
+            storage_policy_id      = null  
+            io_reservation         = null  
+            io_share_level         = "normal"  
+            disk_mode              = null  
+            disk_sharing           = null  
+            attach                 = null  
+            path                   = null
+          }
+        }
     }
   }     
 }
