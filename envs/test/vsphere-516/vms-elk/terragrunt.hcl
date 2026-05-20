@@ -42,22 +42,7 @@ inputs = {
         # Adicionando discos adicionais
       template_disk_sizes = [21, 100, 7] 
       template_disk_io_reservation = [0, 1, 0]
-      data_disk = {
-        "disk_A1" = {
-          size_gb                = 100
-          unit_number            = 3
-          thin_provisioned       = true
-          eagerly_scrub          = false
-          #datastore_id           = "Storage_Purestorage"
-          storage_policy_id      = null
-          io_reservation         = 1
-          io_share_level         = "normal"
-          disk_mode              = null
-          disk_sharing           = null
-          attach                 = null
-          path                   = null
-        }
+      data_disk = {}
       }
     }
   }
-}
