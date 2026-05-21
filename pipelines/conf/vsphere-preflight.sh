@@ -1,7 +1,6 @@
 #!/bin/sh
-# Valida VSPHERE_SERVER antes do terragrunt (Jenkins). Compatível com /bin/sh (dash).
-# Não imprime senha.
-set -eu
+# Biblioteca para source no Jenkins (. vsphere-preflight.sh && vsphere_preflight)
+# Compatível com /bin/sh (dash). Sem "set -e" aqui — o script é sourced pelo step sh do Jenkins.
 
 vsphere_normalize_user() {
   if [ -z "${VSPHERE_USER:-}" ]; then
