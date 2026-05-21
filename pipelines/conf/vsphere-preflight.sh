@@ -2,6 +2,13 @@
 # Valida VSPHERE_SERVER antes do terragrunt (Jenkins). Não imprime senha.
 set -euo pipefail
 
+vsphere_normalize_user() {
+  # Evita usar FQDN do vCenter como usuário (credencial Jenkins trocada)
+  if [ -z "${VSPHERE_USER:-}" ] || [[ "${VSPHERE_USER}" == *".sof.intra"* ]] || [ "${VSPHERE_USER}" = "${VSPHERE_SERVER:-}" ]; then
+    export VSPHERE_USER='SOF\user_svc_jenkins'
+  fi
+}
+
 vsphere_normalize_server() {
   local h="${VSPHERE_SERVER:-}"
   h="${h#"${h%%[![:space:]]*}"}"
@@ -14,6 +21,7 @@ vsphere_normalize_server() {
 
 vsphere_preflight() {
   vsphere_normalize_server
+  vsphere_normalize_user
   if [ -z "${VSPHERE_SERVER:-}" ]; then
     echo "ERRO: VSPHERE_SERVER vazio. Revise a credencial Jenkins TF_VAR_hostname_vcenter_* do Site selecionado."
     exit 1
