@@ -66,10 +66,8 @@ pipeline {
                                 usernameVariable: 'TF_VAR_backend_pg_user',
                                 passwordVariable: 'TF_VAR_backend_pg_passwd'),
                             string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'TF_VAR_hostname_vcenter_516'),
-                            string(credentialsId: 'TF_VAR_username_vcenter_516', variable: 'TF_VAR_username_vcenter_516'),
                             string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'TF_VAR_password_vcenter_516'),
                             string(credentialsId: 'TF_VAR_hostname_vcenter_k', variable: 'TF_VAR_hostname_vcenter_k'),
-                            string(credentialsId: 'TF_VAR_username_vcenter_k', variable: 'TF_VAR_username_vcenter_k'),
                             string(credentialsId: 'TF_VAR_password_vcenter_k', variable: 'TF_VAR_password_vcenter_k'),
                             string(credentialsId: 'ansible_pass_text', variable: 'TF_VAR_VM_PASS')
                         ]) {
@@ -127,10 +125,8 @@ pipeline {
                                 usernameVariable: 'TF_VAR_backend_pg_user',
                                 passwordVariable: 'TF_VAR_backend_pg_passwd'),
                             string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'TF_VAR_hostname_vcenter_516'),
-                            string(credentialsId: 'TF_VAR_username_vcenter_516', variable: 'TF_VAR_username_vcenter_516'),
                             string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'TF_VAR_password_vcenter_516'),
                             string(credentialsId: 'TF_VAR_hostname_vcenter_k', variable: 'TF_VAR_hostname_vcenter_k'),
-                            string(credentialsId: 'TF_VAR_username_vcenter_k', variable: 'TF_VAR_username_vcenter_k'),
                             string(credentialsId: 'TF_VAR_password_vcenter_k', variable: 'TF_VAR_password_vcenter_k'),
                             string(credentialsId: 'ansible_pass_text', variable: 'TF_VAR_VM_PASS')
                         ]) {

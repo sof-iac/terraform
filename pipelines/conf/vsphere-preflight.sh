@@ -7,19 +7,18 @@ vsphere_trim_secret() {
   printf '%s' "$_v" | tr -d '\r\n'
 }
 
-# Prioridade: credencial Jenkins do Site; senão senha do Vault (passwd_vcenter).
+# Usuário fixo user_svc_jenkins. Senha: Jenkins do Site; senão Vault (passwd_vcenter).
 vsphere_export_credentials() {
-  _user=""
   _pass=""
   _site="${VCENTER_SITE:-}"
 
   if [ "$_site" = "vsphere-516" ]; then
-    _user="${TF_VAR_username_vcenter_516:-}"
     _pass="${TF_VAR_password_vcenter_516:-}"
   elif [ "$_site" = "vsphere-k" ]; then
-    _user="${TF_VAR_username_vcenter_k:-}"
     _pass="${TF_VAR_password_vcenter_k:-}"
   fi
+
+  export VSPHERE_USER='user_svc_jenkins'
 
   if [ -n "$_pass" ]; then
     export VSPHERE_PASSWORD="$(vsphere_trim_secret "$_pass")"
@@ -29,31 +28,7 @@ vsphere_export_credentials() {
     echo "DEBUG VSPHERE_PASSWORD: origem=vault-user_svc_jenkins"
   fi
 
-  if [ -n "$_user" ]; then
-    case "$_user" in
-      *".sof.intra"*) ;;
-      *)
-        export VSPHERE_USER="$(vsphere_trim_secret "$_user")"
-        echo "DEBUG VSPHERE_USER: origem=jenkins-${_site}"
-        ;;
-    esac
-  fi
-}
-
-vsphere_normalize_user() {
-  if [ -z "${VSPHERE_USER:-}" ]; then
-    export VSPHERE_USER='user_svc_jenkins'
-    echo "DEBUG VSPHERE_USER: origem=padrao user_svc_jenkins"
-    return
-  fi
-  case "$VSPHERE_USER" in
-    *".sof.intra"*)
-      export VSPHERE_USER='user_svc_jenkins'
-      ;;
-  esac
-  if [ -n "${VSPHERE_SERVER:-}" ] && [ "$VSPHERE_USER" = "$VSPHERE_SERVER" ]; then
-    export VSPHERE_USER='user_svc_jenkins'
-  fi
+  echo "DEBUG VSPHERE_USER: user_svc_jenkins (fixo; senha conforme origem acima)"
 }
 
 vsphere_normalize_server() {
@@ -69,7 +44,6 @@ vsphere_normalize_server() {
 vsphere_preflight() {
   vsphere_normalize_server
   vsphere_export_credentials
-  vsphere_normalize_user
   if [ -z "${VSPHERE_SERVER:-}" ]; then
     echo "ERRO: VSPHERE_SERVER vazio. Revise a credencial Jenkins TF_VAR_hostname_vcenter_* do Site selecionado."
     exit 1
@@ -89,6 +63,5 @@ vsphere_preflight() {
     echo "ERRO: VSPHERE_PASSWORD vazio. Configure TF_VAR_password_vcenter_${VCENTER_SITE:-*} no Jenkins ou o secret Vault user_svc_jenkins."
     exit 1
   fi
-  echo "DEBUG VSPHERE_USER=${VSPHERE_USER}"
   echo "DEBUG VSPHERE_PASSWORD: set=yes length=${#VSPHERE_PASSWORD}"
 }
