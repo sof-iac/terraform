@@ -98,9 +98,14 @@ inputs = {
       tag_name             = "k8s_portworx"
       tag_description      = "K8s Portworx"
       },
+    "Tags_accantanhede" = {
+      category_name        = "Responsavel"
+      tag_name             = "Augusto Cesar Cantanhede"
+      tag_description      = "Owner do objeto/servico"
+      },
     "Tags_jfneiva" = {
       category_name        = "Responsavel"
-      tag_name             = "João Francisco Neiva"
+      tag_name             = "João Francisco Neiva de Carvalho"
       tag_description      = "Owner do objeto/servico"
       },
     "Tags_wildfly" = {
