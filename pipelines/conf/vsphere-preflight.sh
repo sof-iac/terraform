@@ -1,16 +1,25 @@
-#!/usr/bin/env bash
-# Valida VSPHERE_SERVER antes do terragrunt (Jenkins). Não imprime senha.
-set -euo pipefail
+#!/bin/sh
+# Valida VSPHERE_SERVER antes do terragrunt (Jenkins). Compatível com /bin/sh (dash).
+# Não imprime senha.
+set -eu
 
 vsphere_normalize_user() {
-  # Evita usar FQDN do vCenter como usuário (credencial Jenkins trocada)
-  if [ -z "${VSPHERE_USER:-}" ] || [[ "${VSPHERE_USER}" == *".sof.intra"* ]] || [ "${VSPHERE_USER}" = "${VSPHERE_SERVER:-}" ]; then
+  if [ -z "${VSPHERE_USER:-}" ]; then
+    export VSPHERE_USER='SOF\user_svc_jenkins'
+    return
+  fi
+  case "$VSPHERE_USER" in
+    *".sof.intra"*)
+      export VSPHERE_USER='SOF\user_svc_jenkins'
+      ;;
+  esac
+  if [ -n "${VSPHERE_SERVER:-}" ] && [ "$VSPHERE_USER" = "$VSPHERE_SERVER" ]; then
     export VSPHERE_USER='SOF\user_svc_jenkins'
   fi
 }
 
 vsphere_normalize_server() {
-  local h="${VSPHERE_SERVER:-}"
+  h="${VSPHERE_SERVER:-}"
   h="${h#"${h%%[![:space:]]*}"}"
   h="${h%"${h##*[![:space:]]}"}"
   h="${h#https://}"
@@ -35,6 +44,6 @@ vsphere_preflight() {
       echo "  - No nó Jenkins, teste: getent hosts '${VSPHERE_SERVER}'"
       exit 1
     fi
-    echo "DEBUG DNS OK: $(getent hosts "$VSPHERE_SERVER" | head -1)"
+    echo "DEBUG DNS OK: $(getent hosts "$VSPHERE_SERVER" | head -n 1)"
   fi
 }
