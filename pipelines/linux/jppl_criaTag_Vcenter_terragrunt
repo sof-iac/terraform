@@ -62,20 +62,21 @@ pipeline {
                                 usernameVariable: 'TF_VAR_backend_pg_user',
                                 passwordVariable: 'TF_VAR_backend_pg_passwd'),
                             string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'TF_VAR_hostname_vcenter_516'),
-                            string(credentialsId: 'TF_VAR_hostname_vcenter_k', variable: 'TF_VAR_hostname_vcenter_k')
+                            string(credentialsId: 'TF_VAR_username_vcenter_516', variable: 'TF_VAR_username_vcenter_516'),
+                            string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'TF_VAR_password_vcenter_516'),
+                            string(credentialsId: 'TF_VAR_hostname_vcenter_k', variable: 'TF_VAR_hostname_vcenter_k'),
+                            string(credentialsId: 'TF_VAR_username_vcenter_k', variable: 'TF_VAR_username_vcenter_k'),
+                            string(credentialsId: 'TF_VAR_password_vcenter_k', variable: 'TF_VAR_password_vcenter_k')
                         ]) {
                             withVault([configuration: vaultConfiguration, vaultSecrets: secretsVcenter]) {
                                 def vcenterHostRaw = (params.Site == 'vsphere-516') ? env.TF_VAR_hostname_vcenter_516 : env.TF_VAR_hostname_vcenter_k
-                                env.VSPHERE_SERVER   = vcenterHostRaw?.trim()?.replaceAll('(?i)^https?://', '')?.replaceAll('/.*', '') ?: ''
-                                env.VSPHERE_USER     = 'SOF\\user_svc_jenkins'
-                                env.VSPHERE_PASSWORD = env.passwd_vcenter
+                                env.VSPHERE_SERVER = vcenterHostRaw?.trim()?.replaceAll('(?i)^https?://', '')?.replaceAll('/.*', '') ?: ''
+                                env.VCENTER_SITE   = params.Site
                                 sh '''
                                     . "${WORKSPACE}/pipelines/conf/vsphere-preflight.sh"
                                     vsphere_preflight
                                     echo "DEBUG TF_VAR_backend_pg_user: set=${TF_VAR_backend_pg_user:+yes} length=${#TF_VAR_backend_pg_user}"
                                     echo "DEBUG TF_VAR_backend_pg_passwd: set=${TF_VAR_backend_pg_passwd:+yes} length=${#TF_VAR_backend_pg_passwd}"
-                                    echo "DEBUG VSPHERE_USER=${VSPHERE_USER} (Vault + SSO SOF\\\\user_svc_jenkins)"
-                                    echo "DEBUG VSPHERE_PASSWORD: set=${VSPHERE_PASSWORD:+yes} length=${#VSPHERE_PASSWORD}"
                                     terragrunt plan -lock=true
                                 '''
                             }
@@ -119,13 +120,16 @@ pipeline {
                                 usernameVariable: 'TF_VAR_backend_pg_user',
                                 passwordVariable: 'TF_VAR_backend_pg_passwd'),
                             string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'TF_VAR_hostname_vcenter_516'),
-                            string(credentialsId: 'TF_VAR_hostname_vcenter_k', variable: 'TF_VAR_hostname_vcenter_k')
+                            string(credentialsId: 'TF_VAR_username_vcenter_516', variable: 'TF_VAR_username_vcenter_516'),
+                            string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'TF_VAR_password_vcenter_516'),
+                            string(credentialsId: 'TF_VAR_hostname_vcenter_k', variable: 'TF_VAR_hostname_vcenter_k'),
+                            string(credentialsId: 'TF_VAR_username_vcenter_k', variable: 'TF_VAR_username_vcenter_k'),
+                            string(credentialsId: 'TF_VAR_password_vcenter_k', variable: 'TF_VAR_password_vcenter_k')
                         ]) {
                             withVault([configuration: vaultConfiguration, vaultSecrets: secretsVcenter]) {
                                 def vcenterHostRaw = (params.Site == 'vsphere-516') ? env.TF_VAR_hostname_vcenter_516 : env.TF_VAR_hostname_vcenter_k
-                                env.VSPHERE_SERVER   = vcenterHostRaw?.trim()?.replaceAll('(?i)^https?://', '')?.replaceAll('/.*', '') ?: ''
-                                env.VSPHERE_USER     = 'SOF\\user_svc_jenkins'
-                                env.VSPHERE_PASSWORD = env.passwd_vcenter
+                                env.VSPHERE_SERVER = vcenterHostRaw?.trim()?.replaceAll('(?i)^https?://', '')?.replaceAll('/.*', '') ?: ''
+                                env.VCENTER_SITE   = params.Site
                                 sh '''
                                     . "${WORKSPACE}/pipelines/conf/vsphere-preflight.sh"
                                     vsphere_preflight
