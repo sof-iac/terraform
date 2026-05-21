@@ -25,7 +25,7 @@ inputs = {
       resource_pool     = "Blade_DTI/Resources"
       vsphere_cluster   = "Blade_DTI"
       domain            = "blk.sof.intra"
-      network           = { "PG_Gaia_DMZ_Servico_Producao" = ["192.168.121.12"] }
+      network           = { "PG_Servico" = ["192.168.121.12"] }
       dns_server_list   = []
       mask              = ["24"]
       gateway           = "192.168.121.1"
@@ -55,7 +55,7 @@ inputs = {
       resource_pool     = "Blade_DTI/Resources"
       vsphere_cluster   = "Blade_DTI"
       domain            = "blk.sof.intra"
-      network           = { "PG_Gaia_DMZ_Servico_Producao" = ["192.168.121.13"] }
+      network           = { "PG_Servico" = ["192.168.121.13"] }
       dns_server_list   = []
       mask              = ["24"]
       gateway           = "192.168.121.1"
@@ -77,3 +77,11 @@ inputs = {
 
   }
 }
+
+# PG_Dmz VLAN access: 2443
+# Pg_Dominio_Recurso VLAN access: 2442
+# PG_Gerencia VLAN access: 2440
+# PG_Kubernetes VLAN access: 2444
+# PG_Servico VLAN access: 2441
+# PG_Dmz para os apaches.
+ 
