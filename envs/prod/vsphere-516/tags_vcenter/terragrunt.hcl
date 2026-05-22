@@ -93,6 +93,16 @@ inputs = {
       tag_name             = "Test"
       tag_description      = "Ambiente de Testes"
       },
+    "Tags_ambienteProd" = {
+      category_name        = "Ambiente"
+      tag_name             = "Prod"
+      tag_description      = "Ambiente de Producao"
+      },
+    "Tags_origemTerraform" = {
+      category_name        = "Origem"
+      tag_name             = "Terraform"
+      tag_description      = "Criado via Terraform"
+      },
     "Tags_k8sportworx" = {
       category_name        = "Aplicacao"
       tag_name             = "k8s_portworx"
