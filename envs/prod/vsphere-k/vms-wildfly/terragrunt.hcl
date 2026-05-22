@@ -64,7 +64,7 @@ inputs = {
       local_adminpass   = "${local.TF_VAR_VM_PASS}"
       distro            = "${local.TF_VAR_DISTRO}"
       network_type      = ["vmxnet3"]
-      annotation        = "Servidor de Producao Wildfly - 14/05/2026 - Rogerio Vieira"
+      annotation        = "Servidor de Producao Wildfly - 21/05/2026 - Rogerio Vieira"
       tags = {
         "Origem"       = "Terraform"
         "Ambiente"     = "Prod"
@@ -84,4 +84,8 @@ inputs = {
 # PG_Kubernetes VLAN access: 2444
 # PG_Servico VLAN access: 2441
 # PG_Dmz para os apaches.
- 
+# PG_Dmz - VLAN access: 2443 - rede 172.16.51.0/24
+# Pg_Dominio_Recurso - VLAN access: 2442 - rede 192.168.80.0/24
+# PG_Gerencia - VLAN access: 2440 - rede 192.168.240.0/24
+# PG_Kubernetes - VLAN access: 2444 - rede 192.168.122.0/24
+# PG_Servico - VLAN access: 2441 - rede 192.168.121.0/24
