@@ -26,7 +26,7 @@ inputs = {
       vsphere_cluster   = "Blade_DTI"
       domain            = "blk.sof.intra"
       network           = { "PG_Servico" = ["192.168.121.12"] }
-      dns_server_list   = []
+      dns_server_list   = ["192.168.80.10"]
       mask              = ["24"]
       gateway           = "192.168.121.1"
       cpu               = 4
@@ -56,7 +56,7 @@ inputs = {
       vsphere_cluster   = "Blade_DTI"
       domain            = "blk.sof.intra"
       network           = { "PG_Servico" = ["192.168.121.13"] }
-      dns_server_list   = []
+      dns_server_list   = ["192.168.80.10"]
       mask              = ["24"]
       gateway           = "192.168.121.1"
       cpu               = 4
