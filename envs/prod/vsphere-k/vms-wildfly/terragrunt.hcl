@@ -15,11 +15,11 @@ locals {
 inputs = {
   vm = {
 
-    "PSAP01K-WILDFLY" = {
+    "PSAPK01-WILDFLY" = {
       template          = "default-template-alma-9.6-base"
       instances         = 1
       vmstartcount      = 1
-      staticvmname      = "PSAP01K-WILDFLY"
+      staticvmname      = "PSAPK01-WILDFLY"
       datacenter        = "BLOCOK"
       datastore_cluster = "Purestorage_K"
       resource_pool     = "Blade_DTI/Resources"
@@ -45,11 +45,11 @@ inputs = {
       data_disk                    = {}
     }
 
-    "PSAP04K-WILDFLY" = {
+    "PSAPK04-WILDFLY" = {
       template          = "default-template-alma-9.6-base"
       instances         = 1
       vmstartcount      = 4
-      staticvmname      = "PSAP04K-WILDFLY"
+      staticvmname      = "PSAPK04-WILDFLY"
       datacenter        = "BLOCOK"
       datastore_cluster = "Purestorage_K"
       resource_pool     = "Blade_DTI/Resources"
