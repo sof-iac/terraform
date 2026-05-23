@@ -12,71 +12,7 @@ locals {
   TF_VAR_DISTRO  = get_env("TF_VAR_DISTRO")
 }
 
-inputs = {
-  vm = {
-
-    "PSAPK01-WILDFLY" = {
-      template          = "default-template-alma-9.6-base"
-      instances         = 1
-      vmstartcount      = 1
-      staticvmname      = "PSAPK01-WILDFLY"
-      datacenter        = "BLOCOK"
-      datastore_cluster = "Purestorage_K"
-      resource_pool     = "Blade_DTI/Resources"
-      vsphere_cluster   = "Blade_DTI"
-      domain            = "blk.sof.intra"
-      network           = { "PG_Servico" = ["192.168.121.12"] }
-      dns_server_list   = ["192.168.80.10"]
-      mask              = ["24"]
-      gateway           = "192.168.121.1"
-      cpu               = 4
-      memory            = 13312
-      local_adminpass   = "${local.TF_VAR_VM_PASS}"
-      distro            = "${local.TF_VAR_DISTRO}"
-      network_type      = ["vmxnet3"]
-      annotation        = "Servidor de Producao Wildfly - 21/05/2026 - Rogerio Vieira"
-      tags = {
-        "Origem"       = "Terraform"
-        "Ambiente"     = "Prod"
-        "Aplicacao"    = "Wildfly"
-        "Responsavel"  = "Rogerio Vieira Silva"
-      }
-      template_disk_io_reservation = [1, 1, 1]
-      data_disk                    = {}
-    }
-
-    "PSAPK04-WILDFLY" = {
-      template          = "default-template-alma-9.6-base"
-      instances         = 1
-      vmstartcount      = 4
-      staticvmname      = "PSAPK04-WILDFLY"
-      datacenter        = "BLOCOK"
-      datastore_cluster = "Purestorage_K"
-      resource_pool     = "Blade_DTI/Resources"
-      vsphere_cluster   = "Blade_DTI"
-      domain            = "blk.sof.intra"
-      network           = { "PG_Servico" = ["192.168.121.13"] }
-      dns_server_list   = ["192.168.80.10"]
-      mask              = ["24"]
-      gateway           = "192.168.121.1"
-      cpu               = 4
-      memory            = 13312
-      local_adminpass   = "${local.TF_VAR_VM_PASS}"
-      distro            = "${local.TF_VAR_DISTRO}"
-      network_type      = ["vmxnet3"]
-      annotation        = "Servidor de Producao Wildfly - 21/05/2026 - Rogerio Vieira"
-      tags = {
-        "Origem"       = "Terraform"
-        "Ambiente"     = "Prod"
-        "Aplicacao"    = "Wildfly"
-        "Responsavel"  = "Rogerio Vieira Silva"
-      }
-      template_disk_io_reservation = [1, 1, 1]
-      data_disk                    = {}
-    }    
-
-  }
-}
+inputs = {}
 
 # PG_Dmz VLAN access: 2443
 # Pg_Dominio_Recurso VLAN access: 2442
