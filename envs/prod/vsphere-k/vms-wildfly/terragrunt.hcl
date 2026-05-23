@@ -9,10 +9,11 @@ include {
 locals {
   vcenter        = basename(dirname(get_terragrunt_dir()))
   TF_VAR_VM_PASS = get_env("TF_VAR_VM_PASS")
-  TF_VAR_DISTRO  = get_env("TF_VAR_DISTRO")
 }
 
-inputs = {}
+inputs = {
+  vm = {}
+}
 
 # PG_Dmz VLAN access: 2443
 # Pg_Dominio_Recurso VLAN access: 2442
