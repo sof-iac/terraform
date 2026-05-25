@@ -15,11 +15,11 @@ locals {
 inputs = {
   vm = {
 
-    "PDWH03_JDK11" = {
+    "PDWH03-JDK11" = {
       template          = "default-template-alma-9.6-base"
       instances         = 1
       vmstartcount      = 1
-      staticvmname      = "PDWH03_JDK11"
+      staticvmname      = "PDWH03-JDK11"
       datacenter        = "SOF"
       datastore_cluster = "Purestorage_Default"
       resource_pool     = "Blade_Kratos/Resources"
