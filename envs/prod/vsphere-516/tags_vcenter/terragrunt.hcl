@@ -122,7 +122,12 @@ inputs = {
       category_name        = "Aplicacao"
       tag_name             = "Wildfly"
       tag_description      = "Servidor Wildfly"
-      } 
+      },
+    "Tags_wildfly" = {
+      category_name        = "Aplicacao"
+      tag_name             = "Pentaho"
+      tag_description      = "Servidor ETLs"
+    } 
   }   
 }
 
