@@ -75,17 +75,17 @@ inputs = {
       data_disk                    = {}
     }
 
-    "TSAP03-WILDFLY" = {
+    "TSAP03" = {
       template          = "default-template-alma-9.6-base"
       instances         = 1
       vmstartcount      = 3
-      staticvmname      = "TSAP03-WILDFLY"
+      staticvmname      = "TSAP03"
       datacenter        = "SOF"
       datastore_cluster = "Purestorage_Default"
       resource_pool     = "Blade_Kratos/Resources"
       vsphere_cluster   = "Blade_Kratos"
       domain            = "sof.intra"
-      network           = { "PG_Gaia_Teste" = ["192.168.30.138"] }
+      network           = { "PG_Gaia_Teste" = ["192.168.30.203"] }
       dns_server_list   = []
       mask              = ["24"]
       gateway           = "192.168.30.1"
@@ -105,7 +105,7 @@ inputs = {
       data_disk                    = {}
     }
 
-    "TSAP04-WILDFLY" = {
+    "TSAP04" = {
       template          = "default-template-alma-9.6-base"
       instances         = 1
       vmstartcount      = 4
@@ -115,7 +115,7 @@ inputs = {
       resource_pool     = "Blade_Kratos/Resources"
       vsphere_cluster   = "Blade_Kratos"
       domain            = "sof.intra"
-      network           = { "PG_Gaia_Teste" = ["192.168.30.139"] }
+      network           = { "PG_Gaia_Teste" = ["192.168.30.204"] }
       dns_server_list   = []
       mask              = ["24"]
       gateway           = "192.168.30.1"
@@ -135,17 +135,17 @@ inputs = {
       data_disk                    = {}
     }
 
-    "TSAP05-WILDFLY" = {
+    "TSAP05" = {
       template          = "default-template-alma-9.6-base"
       instances         = 1
       vmstartcount      = 5
-      staticvmname      = "TSAP05-WILDFLY"
+      staticvmname      = "TSAP05"
       datacenter        = "SOF"
       datastore_cluster = "Purestorage_Default"
       resource_pool     = "Blade_Kratos/Resources"
       vsphere_cluster   = "Blade_Kratos"
       domain            = "sof.intra"
-      network           = { "PG_Gaia_Teste" = ["192.168.30.144"] }
+      network           = { "PG_Gaia_Teste" = ["192.168.30.205"] }
       dns_server_list   = []
       mask              = ["24"]
       gateway           = "192.168.30.1"
@@ -256,17 +256,17 @@ inputs = {
     }
 
 
-    "TSAP09-WILDFLY" = {
+    "TSAP09" = {
       template          = "default-template-alma-9.6-base"
       instances         = 1
       vmstartcount      = 9
-      staticvmname      = "TSAP09-WILDFLY"
+      staticvmname      = "TSAP09"
       datacenter        = "SOF"
       datastore_cluster = "Purestorage_Default"
       resource_pool     = "Blade_Kratos/Resources"
       vsphere_cluster   = "Blade_Kratos"
       domain            = "sof.intra"
-      network           = { "PG_Gaia_Teste" = ["192.168.30.157"] }
+      network           = { "PG_Gaia_Teste" = ["192.168.30.182"] }
       dns_server_list   = []
       mask              = ["24"]
       gateway           = "192.168.30.1"
@@ -286,17 +286,17 @@ inputs = {
       data_disk                    = {}
     }
 
-    "TSAP10-WILDFLY" = {
+    "TSAP10" = {
       template          = "default-template-alma-9.6-base"
       instances         = 1
       vmstartcount      = 10
-      staticvmname      = "TSAP10-WILDFLY"
+      staticvmname      = "TSAP10"
       datacenter        = "SOF"
       datastore_cluster = "Purestorage_Default"
       resource_pool     = "Blade_Kratos/Resources"
       vsphere_cluster   = "Blade_Kratos"
       domain            = "sof.intra"
-      network           = { "PG_Gaia_Teste" = ["192.168.30.158"] }
+      network           = { "PG_Gaia_Teste" = ["192.168.30.184"] }
       dns_server_list   = []
       mask              = ["24"]
       gateway           = "192.168.30.1"
@@ -316,17 +316,17 @@ inputs = {
       data_disk                    = {}
     }
 
-    "TSAP20-WILDFLY" = {
+    "TSAP20" = {
       template          = "default-template-alma-9.6-base"
       instances         = 1
       vmstartcount      = 20
-      staticvmname      = "TSAP20-WILDFLY"
+      staticvmname      = "TSAP20"
       datacenter        = "SOF"
       datastore_cluster = "Purestorage_Default"
       resource_pool     = "Blade_Kratos/Resources"
       vsphere_cluster   = "Blade_Kratos"
       domain            = "sof.intra"
-      network           = { "PG_Gaia_Teste" = ["192.168.30.159"] }
+      network           = { "PG_Gaia_Teste" = ["192.168.30.186"] }
       dns_server_list   = []
       mask              = ["24"]
       gateway           = "192.168.30.1"
