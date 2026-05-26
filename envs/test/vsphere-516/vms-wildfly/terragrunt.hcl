@@ -49,13 +49,13 @@ inputs = {
       template          = "default-template-alma-9.6-base"
       instances         = 1
       vmstartcount      = 2
-      staticvmname      = "TSAP02-WILDFLY"
+      staticvmname      = "TSAP02"
       datacenter        = "SOF"
       datastore_cluster = "Purestorage_Default"
       resource_pool     = "Blade_Kratos/Resources"
       vsphere_cluster   = "Blade_Kratos"
       domain            = "sof.intra"
-      network           = { "PG_Gaia_Teste" = ["192.168.30.128"] }
+      network           = { "PG_Gaia_Teste" = ["192.168.30.202"] }
       dns_server_list   = []
       mask              = ["24"]
       gateway           = "192.168.30.1"
