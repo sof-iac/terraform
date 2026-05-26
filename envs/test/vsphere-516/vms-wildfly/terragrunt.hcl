@@ -45,7 +45,7 @@ inputs = {
       data_disk                    = {}
     }
 
-    "TSAP02-WILDFLY" = {
+    "TSAP02" = {
       template          = "default-template-alma-9.6-base"
       instances         = 1
       vmstartcount      = 2
