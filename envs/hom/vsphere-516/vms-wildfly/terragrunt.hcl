@@ -14,6 +14,7 @@ locals {
   # 1. Definição do mapeamento exclusivo de cada VM: [IP, vmstartcount]
   vm_matrix = {
     "HSAP01-WILDFLY"          = ["192.168.40.20", 1]
+    "HSAP17-WILDFLY"          = ["192.168.40.21", 1]
   }
 }
 
