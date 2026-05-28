@@ -56,7 +56,6 @@ inputs = {
         "Origem"      = "Terraform"
         "Ambiente"    = "Test"
         "Aplicacao"   = "Wildfly"
-        "Responsavel" = "Robson Mendes"
       }
       
       template_disk_io_reservation = [1, 1, 1]
