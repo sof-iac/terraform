@@ -225,17 +225,17 @@ inputs = {
       data_disk                    = {}
     }
 
-    "TSAP08-WILDFLY" = {
+    "TSAP08" = {
       template          = "default-template-alma-9.6-base"
       instances         = 1
       vmstartcount      = 7
-      staticvmname      = "TSAP08-WILDFLY"
+      staticvmname      = "TSAP08"
       datacenter        = "SOF"
       datastore_cluster = "Purestorage_Default"
       resource_pool     = "Blade_Kratos/Resources"
       vsphere_cluster   = "Blade_Kratos"
       domain            = "sof.intra"
-      network           = { "PG_Gaia_Teste" = ["192.168.30.209"] }
+      network           = { "PG_Gaia_Teste" = ["192.168.30.180"] }
       dns_server_list   = []
       mask              = ["24"]
       gateway           = "192.168.30.1"
