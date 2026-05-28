@@ -23,7 +23,7 @@ inputs = {
   vm = {
     for name, config in local.vm_matrix : name => {
       staticvmname      = name
-      network           = { "PG_Gaia_DMZ_Servico_Homolocacao" = [config[0]] }
+      network           = { "PG_Gaia_DMZ_Servico_Homologacao" = [config[0]] }
       vmstartcount      = config[1]
       
       # Valores padrão replicados automaticamente para todas as instâncias
