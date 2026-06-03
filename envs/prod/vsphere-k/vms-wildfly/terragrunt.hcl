@@ -15,17 +15,17 @@ locals {
 inputs = {
   vm = {
 
-    "PSAPK01-WILDFLY" = {
+    "PSAPK01" = {
       template          = "default-template-alma-9.6-base"
       instances         = 1
       vmstartcount      = 1
-      staticvmname      = "PSAPK01-WILDFLY"
+      staticvmname      = "PSAPK01"
       datacenter        = "BLOCOK"
       datastore_cluster = "Purestorage_K"
       resource_pool     = "Blade_DTI/Resources"
       vsphere_cluster   = "Blade_DTI"
       domain            = "blk.sof.intra"
-      network           = { "PG_Servico" = ["192.168.121.12"] }
+      network           = { "PG_Servico" = ["192.168.121.11"] }
       dns_server_list   = ["192.168.80.10"]
       mask              = ["24"]
       gateway           = "192.168.121.1"
