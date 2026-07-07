@@ -127,7 +127,12 @@ inputs = {
       category_name        = "Aplicacao"
       tag_name             = "Pentaho"
       tag_description      = "Servidor ETLs"
-    } 
+    },
+    "Tags_Elks" = {
+      category_name        = "Aplicacao"
+      tag_name             = "Elks"
+      tag_description      = "Servidores Elks"
+    }  
   }   
 }
 
