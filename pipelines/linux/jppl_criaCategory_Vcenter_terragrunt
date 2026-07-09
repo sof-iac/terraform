@@ -21,6 +21,9 @@ pipeline {
             steps {
                 script {
                     dir("${Diretorio}/${Ambiente}/${Site}") {
+                        def vcenterUserCredId = (params.Site == 'vsphere-516')
+                            ? 'TF_VAR_username_vcenter_516'
+                            : 'TF_VAR_username_vcenter_k'
                         def secrets_vcenter = [
                             [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
                                 [envVar: 'passwd_vcenter', vaultKey: 'password']]]
@@ -28,8 +31,10 @@ pipeline {
                         def configuration = [vaultUrl: 'https://vault.app.sof.intra',
                             vaultCredentialId: 'vault_approle_jenkins',
                             engineVersion: 2]
-                        withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
-                            sh "echo '{\\n  \"username_vcenter\": \"user_svc_jenkins\",\\n  \"passwd_vcenter\": \"$passwd_vcenter\"\\n}' > secrets.json"
+                        withCredentials([string(credentialsId: vcenterUserCredId, variable: 'USER_VCENTER')]) {
+                            withVault([configuration: configuration, vaultSecrets: secrets_vcenter]) {
+                                sh "echo '{\\n  \"username_vcenter\": \"${env.USER_VCENTER}\",\\n  \"passwd_vcenter\": \"${passwd_vcenter}\"\\n}' > secrets.json"
+                            }
                         }
                     }
                 }
@@ -62,8 +67,10 @@ pipeline {
                                 usernameVariable: 'TF_VAR_backend_pg_user',
                                 passwordVariable: 'TF_VAR_backend_pg_passwd'),
                             string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'TF_VAR_hostname_vcenter_516'),
+                            string(credentialsId: 'TF_VAR_username_vcenter_516', variable: 'TF_VAR_username_vcenter_516'),
                             string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'TF_VAR_password_vcenter_516'),
                             string(credentialsId: 'TF_VAR_hostname_vcenter_k', variable: 'TF_VAR_hostname_vcenter_k'),
+                            string(credentialsId: 'TF_VAR_username_vcenter_k', variable: 'TF_VAR_username_vcenter_k'),
                             string(credentialsId: 'TF_VAR_password_vcenter_k', variable: 'TF_VAR_password_vcenter_k')
                         ]) {
                             withVault([configuration: vaultConfiguration, vaultSecrets: secretsVcenter]) {
@@ -118,8 +125,10 @@ pipeline {
                                 usernameVariable: 'TF_VAR_backend_pg_user',
                                 passwordVariable: 'TF_VAR_backend_pg_passwd'),
                             string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'TF_VAR_hostname_vcenter_516'),
+                            string(credentialsId: 'TF_VAR_username_vcenter_516', variable: 'TF_VAR_username_vcenter_516'),
                             string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'TF_VAR_password_vcenter_516'),
                             string(credentialsId: 'TF_VAR_hostname_vcenter_k', variable: 'TF_VAR_hostname_vcenter_k'),
+                            string(credentialsId: 'TF_VAR_username_vcenter_k', variable: 'TF_VAR_username_vcenter_k'),
                             string(credentialsId: 'TF_VAR_password_vcenter_k', variable: 'TF_VAR_password_vcenter_k')
                         ]) {
                             withVault([configuration: vaultConfiguration, vaultSecrets: secretsVcenter]) {
