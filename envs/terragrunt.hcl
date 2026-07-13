@@ -2,9 +2,7 @@ locals {
   parsed            = regex(".*/envs/(?P<env>.*?)/.*", get_terragrunt_dir())
   env               = local.parsed.env
   module-name       = get_terragrunt_dir()
-  vcenter-host      = strcontains(local.module-name, "vsphere-516") == true ? get_env("TF_VAR_hostname_vcenter_516") : get_env("TF_VAR_hostname_vcenter_k")
-  vcenter-user      = strcontains(local.module-name, "vsphere-516") == true ? get_env("TF_VAR_username_vcenter_516") : get_env("TF_VAR_username_vcenter_k")
-  vcenter-pass      = strcontains(local.module-name, "vsphere-516") == true ? get_env("TF_VAR_password_vcenter_516") : get_env("TF_VAR_password_vcenter_k")
+  vcenter-host      = get_env("VSPHERE_SERVER", strcontains(local.module-name, "vsphere-516") ? get_env("TF_VAR_hostname_vcenter_516", "") : get_env("TF_VAR_hostname_vcenter_k", ""))
   backend-pg-user   = get_env("TF_VAR_backend_pg_user")
   backend-pg-passwd = get_env("TF_VAR_backend_pg_passwd")
   backend-pg-host   = "psbd02.sof.intra"
@@ -18,12 +16,9 @@ generate "provider" {
   contents  = <<EOF
 
 %{if strcontains(local.module-name, "vsphere")}
+# user e password: VSPHERE_USER e VSPHERE_PASSWORD (Jenkins exporta após withCredentials)
 provider "vsphere" {
-  user           = "${local.vcenter-user}"
-  password       = "${local.vcenter-pass}"
-  vsphere_server = "${local.vcenter-host}"
-
-  # if you have a self-signed cert
+  vsphere_server       = "${local.vcenter-host}"
   allow_unverified_ssl = true
 }
 %{endif}

@@ -115,24 +115,14 @@ inputs = {
       },
     "Tags_jfneiva" = {
       category_name        = "Responsavel"
-      tag_name             = "João Francisco Neiva de Carvalho"
+      tag_name             = "João Francisco Neiva"
       tag_description      = "Owner do objeto/servico"
       },
     "Tags_wildfly" = {
       category_name        = "Aplicacao"
       tag_name             = "Wildfly"
       tag_description      = "Servidor Wildfly"
-      },
-    "Tags_wildfly" = {
-      category_name        = "Aplicacao"
-      tag_name             = "Pentaho"
-      tag_description      = "Servidor ETLs"
-    },
-    "Tags_Elks" = {
-      category_name        = "Aplicacao"
-      tag_name             = "Elks"
-      tag_description      = "Servidores Elks"
-    }  
+      } 
   }   
 }
 
