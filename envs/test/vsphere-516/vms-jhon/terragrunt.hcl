@@ -14,10 +14,10 @@ locals {
 
 inputs = {
   vm = {
-    "TESTE" = {
+    "JHON-TESTE" = {
         template          = "default-template-ubuntu2404-base"
-        instances         = 2
-        vmstartcount      = 1
+        instances         = 1
+        vmstartcount      = 5
         staticvmname      = null
         datacenter        = "SOF" #dependency.dc-config.outputs.dc_id
         datastore_cluster = "Purestorage_Default"
