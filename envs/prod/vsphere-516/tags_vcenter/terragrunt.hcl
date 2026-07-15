@@ -132,7 +132,12 @@ inputs = {
       category_name        = "Aplicacao"
       tag_name             = "Elks"
       tag_description      = "Servidores Elks"
-    }  
+    },
+    "Tags_Glpi" = {
+      category_name        = "Aplicacao"
+      tag_name             = "GLPI"
+      tag_description      = "Servidores GLPI"
+    }   
   }   
 }
 
