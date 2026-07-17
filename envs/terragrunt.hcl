@@ -10,6 +10,9 @@ locals {
   backend-pg-dbname = "terraform"
 }
 
+# Atributo que bloqueia a destruição deste módulo específico
+prevent_destroy = true
+
 generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite_terragrunt"
