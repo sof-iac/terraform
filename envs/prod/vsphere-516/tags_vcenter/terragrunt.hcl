@@ -132,7 +132,22 @@ inputs = {
       category_name        = "Aplicacao"
       tag_name             = "Elks"
       tag_description      = "Servidores Elks"
-    }  
+    },
+    "Tags_Glpi" = {
+      category_name        = "Aplicacao"
+      tag_name             = "GLPI"
+      tag_description      = "Servidores GLPI"
+    },    
+    "Tags_MariaDB" = {
+      category_name        = "Aplicacao"
+      tag_name             = "MariaDB"
+      tag_description      = "Bancos de dados MariaDB"
+    },
+    "Tags_Alexandernm" = {
+      category_name        = "Responsavel"
+      tag_name             = "Alexander Moreira de Morais"
+      tag_description      = "Owner do objeto/servico"
+    }    
   }   
 }
 
