@@ -147,7 +147,12 @@ inputs = {
       category_name        = "Responsavel"
       tag_name             = "Alexander Moreira de Morais"
       tag_description      = "Owner do objeto/servico"
-    }    
+    },
+    "Tags_SACPO" = {
+      category_name        = "Aplicacao"
+      tag_name             = "SACPO"
+      tag_description      = "Sistema de Acompanhamento da Carreira de Planejamento e Orçamento"
+    } 
   }   
 }
 
