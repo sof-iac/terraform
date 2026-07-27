@@ -1,38 +1,32 @@
 # =============================================================================
-# Template de import — vsphere_virtual_machine (módulo linux/windows)
+# Template de import — recursos vSphere no tfstate (PostgreSQL)
 # =============================================================================
 #
-# Use quando a VM já existe no vCenter, mas o tfstate no PostgreSQL está vazio
-# ou sem o recurso.
-#
-# Prefira o pipeline Jenkins:
-#   pipelines/linux/jppl_importVM_terragrunt
-#
-# Parâmetros do job:
-#   Ambiente / Site / Grupo  → stack Terragrunt (ex.: prod / vsphere-516 / vms-etls)
-#   VmName                   → chave do for_each (= staticvmname / nome da VM)
-#   VmId                     → UUID da VM no vCenter (recomendado) ou MOID (vm-XXXX)
-#
-# Como obter o UUID no vCenter:
-#   VM → Summary → UUID  (ou govc: govc vm.info -json NOME | jq -r .VirtualMachines[0].Config.Uuid)
-#
-# Sintaxe do endereço Terraform (for_each):
-#   vsphere_virtual_machine.vm["NOME_DA_VM"]
-#
-# Exemplo de bloco import (Terraform >= 1.5) — NÃO é aplicado sozinho neste
-# diretório; serve de referência. O pipeline usa `terragrunt import`.
+# Pipelines Jenkins:
+#   VM:  pipelines/linux/jppl_importVM_terragrunt
+#   Tag: pipelines/linux/jppl_importTag_Vcenter_terragrunt
 #
 # -----------------------------------------------------------------------------
-import {
-  to = vsphere_virtual_machine.vm["TSBD31"]
-  id = "vm-48687"
-}
+# VM (módulo linux/windows)
 # -----------------------------------------------------------------------------
+# Endereço: vsphere_virtual_machine.vm["NOME"]
+# ID:       UUID da VM (recomendado) ou MOID vm-XXXX
 #
-# Equivalente via CLI (executado dentro do stack, ex. envs/prod/vsphere-516/vms-etls):
+#   terragrunt import 'vsphere_virtual_machine.vm["PDWH03-JDK11"]' '4220-...'
 #
-#   terragrunt import 'vsphere_virtual_machine.vm["PDWH03-JDK11"]' '42204605-34db-5a3d-51f3-221dee7d3591'
+# -----------------------------------------------------------------------------
+# Tag (módulo tags_vcenter)
+# -----------------------------------------------------------------------------
+# Endereço: module.terraform_vsphere_tags["Tags_X"].vsphere_tag.tag
+# ID:       URN no vCenter
+#           Ex.: urn:vmomi:InventoryServiceTag:3021ded9-...:GLOBAL
 #
-# Depois do import, rode um plan no mesmo stack para reconciliar drift
-# (discos, tags, customize, etc.).
+#   terragrunt import \
+#     'module.terraform_vsphere_tags["Tags_Postgres"].vsphere_tag.tag' \
+#     'urn:vmomi:InventoryServiceTag:....:GLOBAL'
+#
+# Pré-requisito: a chave já deve existir no terragrunt.hcl do stack
+# (ex.: envs/prod/vsphere-516/tags_vcenter → Tags_Postgres).
+#
+# Depois do import, rode plan no mesmo stack para reconciliar drift.
 # =============================================================================

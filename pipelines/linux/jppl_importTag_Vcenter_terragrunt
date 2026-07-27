@@ -5,10 +5,9 @@ pipeline {
         choice(name: 'Diretorio', choices: ['envs'], description: 'Diretório raiz')
         choice(name: 'Ambiente', choices: ['base', 'lab', 'prod', 'test'], description: 'Ambiente do stack')
         choice(name: 'Site', choices: ['vsphere-516', 'vsphere-k'], description: 'Site vCenter')
-        string(name: 'Grupo', defaultValue: 'vms-etls', description: 'Pasta do stack (ex.: vms-etls, vms-wildfly)')
-        string(name: 'VmName', defaultValue: '', description: 'Nome da VM no HCL (chave for_each / staticvmname). Ex.: PDWH03-JDK11')
-        string(name: 'VmId', defaultValue: '', description: 'UUID da VM no vCenter (recomendado) ou MOID da URL (vm-XXXX)')
-        choice(name: 'Tipo', choices: ['linux', 'windows'], description: 'Módulo da VM (mesmo resource address nos dois)')
+        string(name: 'Grupo', defaultValue: 'tags_vcenter', description: 'Pasta do stack (ex.: tags_vcenter)')
+        string(name: 'TagKey', defaultValue: '', description: 'Chave no terragrunt.hcl (for_each). Ex.: Tags_Postgres, Tags_RVS')
+        string(name: 'TagId', defaultValue: '', description: 'ID da tag no vCenter (URN). Ex.: urn:vmomi:InventoryServiceTag:uuid:GLOBAL')
         booleanParam(name: 'RodarPlanAposImport', defaultValue: true, description: 'Após o import, executa terragrunt plan para ver drift')
         booleanParam(name: 'PularAprovacao', defaultValue: false, description: 'Se true, não pede confirmação antes do import')
     }
@@ -30,18 +29,18 @@ pipeline {
                         params.Grupo
                     ].collect { (it ?: '').toString().trim() }.join('/')
 
-                    if (!params.VmName?.trim()) {
-                        error('Parâmetro VmName é obrigatório (nome da VM no terragrunt.hcl / staticvmname).')
+                    if (!params.TagKey?.trim()) {
+                        error('Parâmetro TagKey é obrigatório (chave no terragrunt.hcl, ex.: Tags_Postgres).')
                     }
-                    if (!params.VmId?.trim()) {
-                        error('Parâmetro VmId é obrigatório (UUID ou MOID da VM no vCenter).')
+                    if (!params.TagId?.trim()) {
+                        error('Parâmetro TagId é obrigatório (URN da tag no vCenter).')
                     }
                     if (!fileExists(env.STACK_DIR)) {
                         error("Stack não encontrado: ${env.STACK_DIR}")
                     }
                     echo "Import destino: ${env.STACK_DIR}"
-                    echo "Recurso: vsphere_virtual_machine.vm[\"${params.VmName.trim()}\"]"
-                    echo "ID vCenter: ${params.VmId.trim()}"
+                    echo "Recurso: module.terraform_vsphere_tags[\"${params.TagKey.trim()}\"].vsphere_tag.tag"
+                    echo "ID vCenter: ${params.TagId.trim()}"
                 }
             }
         }
@@ -62,15 +61,15 @@ pipeline {
                 script {
                     timeout(time: 60, unit: 'MINUTES') {
                         input(
-                            message: """Confirma IMPORTAR a VM no tfstate (PostgreSQL)?
+                            message: """Confirma IMPORTAR a tag no tfstate (PostgreSQL)?
 
 Ambiente: ${params.Ambiente}
 Site: ${params.Site}
 Grupo: ${params.Grupo}
-VmName (HCL): ${params.VmName}
-VmId (vCenter): ${params.VmId}
+TagKey (HCL): ${params.TagKey}
+TagId (vCenter URN): ${params.TagId}
 
-Isso NÃO cria/altera a VM no vCenter — só associa o recurso existente ao state.""",
+Isso NÃO cria/altera a tag no vCenter — só associa o recurso existente ao state.""",
                             ok: 'Aprovar e importar',
                             submitterParameter: 'APROVADO_POR'
                         )
@@ -100,23 +99,20 @@ Isso NÃO cria/altera a VM no vCenter — só associa o recurso existente ao sta
                             string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'TF_VAR_password_vcenter_516'),
                             string(credentialsId: 'TF_VAR_hostname_vcenter_k', variable: 'TF_VAR_hostname_vcenter_k'),
                             string(credentialsId: 'TF_VAR_username_vcenter_k', variable: 'TF_VAR_username_vcenter_k'),
-                            string(credentialsId: 'TF_VAR_password_vcenter_k', variable: 'TF_VAR_password_vcenter_k'),
-                            string(credentialsId: 'ansible_pass_text', variable: 'TF_VAR_VM_PASS')
+                            string(credentialsId: 'TF_VAR_password_vcenter_k', variable: 'TF_VAR_password_vcenter_k')
                         ]) {
                             withVault([configuration: vaultConfiguration, vaultSecrets: secretsVcenter]) {
                                 def site = params.Site.toString().trim()
                                 def vcenterHostRaw = (site == 'vsphere-516') ? env.TF_VAR_hostname_vcenter_516 : env.TF_VAR_hostname_vcenter_k
                                 env.VSPHERE_SERVER = vcenterHostRaw?.trim()?.replaceAll('(?i)^https?://', '')?.replaceAll('/.*', '') ?: ''
                                 env.VCENTER_SITE   = site
-                                // Legado em vários terragrunt.hcl (get_env sem default). Módulo linux não usa.
-                                env.TF_VAR_DISTRO  = 'unused'
 
-                                def vmName = params.VmName.trim()
-                                def vmId   = params.VmId.trim()
-                                // Aspas obrigatórias no índice string do for_each: vm["TSBD31"]
-                                def importAddr = "vsphere_virtual_machine.vm[\"${vmName}\"]"
+                                def tagKey = params.TagKey.trim()
+                                def tagId  = params.TagId.trim()
+                                // Aspas obrigatórias no for_each do módulo
+                                def importAddr = "module.terraform_vsphere_tags[\"${tagKey}\"].vsphere_tag.tag"
 
-                                echo "Executando: terragrunt import '${importAddr}' '${vmId}'"
+                                echo "Executando: terragrunt import '${importAddr}' '${tagId}'"
                                 sh """
                                     . "\${WORKSPACE}/pipelines/conf/vsphere-preflight.sh"
                                     vsphere_preflight
@@ -124,10 +120,10 @@ Isso NÃO cria/altera a VM no vCenter — só associa o recurso existente ao sta
                                     echo "DEBUG: listando state antes do import..."
                                     terragrunt state list || true
 
-                                    terragrunt import '${importAddr}' '${vmId}'
+                                    terragrunt import '${importAddr}' '${tagId}'
 
                                     echo "DEBUG: listando state após o import..."
-                                    terragrunt state list | grep -F 'vsphere_virtual_machine.vm' || terragrunt state list
+                                    terragrunt state list | grep -F 'vsphere_tag.tag' || terragrunt state list
                                 """
                             }
                         }
@@ -159,15 +155,13 @@ Isso NÃO cria/altera a VM no vCenter — só associa o recurso existente ao sta
                             string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'TF_VAR_password_vcenter_516'),
                             string(credentialsId: 'TF_VAR_hostname_vcenter_k', variable: 'TF_VAR_hostname_vcenter_k'),
                             string(credentialsId: 'TF_VAR_username_vcenter_k', variable: 'TF_VAR_username_vcenter_k'),
-                            string(credentialsId: 'TF_VAR_password_vcenter_k', variable: 'TF_VAR_password_vcenter_k'),
-                            string(credentialsId: 'ansible_pass_text', variable: 'TF_VAR_VM_PASS')
+                            string(credentialsId: 'TF_VAR_password_vcenter_k', variable: 'TF_VAR_password_vcenter_k')
                         ]) {
                             withVault([configuration: vaultConfiguration, vaultSecrets: secretsVcenter]) {
                                 def site = params.Site.toString().trim()
                                 def vcenterHostRaw = (site == 'vsphere-516') ? env.TF_VAR_hostname_vcenter_516 : env.TF_VAR_hostname_vcenter_k
                                 env.VSPHERE_SERVER = vcenterHostRaw?.trim()?.replaceAll('(?i)^https?://', '')?.replaceAll('/.*', '') ?: ''
                                 env.VCENTER_SITE   = site
-                                env.TF_VAR_DISTRO  = 'unused'
                                 sh '''
                                     . "${WORKSPACE}/pipelines/conf/vsphere-preflight.sh"
                                     vsphere_preflight
