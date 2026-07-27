@@ -6,11 +6,10 @@ include {
   path = find_in_parent_folders()
 }
 
-locals {  
+locals {
   vcenter        = basename(dirname(get_terragrunt_dir()))
   TF_VAR_VM_PASS = get_env("TF_VAR_VM_PASS")
-  TF_VAR_DISTRO  = get_env("TF_VAR_DISTRO")
-}  
+}
 
 inputs = {
   vm = {
@@ -31,7 +30,6 @@ inputs = {
         cpu               = 6
         memory            = 8192
         local_adminpass   = "${local.TF_VAR_VM_PASS}"
-        distro            = "${local.TF_VAR_DISTRO}"
         network_type      = ["vmxnet3"]
         annotation        = "Vm teste Banco de Dados 17/07/2026 - Chamado 7477 Mauricio Almeida"
         tags = {

@@ -3,7 +3,7 @@ pipeline {
 
     parameters {
         choice(name: 'Diretorio', choices: ['envs'], description: 'Diretório raiz')
-        choice(name: 'Ambiente', choices: ['prod', 'base', 'test', 'lab'], description: 'Ambiente do stack')
+        choice(name: 'Ambiente', choices: ['base', 'lab','prod', ' test'], description: 'Ambiente do stack')
         choice(name: 'Site', choices: ['vsphere-516', 'vsphere-k'], description: 'Site vCenter')
         string(name: 'Grupo', defaultValue: 'vms-etls', description: 'Pasta do stack (ex.: vms-etls, vms-wildfly)')
         string(name: 'VmName', defaultValue: '', description: 'Nome da VM no HCL (chave for_each / staticvmname). Ex.: PDWH03-JDK11')
@@ -103,6 +103,8 @@ Isso NÃO cria/altera a VM no vCenter — só associa o recurso existente ao sta
                                 env.VCENTER_SITE   = params.Site
                                 env.IMPORT_VM_NAME = params.VmName.trim()
                                 env.IMPORT_VM_ID   = params.VmId.trim()
+                                // Legado em vários terragrunt.hcl (get_env sem default). Módulo linux não usa.
+                                env.TF_VAR_DISTRO  = 'unused'
 
                                 sh '''
                                     . "${WORKSPACE}/pipelines/conf/vsphere-preflight.sh"
@@ -156,6 +158,7 @@ Isso NÃO cria/altera a VM no vCenter — só associa o recurso existente ao sta
                                 def vcenterHostRaw = (params.Site == 'vsphere-516') ? env.TF_VAR_hostname_vcenter_516 : env.TF_VAR_hostname_vcenter_k
                                 env.VSPHERE_SERVER = vcenterHostRaw?.trim()?.replaceAll('(?i)^https?://', '')?.replaceAll('/.*', '') ?: ''
                                 env.VCENTER_SITE   = params.Site
+                                env.TF_VAR_DISTRO  = 'unused'
                                 sh '''
                                     . "${WORKSPACE}/pipelines/conf/vsphere-preflight.sh"
                                     vsphere_preflight
