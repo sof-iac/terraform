@@ -6,8 +6,9 @@ pipeline {
         choice(name: 'Ambiente', choices: ['base', 'lab', 'prod', 'test'], description: 'Ambiente do stack')
         choice(name: 'Site', choices: ['vsphere-516', 'vsphere-k'], description: 'Site vCenter')
         string(name: 'Grupo', defaultValue: 'tags_vcenter', description: 'Pasta do stack (ex.: tags_vcenter)')
-        string(name: 'TagKey', defaultValue: '', description: 'Chave no terragrunt.hcl (for_each). Ex.: Tags_Postgres, Tags_RVS')
-        string(name: 'TagId', defaultValue: '', description: 'ID da tag no vCenter (URN). Ex.: urn:vmomi:InventoryServiceTag:uuid:GLOBAL')
+        string(name: 'TagKey', defaultValue: '', description: 'Chave no terragrunt.hcl (for_each). Ex.: Tags_ambienteProd')
+        string(name: 'CategoryName', defaultValue: '', description: 'category_name no HCL / vCenter. Ex.: Ambiente')
+        string(name: 'TagName', defaultValue: '', description: 'tag_name no HCL / vCenter. Ex.: Prod')
         booleanParam(name: 'RodarPlanAposImport', defaultValue: true, description: 'Após o import, executa terragrunt plan para ver drift')
         booleanParam(name: 'PularAprovacao', defaultValue: false, description: 'Se true, não pede confirmação antes do import')
     }
@@ -30,17 +31,20 @@ pipeline {
                     ].collect { (it ?: '').toString().trim() }.join('/')
 
                     if (!params.TagKey?.trim()) {
-                        error('Parâmetro TagKey é obrigatório (chave no terragrunt.hcl, ex.: Tags_Postgres).')
+                        error('Parâmetro TagKey é obrigatório (chave no terragrunt.hcl, ex.: Tags_ambienteProd).')
                     }
-                    if (!params.TagId?.trim()) {
-                        error('Parâmetro TagId é obrigatório (URN da tag no vCenter).')
+                    if (!params.CategoryName?.trim()) {
+                        error('Parâmetro CategoryName é obrigatório (ex.: Ambiente).')
+                    }
+                    if (!params.TagName?.trim()) {
+                        error('Parâmetro TagName é obrigatório (ex.: Prod).')
                     }
                     if (!fileExists(env.STACK_DIR)) {
                         error("Stack não encontrado: ${env.STACK_DIR}")
                     }
                     echo "Import destino: ${env.STACK_DIR}"
                     echo "Recurso: module.terraform_vsphere_tags[\"${params.TagKey.trim()}\"].vsphere_tag.tag"
-                    echo "ID vCenter: ${params.TagId.trim()}"
+                    echo "Import ID (JSON): {\"category_name\": \"${params.CategoryName.trim()}\", \"tag_name\": \"${params.TagName.trim()}\"}"
                 }
             }
         }
@@ -67,9 +71,11 @@ Ambiente: ${params.Ambiente}
 Site: ${params.Site}
 Grupo: ${params.Grupo}
 TagKey (HCL): ${params.TagKey}
-TagId (vCenter URN): ${params.TagId}
+CategoryName: ${params.CategoryName}
+TagName: ${params.TagName}
 
-Isso NÃO cria/altera a tag no vCenter — só associa o recurso existente ao state.""",
+Isso NÃO cria/altera a tag no vCenter — só associa o recurso existente ao state.
+O provider vsphere exige JSON (category_name + tag_name), não o URN da URL.""",
                             ok: 'Aprovar e importar',
                             submitterParameter: 'APROVADO_POR'
                         )
@@ -107,12 +113,14 @@ Isso NÃO cria/altera a tag no vCenter — só associa o recurso existente ao st
                                 env.VSPHERE_SERVER = vcenterHostRaw?.trim()?.replaceAll('(?i)^https?://', '')?.replaceAll('/.*', '') ?: ''
                                 env.VCENTER_SITE   = site
 
-                                def tagKey = params.TagKey.trim()
-                                def tagId  = params.TagId.trim()
-                                // Aspas obrigatórias no for_each do módulo
-                                def importAddr = "module.terraform_vsphere_tags[\"${tagKey}\"].vsphere_tag.tag"
+                                def tagKey       = params.TagKey.trim()
+                                def categoryName = params.CategoryName.trim()
+                                def tagName      = params.TagName.trim()
+                                def importAddr   = "module.terraform_vsphere_tags[\"${tagKey}\"].vsphere_tag.tag"
+                                // Provider exige JSON, não URN — ver docs vsphere_tag Import
+                                def importId     = "{\"category_name\": \"${categoryName}\", \"tag_name\": \"${tagName}\"}"
 
-                                echo "Executando: terragrunt import '${importAddr}' '${tagId}'"
+                                echo "Executando: terragrunt import '${importAddr}' '${importId}'"
                                 sh """
                                     . "\${WORKSPACE}/pipelines/conf/vsphere-preflight.sh"
                                     vsphere_preflight
@@ -120,7 +128,7 @@ Isso NÃO cria/altera a tag no vCenter — só associa o recurso existente ao st
                                     echo "DEBUG: listando state antes do import..."
                                     terragrunt state list || true
 
-                                    terragrunt import '${importAddr}' '${tagId}'
+                                    terragrunt import '${importAddr}' '${importId}'
 
                                     echo "DEBUG: listando state após o import..."
                                     terragrunt state list | grep -F 'vsphere_tag.tag' || terragrunt state list

@@ -18,15 +18,15 @@
 # Tag (módulo tags_vcenter)
 # -----------------------------------------------------------------------------
 # Endereço: module.terraform_vsphere_tags["Tags_X"].vsphere_tag.tag
-# ID:       URN no vCenter
-#           Ex.: urn:vmomi:InventoryServiceTag:3021ded9-...:GLOBAL
+#
+# IMPORTANTE: o provider vsphere NÃO aceita o URN da URL no import.
+# Exige JSON com category_name + tag_name (iguais ao terragrunt.hcl):
 #
 #   terragrunt import \
-#     'module.terraform_vsphere_tags["Tags_Postgres"].vsphere_tag.tag' \
-#     'urn:vmomi:InventoryServiceTag:....:GLOBAL'
+#     'module.terraform_vsphere_tags["Tags_ambienteProd"].vsphere_tag.tag' \
+#     '{"category_name": "Ambiente", "tag_name": "Prod"}'
 #
-# Pré-requisito: a chave já deve existir no terragrunt.hcl do stack
-# (ex.: envs/prod/vsphere-516/tags_vcenter → Tags_Postgres).
+# No Jenkins: TagKey=Tags_ambienteProd | CategoryName=Ambiente | TagName=Prod
 #
 # Depois do import, rode plan no mesmo stack para reconciliar drift.
 # =============================================================================
