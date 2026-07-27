@@ -108,26 +108,27 @@ Isso NÃO cria/altera a VM no vCenter — só associa o recurso existente ao sta
                                 def vcenterHostRaw = (site == 'vsphere-516') ? env.TF_VAR_hostname_vcenter_516 : env.TF_VAR_hostname_vcenter_k
                                 env.VSPHERE_SERVER = vcenterHostRaw?.trim()?.replaceAll('(?i)^https?://', '')?.replaceAll('/.*', '') ?: ''
                                 env.VCENTER_SITE   = site
-                                env.IMPORT_VM_NAME = params.VmName.trim()
-                                env.IMPORT_VM_ID   = params.VmId.trim()
                                 // Legado em vários terragrunt.hcl (get_env sem default). Módulo linux não usa.
                                 env.TF_VAR_DISTRO  = 'unused'
 
-                                sh '''
-                                    . "${WORKSPACE}/pipelines/conf/vsphere-preflight.sh"
+                                def vmName = params.VmName.trim()
+                                def vmId   = params.VmId.trim()
+                                // Aspas obrigatórias no índice string do for_each: vm["TSBD31"]
+                                def importAddr = "vsphere_virtual_machine.vm[\"${vmName}\"]"
+
+                                echo "Executando: terragrunt import '${importAddr}' '${vmId}'"
+                                sh """
+                                    . "\${WORKSPACE}/pipelines/conf/vsphere-preflight.sh"
                                     vsphere_preflight
 
                                     echo "DEBUG: listando state antes do import..."
                                     terragrunt state list || true
 
-                                    # Endereço for_each: vsphere_virtual_machine.vm["NOME"]
-                                    ADDR="vsphere_virtual_machine.vm[\"${IMPORT_VM_NAME}\"]"
-                                    echo "Executando: terragrunt import ${ADDR} ${IMPORT_VM_ID}"
-                                    terragrunt import "${ADDR}" "${IMPORT_VM_ID}"
+                                    terragrunt import '${importAddr}' '${vmId}'
 
                                     echo "DEBUG: listando state após o import..."
-                                    terragrunt state list | grep -F "vsphere_virtual_machine.vm" || terragrunt state list
-                                '''
+                                    terragrunt state list | grep -F 'vsphere_virtual_machine.vm' || terragrunt state list
+                                """
                             }
                         }
                     }
