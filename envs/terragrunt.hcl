@@ -11,7 +11,7 @@ locals {
 }
 
 # Atributo que bloqueia a destruição deste módulo específico
-prevent_destroy = true
+#prevent_destroy = true
 
 generate "provider" {
   path      = "provider.tf"
