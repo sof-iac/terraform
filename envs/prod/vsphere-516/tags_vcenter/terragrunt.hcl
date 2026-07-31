@@ -153,6 +153,11 @@ inputs = {
       tag_name             = "SACPO"
       tag_description      = "Sistema de Acompanhamento da Carreira de Planejamento e Orçamento"
     } 
+    "Tags_NETBOX" = {
+      category_name        = "Aplicacao"
+      tag_name             = "Netbox"
+      tag_description      = "Ferramenta para IPAM e DCIM que documenta a infraestrutura de rede e data center"
+    } 
   }   
 }
 
