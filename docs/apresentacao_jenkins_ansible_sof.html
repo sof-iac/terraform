@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jenkins + Ansible + Puppet + Terraform na SOF — Onboarding</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a2332;
+      --text: #e8eef4;
+      --muted: #9aabbc;
+      --accent: #2dd4bf;
+      --accent2: #38bdf8;
+      --warn: #fbbf24;
+      --border: #2a3a4f;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      font-family: "Segoe UI", "IBM Plex Sans", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .deck { height: 100%; position: relative; overflow: hidden; }
+    .slide {
+      display: none;
+      height: 100%;
+      padding: 3.5rem 4.5rem 4.5rem;
+      flex-direction: column;
+      justify-content: center;
+      background:
+        radial-gradient(ellipse 80% 50% at 100% 0%, rgba(45, 212, 191, 0.08), transparent),
+        radial-gradient(ellipse 60% 40% at 0% 100%, rgba(56, 189, 248, 0.06), transparent),
+        var(--bg);
+    }
+    .slide.active { display: flex; }
+    .slide h1 {
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+      max-width: 18ch;
+    }
+    .slide.wide h1 { max-width: none; }
+    .slide h2 {
+      font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+      font-weight: 650;
+      margin-bottom: 1.25rem;
+      color: var(--accent);
+    }
+    .lead {
+      font-size: 1.2rem;
+      color: var(--muted);
+      max-width: 42rem;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+    ul { list-style: none; max-width: 52rem; }
+    li {
+      position: relative;
+      padding-left: 1.25rem;
+      margin: 0.55rem 0;
+      font-size: 1.05rem;
+      line-height: 1.45;
+      color: var(--text);
+    }
+    li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    li strong { color: #fff; font-weight: 650; }
+    .subtitle {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent2);
+      margin-bottom: 0.75rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 0.5rem;
+      max-width: 60rem;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.15rem;
+    }
+    .card h3 {
+      font-size: 0.95rem;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
+    .card p, .card li {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .card li { margin: 0.3rem 0; padding-left: 1rem; }
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 1rem 0 1.5rem;
+      font-size: 0.95rem;
+    }
+    .flow span {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+    }
+    .flow .arrow { color: var(--accent); border: none; background: none; padding: 0 0.2rem; font-size: 1.2rem; }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      max-width: 58rem;
+    }
+    @media (max-width: 800px) {
+      .slide { padding: 2rem 1.5rem 3.5rem; }
+      .two-col { grid-template-columns: 1fr; }
+    }
+    code, .mono {
+      font-family: "Cascadia Code", "Consolas", monospace;
+      font-size: 0.88em;
+      color: var(--accent2);
+    }
+    .note {
+      margin-top: 1.25rem;
+      padding: 0.75rem 1rem;
+      border-left: 3px solid var(--warn);
+      background: rgba(251, 191, 36, 0.08);
+      color: var(--muted);
+      font-size: 0.95rem;
+      max-width: 48rem;
+    }
+    .nav {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      z-index: 10;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .nav button {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .nav button:hover { border-color: var(--accent); color: var(--accent); }
+    .progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      background: var(--accent);
+      z-index: 20;
+      transition: width 0.2s ease;
+    }
+    .title-slide h1 { max-width: 16ch; font-size: clamp(2.2rem, 5vw, 3.4rem); }
+    .title-slide .lead { font-size: 1.3rem; }
+    kbd {
+      font-size: 0.75rem;
+      border: 1px solid var(--border);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="deck" id="deck">
+
+    <!-- 1 -->
+    <section class="slide title-slide active">
+      <p class="subtitle">Coinf · Onboarding</p>
+      <h1>Jenkins + Ansible + Puppet + Terraform na SOF</h1>
+      <p class="lead">Como criamos, configuramos e mantemos VMs e serviços de forma padronizada, auditável e repetível.</p>
+      <p class="lead" style="font-size:1rem;margin-top:-0.5rem">Visão de alto nível — Terraform (vCenter), Ansible (push) e Puppet (pull via <span class="mono">pmng01</span>).</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="slide wide">
+      <h2>Objetivo desta conversa</h2>
+      <ul>
+        <li>Entender o <strong>fluxo Terraform</strong>: Git (HCL) → Jenkins → Terragrunt → vCenter (criar/alterar VMs)</li>
+        <li>Entender o <strong>fluxo Ansible</strong>: Git → Jenkins → playbook → hosts</li>
+        <li>Entender o <strong>fluxo Puppet</strong>: Git → Jenkins → <span class="mono">pmng01</span> → agentes nas VMs</li>
+        <li>Conhecer os <strong>blocos</strong>: pipeline, playbook, role / classe Puppet, <span class="mono">terragrunt.hcl</span></li>
+        <li>Entender <strong>secrets</strong>: Jenkins Credentials + HashiCorp Vault (AppRole)</li>
+        <li>Ter um mapa rápido das <strong>áreas</strong> (Apache, WildFly, BDs, ELK…)</li>
+      </ul>
+      <p class="note">Não é um workshop hands-on — é o “mapa do território”.</p>
+    </section>
+
+    <!-- 3 -->
+    <section class="slide wide">
+      <h2>Por que Jenkins + Ansible?</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Padronizar</h3>
+          <p>Mesma configuração em testes, homologação e produção, com inventários separados.</p>
+        </div>
+        <div class="card">
+          <h3>Repetir com segurança</h3>
+          <p>Job parametrizado no Jenkins: quem, o quê, em quais hosts — com log e histórico.</p>
+        </div>
+        <div class="card">
+          <h3>IaC</h3>
+          <p>Mudança de config vira código no GitLab (PR → main), não “ajuste manual na VM”.</p>
+        </div>
+        <div class="card">
+          <h3>Idempotência</h3>
+          <p>Rodar de novo o playbook deve deixar o host no estado desejado, sem surpresas.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="slide wide">
+      <h2>Fluxo em uma linha</h2>
+      <div class="flow">
+        <span>GitLab (repo ansible)</span>
+        <span class="arrow">→</span>
+        <span>Jenkins (pipeline)</span>
+        <span class="arrow">→</span>
+        <span>ansible-playbook</span>
+        <span class="arrow">→</span>
+        <span>SSH user ansible</span>
+        <span class="arrow">→</span>
+        <span>VMs / serviços</span>
+      </div>
+      <ul>
+        <li><strong>GitLab</strong> guarda o código (playbooks, roles, inventários, Jenkinsfiles)</li>
+        <li><strong>Jenkins</strong> é o “botão operacional”: parâmetros + execução + logs</li>
+        <li><strong>Ansible</strong> aplica o estado desejado nos hosts do inventário</li>
+      </ul>
+    </section>
+
+    <!-- 5 -->
+    <section class="slide wide">
+      <h2>Estrutura do repositório</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>pipelines/</h3>
+          <p>Jenkinsfiles por domínio (<span class="mono">jppl_*</span>). Parâmetros e chamada ao playbook.</p>
+        </div>
+        <div class="card">
+          <h3>playbooks/</h3>
+          <p>Ponto de entrada Ansible: quais hosts, quais roles, ordem das tarefas.</p>
+        </div>
+        <div class="card">
+          <h3>roles/</h3>
+          <p>Unidade reutilizável: instalar Apache, configurar pg_hba, sudoers, ELK…</p>
+        </div>
+        <div class="card">
+          <h3>inventories/</h3>
+          <p>Quem são os hosts e grupos + <span class="mono">group_vars</span> / <span class="mono">host_vars</span>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section class="slide wide">
+      <h2>Conceitos: Pipeline → Playbook → Role</h2>
+      <div class="two-col">
+        <div>
+          <ul>
+            <li><strong>Pipeline (Jenkins)</strong>: UI com parâmetros (HOSTS, INVENTORY, ENVIRONMENT…). Roda no agente e chama Ansible.</li>
+            <li><strong>Playbook</strong>: “o que fazer nesta execução” — lista de roles e pré/pós tarefas.</li>
+            <li><strong>Role</strong>: “como configurar um componente” — tasks, templates, handlers.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Exemplo mental</h3>
+          <p style="margin-top:0.5rem;color:var(--muted);font-size:0.95rem;line-height:1.5">
+            Job <span class="mono">jppl_config_pg_hba</span><br/>
+            → playbook <span class="mono">config_pg_hba.yml</span><br/>
+            → role <span class="mono">pg_hba</span><br/>
+            → template <span class="mono">testes/sacpo.j2</span><br/>
+            → arquivo no host + reload
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section class="slide wide">
+      <h2>Inventário e escopo</h2>
+      <ul>
+        <li><strong>Inventário</strong> (<span class="mono">*.ini</span>): lista hosts e grupos (ex.: <span class="mono">postgres_testes_siop</span>)</li>
+        <li><strong>HOSTS / --limit</strong>: restringe a execução a um grupo ou host</li>
+        <li><strong>group_vars / host_vars</strong>: variáveis por grupo ou por máquina (sem misturar com a lógica da role)</li>
+      </ul>
+      <p class="note">Regra prática: o pipeline escolhe <em>inventário + limit</em>; a role não “adivinha” o ambiente — recebe parâmetros.</p>
+    </section>
+
+    <!-- 8 -->
+    <section class="slide wide">
+      <h2>Dentro de uma role</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>tasks/</h3>
+          <p>Passos (instalar pacote, copiar arquivo, reiniciar serviço).</p>
+        </div>
+        <div class="card">
+          <h3>templates/ (Jinja2)</h3>
+          <p>Arquivos gerados com variáveis — ex.: <span class="mono">pg_hba</span>, <span class="mono">httpd.conf</span>, unit systemd.</p>
+        </div>
+        <div class="card">
+          <h3>files/</h3>
+          <p>Arquivos estáticos ou scripts copiados como estão (ex.: script de install).</p>
+        </div>
+        <div class="card">
+          <h3>handlers/</h3>
+          <p>Ações reativas: “só restart se o conf mudou”.</p>
+        </div>
+        <div class="card">
+          <h3>defaults/ / vars/</h3>
+          <p>Valores padrão e variáveis da role.</p>
+        </div>
+        <div class="card">
+          <h3>scripts (shell)</h3>
+          <p>Quando a lógica é longa demais para tasks — ainda orquestrados pelo Ansible.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section class="slide wide">
+      <h2>Como o Jenkins executa (padrão SOF)</h2>
+      <ul>
+        <li>Credencial Jenkins <span class="mono">ansible_pass_text</span> → senha de <strong>sudo/become</strong></li>
+        <li>Comando tipicamente: <span class="mono">sudo -u ansible ansible-playbook …</span></li>
+        <li>Passa <span class="mono">ANSIBLE_PASSWD</span> / <span class="mono">ansible_sudo_pass</span> via <span class="mono">-e</span></li>
+        <li>SSH nos alvos com usuário <strong>ansible</strong> + chave</li>
+        <li>Parâmetros do job viram <span class="mono">-e</span> e <span class="mono">--limit</span></li>
+      </ul>
+      <p class="note">O agente Jenkins não “é root na VM alvo”: ele orquestra; quem muda o host é o Ansible como user ansible + become.</p>
+    </section>
+
+    <!-- 10 -->
+    <section class="slide wide">
+      <h2>Secrets: dois cofres</h2>
+      <div class="two-col">
+        <div class="card">
+          <h3>Jenkins Credentials</h3>
+          <ul>
+            <li>Senhas e chaves usadas pelo job</li>
+            <li>Ex.: <span class="mono">ansible_pass_text</span>, chaves SSH</li>
+            <li>Injetadas no pipeline (<span class="mono">credentials()</span>)</li>
+            <li>Não vão para o Git</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>HashiCorp Vault</h3>
+          <ul>
+            <li>Segredos de serviço / rotação</li>
+            <li>URL: <span class="mono">vault.app.sof.intra</span></li>
+            <li>Paths tipo <span class="mono">secrets/servicos/…</span></li>
+            <li>Jenkins acessa via <strong>AppRole</strong></li>
+          </ul>
+        </div>
+      </div>
+      <p class="note" style="margin-top:1rem">Nunca commitamos senhas em playbooks, inventários ou templates.</p>
+    </section>
+
+    <!-- 11 -->
+    <section class="slide wide">
+      <h2>AppRole: Jenkins ↔ Vault</h2>
+      <ul>
+        <li><strong>AppRole</strong> = identidade de máquina/aplicação no Vault (não é login de pessoa)</li>
+        <li>No Jenkins: credencial <span class="mono">vault_approle_jenkins</span> (role_id + secret_id)</li>
+        <li>Pipeline usa o plugin Vault (<span class="mono">withVault</span>) e lê só o path necessário</li>
+        <li>Exemplo: rotação de senha/chave do user <strong>ansible</strong> nos hosts</li>
+      </ul>
+      <div class="flow" style="margin-top:1.25rem">
+        <span>Job Jenkins</span>
+        <span class="arrow">→</span>
+        <span>AppRole</span>
+        <span class="arrow">→</span>
+        <span>Vault entrega secret</span>
+        <span class="arrow">→</span>
+        <span>Ansible aplica no host</span>
+      </div>
+      <p class="lead" style="font-size:0.95rem;margin:0">Em alguns jobs (ex. GitLab Runner), o token ainda pode ser passado como parâmetro — o padrão preferido para integração Jenkins é AppRole.</p>
+    </section>
+
+    <!-- 12 -->
+    <section class="slide wide">
+      <h2>SCM: GitLab → Jenkins</h2>
+      <ul>
+        <li>O código mora no <strong>GitLab</strong> (repo ansible)</li>
+        <li>O job Jenkins é configurado com <strong>SCM Git</strong> apontando para esse repositório</li>
+        <li>Na prática: o workspace do job = checkout do branch (em geral <strong>main</strong> para produção)</li>
+        <li>O Jenkinsfile fica em <span class="mono">pipelines/&lt;área&gt;/jppl_*</span> e é referenciado no job (“Pipeline script from SCM”)</li>
+        <li>Fluxo de mudança: branch → Merge Request → <strong>main</strong> → próximo run do job já usa o código novo</li>
+      </ul>
+      <p class="note">Jenkins não inventa a config: ele executa o que está versionado no GitLab.</p>
+    </section>
+
+    <!-- 13 -->
+    <section class="slide wide">
+      <h2>Ciclo de vida de uma mudança</h2>
+      <div class="flow">
+        <span>1. Alterar role/template</span>
+        <span class="arrow">→</span>
+        <span>2. MR no GitLab</span>
+        <span class="arrow">→</span>
+        <span>3. Merge em main</span>
+        <span class="arrow">→</span>
+        <span>4. Rodar pipeline</span>
+        <span class="arrow">→</span>
+        <span>5. Conferir hosts</span>
+      </div>
+      <ul>
+        <li>Prefira dry-run / ambiente de testes antes de produção</li>
+        <li>Escolha o <strong>limit</strong> certo (grupo ou host)</li>
+        <li>Leia o log do Jenkins — falha de SSH, sudo ou template aparece ali</li>
+      </ul>
+    </section>
+
+    <!-- 14 -->
+    <section class="slide wide">
+      <h2>Overview por áreas (1/2)</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Common / Linux</h3>
+          <p>Baseline da VM: DNS, sudoers, pacotes, proxy, repos, SSH…</p>
+        </div>
+        <div class="card">
+          <h3>Apache</h3>
+          <p>Instalação e config de virtual hosts / HTTPS.</p>
+        </div>
+        <div class="card">
+          <h3>WildFly / JBoss / SIOP</h3>
+          <p>Application server e stacks das apps Java (ex. SIOP).</p>
+        </div>
+        <div class="card">
+          <h3>Bancos</h3>
+          <p>PostgreSQL (install, pg_hba, grants), MariaDB — pipelines em <span class="mono">postgresql/</span>, <span class="mono">mariadb/</span>.</p>
+        </div>
+        <div class="card">
+          <h3>ELK</h3>
+          <p>Elasticsearch, Logstash, Kibana, Filebeat, ILM e índices.</p>
+        </div>
+        <div class="card">
+          <h3>ALM</h3>
+          <p>GitLab, GitLab Runner, integrações de entrega.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15 -->
+    <section class="slide wide">
+      <h2>Overview por áreas (2/2)</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Jenkins</h3>
+          <p>Instalação/config do próprio Jenkins (meta: o orquestrador também é código).</p>
+        </div>
+        <div class="card">
+          <h3>vCenter / Terraform</h3>
+          <p>Provisionamento de VMs via HCL + Jenkins (<span class="mono">jppl_criaVM_*</span>); templates Packer / VMtools.</p>
+        </div>
+        <div class="card">
+          <h3>K8s / RKE2 / Portworx</h3>
+          <p>Clusters Kubernetes (lab/prod) e storage.</p>
+        </div>
+        <div class="card">
+          <h3>Repo / Mirror</h3>
+          <p>Repositórios locais de pacotes (Alma, etc.).</p>
+        </div>
+        <div class="card">
+          <h3>Apps pontuais</h3>
+          <p>GLPI, OpenVAS, SACPO, PHP apps, ETLs, certificados…</p>
+        </div>
+        <div class="card">
+          <h3>Segurança / Vault</h3>
+          <p>Rotação de credenciais ansible, jobs auxiliares de Vault.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 16 -->
+    <section class="slide wide">
+      <h2>Três camadas no ciclo de vida da VM</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Terraform (provisionar)</h3>
+          <p>Cria/altera a <strong>máquina no vCenter</strong> (CPU, RAM, disco, rede, tags) a partir do HCL.</p>
+        </div>
+        <div class="card">
+          <h3>Ansible (push)</h3>
+          <p>Jenkins roda o playbook e <strong>empurra</strong> a config nos hosts do inventário naquela execução.</p>
+        </div>
+        <div class="card">
+          <h3>Puppet (pull)</h3>
+          <p>Jenkins atualiza o <strong>servidor Puppet</strong> (<span class="mono">pmng01</span>); as VMs <strong>buscam</strong> a config no agent run.</p>
+        </div>
+      </div>
+      <p class="note" style="margin-top:1.25rem">IaC em todos: código no Git. Terraform fala com o <strong>vCenter</strong>; Ansible/Puppet falam com o <strong>SO/serviços</strong> dentro da VM.</p>
+    </section>
+
+    <!-- 16b Terraform -->
+    <section class="slide wide">
+      <h2>Terraform: o que é (em uma frase)</h2>
+      <p class="lead">O arquivo <span class="mono">terragrunt.hcl</span> descreve o <strong>estado desejado</strong> da VM no vSphere. O Jenkins aplica essa declaração no vCenter via Terragrunt/Terraform.</p>
+      <ul>
+        <li><strong>Repo</strong> <span class="mono">infra/terraform</span>: stacks em <span class="mono">envs/&lt;ambiente&gt;/&lt;site&gt;/vms-*</span></li>
+        <li><strong>HCL</strong>: nome, template, CPU, memória, IP, discos, tags — o “contrato” da VM</li>
+        <li><strong>State</strong> no PostgreSQL: Terraform sabe o que já existe e o que precisa criar ou mudar</li>
+        <li><strong>Não substitui</strong> Ansible/Puppet: depois da VM existir, a config do SO continua nos outros fluxos</li>
+      </ul>
+    </section>
+
+    <!-- 16c Terraform fluxo -->
+    <section class="slide wide">
+      <h2>Terraform: fluxo em uma linha</h2>
+      <div class="flow">
+        <span>GitLab (repo terraform)</span>
+        <span class="arrow">→</span>
+        <span>MR → main</span>
+        <span class="arrow">→</span>
+        <span>Jenkins <span class="mono">jppl_criaVM_*</span></span>
+        <span class="arrow">→</span>
+        <span>terragrunt plan / apply</span>
+        <span class="arrow">→</span>
+        <span>vCenter (API)</span>
+      </div>
+      <ul>
+        <li>Usuário altera o <span class="mono">terragrunt.hcl</span> do grupo (ex.: <span class="mono">envs/test/vsphere-516/vms-postgres</span>)</li>
+        <li>Merge em <strong>main</strong>; job Jenkins faz checkout e usa credenciais do vCenter (+ Vault)</li>
+        <li><strong>Plan</strong> mostra o que será criado/alterado; em prod há <strong>aprovação</strong> antes do apply</li>
+        <li><strong>Apply</strong> clona o template e ajusta recursos no vCenter conforme o HCL</li>
+      </ul>
+      <p class="note">Parâmetros do job: Ambiente, Site (<span class="mono">vsphere-516</span> / <span class="mono">vsphere-k</span>), Grupo (<span class="mono">vms-*</span>). O código da VM está no Git — não se “clica” a VM na mão no fluxo padrão.</p>
+    </section>
+
+    <!-- 16d Terraform o que mudar -->
+    <section class="slide wide">
+      <h2>Terraform: o que se muda no Git</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>terragrunt.hcl</h3>
+          <p>Mapa <span class="mono">vm = { … }</span>: template, CPU/RAM, rede/IP, discos, tags, annotation.</p>
+        </div>
+        <div class="card">
+          <h3>modules/vsphere/vm/…</h3>
+          <p>Lógica reutilizável (provider vsphere). Em geral <strong>não</strong> se edita por VM — só o stack em <span class="mono">envs/</span>.</p>
+        </div>
+        <div class="card">
+          <h3>pipelines/linux|windows</h3>
+          <p>Jobs <span class="mono">jppl_criaVM_*</span>, tags, import — orquestram plan/apply no Jenkins.</p>
+        </div>
+        <div class="card">
+          <h3>Plan → Apply</h3>
+          <p>Nova VM no HCL → create; mudar CPU/disco no HCL → update; remover do HCL → destroy (cuidado em prod).</p>
+        </div>
+      </div>
+      <p class="note">Regra: edite o HCL → merge → rode o pipeline do stack certo. O Jenkins aplica no vCenter; o tfstate no Postgres registra o resultado.</p>
+    </section>
+
+    <!-- 17 -->
+    <section class="slide wide">
+      <h2>Puppet: fluxo em uma linha</h2>
+      <div class="flow">
+        <span>Gitea (repo puppet)</span>
+        <span class="arrow">→</span>
+        <span>Jenkins <span class="mono">jppl_SCM_*</span></span>
+        <span class="arrow">→</span>
+        <span>Ansible sync → <span class="mono">pmng01</span></span>
+        <span class="arrow">→</span>
+        <span>Puppet agent nas VMs</span>
+      </div>
+      <ul>
+        <li>Usuário altera a <strong>classe</strong> no Git (<span class="mono">sof/classes/&lt;classe&gt;/puppet/</span>)</li>
+        <li>Pipeline Jenkins (<span class="mono">pipelines/puppet/…/jppl_SCM_classes_puppet</span>) publica no servidor</li>
+        <li>Playbook <span class="mono">configura_puppet.yml</span> copia o módulo para <span class="mono">/opt/puppetlabs/puppet/modules/…</span> no <strong>pmng01</strong></li>
+        <li>Hosts com a classe aplicada recebem a config no próximo ciclo do <strong>puppet agent</strong></li>
+      </ul>
+    </section>
+
+    <!-- 18 -->
+    <section class="slide wide">
+      <h2>Puppet: o que muda no Git</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>manifests/</h3>
+          <p>Classe Puppet (<span class="mono">init.pp</span>) — o “o quê” configurar.</p>
+        </div>
+        <div class="card">
+          <h3>templates/ (.erb)</h3>
+          <p>Arquivos gerados com parâmetros (ex.: <span class="mono">httpd.conf.erb</span>).</p>
+        </div>
+        <div class="card">
+          <h3>files/</h3>
+          <p>Arquivos estáticos copiados para o host.</p>
+        </div>
+        <div class="card">
+          <h3>Pipeline + playbook</h3>
+          <p><span class="mono">jppl_SCM_*</span> + <span class="mono">configura_puppet.yml</span> + inventário <span class="mono">puppet.ini</span> (host <span class="mono">pmng01</span>).</p>
+        </div>
+      </div>
+      <p class="note">Regra: edite no Git → rode o job da classe → aguarde o agent nas VMs. Não edite o módulo direto no <span class="mono">pmng01</span>.</p>
+    </section>
+
+    <!-- 19 -->
+    <section class="slide wide">
+      <h2>O que um novato deve lembrar</h2>
+      <ul>
+        <li><strong>Não edite config “só no servidor”</strong> se ela é gerida por role/classe/HCL — a próxima execução sobrescreve</li>
+        <li><strong>Mude no Git</strong>, valide no Jenkins, aplique com limit / classe / stack conscientes</li>
+        <li><strong>Terraform</strong> cria/altera a VM no <strong>vCenter</strong>; <strong>Ansible</strong> aplica na hora nos hosts; <strong>Puppet</strong> via <span class="mono">pmng01</span> + agent</li>
+        <li><strong>Secrets</strong> ficam no Jenkins/Vault — nunca no repositório</li>
+        <li>Em dúvida: rode primeiro em <strong>testes</strong>, leia o log (e o plan), peça revisão</li>
+      </ul>
+    </section>
+
+    <!-- 20 -->
+    <section class="slide title-slide">
+      <p class="subtitle">Próximos passos</p>
+      <h1>Explorar e perguntar</h1>
+      <ul style="margin-top:1rem">
+        <li>Ler <span class="mono">readme.md</span> na raiz do repo ansible / terraform</li>
+        <li>Terraform: <span class="mono">envs/…/vms-*</span> + <span class="mono">pipelines/linux/jppl_criaVM_*</span></li>
+        <li>Ansible: abrir um pipeline em <span class="mono">pipelines/</span> e a role</li>
+        <li>Puppet: abrir <span class="mono">sof/classes/&lt;classe&gt;/</span> + <span class="mono">pipelines/puppet/…</span></li>
+        <li>Dúvidas: equipe DevOps / Coinf</li>
+      </ul>
+      <p class="lead" style="margin-top:2rem">Obrigado.</p>
+    </section>
+
+  </div>
+
+  <div class="nav">
+    <span id="counter">1 / 20</span>
+    <button type="button" id="prev" aria-label="Anterior">‹</button>
+    <button type="button" id="next" aria-label="Próximo">›</button>
+    <span><kbd>←</kbd> <kbd>→</kbd></span>
+  </div>
+
+  <script>
+    (function () {
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      let i = 0;
+      const counter = document.getElementById('counter');
+      const progress = document.getElementById('progress');
+
+      function show(n) {
+        i = (n + slides.length) % slides.length;
+        slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+        counter.textContent = (i + 1) + ' / ' + slides.length;
+        progress.style.width = ((i + 1) / slides.length * 100) + '%';
+      }
+
+      document.getElementById('prev').onclick = () => show(i - 1);
+      document.getElementById('next').onclick = () => show(i + 1);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); show(i + 1); }
+        if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(i - 1); }
+        if (e.key === 'Home') show(0);
+        if (e.key === 'End') show(slides.length - 1);
+      });
+      show(0);
+    })();
+  </script>
+</body>
+</html>
