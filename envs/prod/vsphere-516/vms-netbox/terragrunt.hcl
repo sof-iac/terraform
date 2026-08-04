@@ -16,7 +16,7 @@ inputs = {
     # Definição VM para o servidor Netbox de produção
     "PHIP" = {
       template          = "default-template-ubuntu2404-base"
-      instances         = 1
+      instances         = 2
       vmstartcount      = 1
       datacenter        = "SOF"
       datastore_cluster = "Purestorage_Replicado"
