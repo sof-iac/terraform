@@ -157,6 +157,11 @@ inputs = {
       category_name        = "Aplicacao"
       tag_name             = "Netbox"
       tag_description      = "Ferramenta para IPAM e DCIM que documenta a infraestrutura de rede e data center"
+    },
+    "Tags_thiagofn" = {
+      category_name        = "Responsavel"
+      tag_name             = "Thiago Fernandes Neves"
+      tag_description      = "Owner do objeto/servico"
     }
   }   
 }
