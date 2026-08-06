@@ -48,7 +48,7 @@ inputs = {
       gateway           = "192.168.30.1"
       # Condicionais para aplicar CPU e memória customizadas
       cpu               = name == "TSAP07" ? 8 : 4
-      memory            = name == "TSAP07" ? 16384 : 13312
+      memory            = name == "TSAP07" ? 24576 : 13312
       local_adminpass   = local.TF_VAR_VM_PASS
       distro            = local.TF_VAR_DISTRO
       network_type      = ["vmxnet3"]
