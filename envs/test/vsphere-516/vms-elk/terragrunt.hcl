@@ -40,7 +40,7 @@ inputs = {
         }
 
         # Adicionando discos adicionais
-      template_disk_sizes = [21, 100, 7] 
+      template_disk_sizes = [21, 200, 7] 
       template_disk_io_reservation = [0, 1, 0]
       data_disk = {}
       }
