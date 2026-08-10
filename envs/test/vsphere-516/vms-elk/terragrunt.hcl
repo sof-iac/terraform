@@ -29,7 +29,7 @@ inputs = {
         mask              = ["24"]
         gateway           = "192.168.30.1"
         cpu               = 2
-        memory            = 8192
+        memory            = 16768
         local_adminpass   = "${local.TF_VAR_VM_PASS}"
         distro            = "${local.TF_VAR_DISTRO}"
         network_type      = ["vmxnet3"]
@@ -37,10 +37,12 @@ inputs = {
         tags = {
           "Origem"    = "Terraform"
           "Ambiente"  = "Test"
+          "Aplicacao" = "ELK"
+          "Responsavel" = "Augusto Cesar Cantanhede"
         }
 
         # Adicionando discos adicionais
-      template_disk_sizes = [21, 200, 7] 
+      template_disk_sizes = [21, 100, 7] 
       template_disk_io_reservation = [0, 1, 0]
       data_disk = {}
       }
