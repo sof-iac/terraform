@@ -39,6 +39,9 @@ inputs = {
     "category_k8s_storage" = {
       category_name        = "k8s_storage"
       category_description = "Tipo Storage Kubernetes"
+      # Já existia no vCenter assim; API não permite remover associable_types
+      cardinality      = "SINGLE"
+      associable_types = ["Datacenter", "Datastore", "Folder"]
       },
     "category_k8s_zone" = {
       category_name        = "k8s_zone"
