@@ -3,7 +3,7 @@ pipeline {
 
     parameters {
         choice(name: 'Diretorio', choices: ['envs'], description: 'Diretório raiz')
-        choice(name: 'Ambiente', choices: ['base', 'lab', 'prod', 'test'], description: 'Ambiente do stack')
+        choice(name: 'Ambiente', choices: ['prod', 'base', 'lab', 'test'], description: 'Ambiente do stack')
         choice(name: 'Site', choices: ['vsphere-516', 'vsphere-k'], description: 'Site vCenter')
         string(name: 'Grupo', defaultValue: 'category_vcenter', description: 'Pasta do stack (ex.: category_vcenter)')
         string(name: 'CategoryKey', defaultValue: '', description: 'Chave no terragrunt.hcl (for_each). Ex.: category_ambiente')
