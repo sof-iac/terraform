@@ -153,6 +153,26 @@ inputs = {
       tag_name             = "SACPO"
       tag_description      = "Sistema de Acompanhamento da Carreira de Planejamento e Orçamento"
     },
+    "Tags_Cluster_Master" = {
+      category_name        = "Cluster"
+      tag_name             = "Master"
+      tag_description      = "Master do Cluster"
+    },
+    "Tags_Cluster_Kibana" = {
+      category_name        = "Cluster"
+      tag_name             = "Kibana"
+      tag_description      = "Cluster ou Nó Kibana"
+    },    
+    "Tags_Cluster_ingest" = {
+      category_name        = "Cluster"
+      tag_name             = "Ingest"
+      tag_description      = "Cluster Ingest ou de Dados"
+    },
+    "Tags_Cluster_Logstash" = {
+      category_name        = "Cluster"
+      tag_name             = "Logstash"
+      tag_description      = "Cluster ou Nó Logstash"
+    },
     "Tags_NETBOX" = {
       category_name        = "Aplicacao"
       tag_name             = "Netbox"

@@ -28,6 +28,10 @@ inputs = {
       category_name        = "Aplicacao"
       category_description = "A qual aplicacao se destina"
       },
+    "category_cluster" = {
+      category_name        = "Cluster"
+      category_description = "A qual cluster ou nó se destina"
+      },      
     "category_k8s_region" = {
       category_name        = "k8s_region"
       category_description = "Região Kubernetes"
