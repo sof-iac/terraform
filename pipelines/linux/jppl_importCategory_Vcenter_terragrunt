@@ -1,0 +1,180 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(name: 'Diretorio', choices: ['envs'], description: 'Diretório raiz')
+        choice(name: 'Ambiente', choices: ['base', 'lab', 'prod', 'test'], description: 'Ambiente do stack')
+        choice(name: 'Site', choices: ['vsphere-516', 'vsphere-k'], description: 'Site vCenter')
+        string(name: 'Grupo', defaultValue: 'category_vcenter', description: 'Pasta do stack (ex.: category_vcenter)')
+        string(name: 'CategoryKey', defaultValue: '', description: 'Chave no terragrunt.hcl (for_each). Ex.: category_ambiente')
+        string(name: 'CategoryName', defaultValue: '', description: 'Nome da categoria no vCenter / HCL (category_name). Ex.: Ambiente')
+        booleanParam(name: 'RodarPlanAposImport', defaultValue: true, description: 'Após o import, executa terragrunt plan para ver drift')
+        booleanParam(name: 'PularAprovacao', defaultValue: false, description: 'Se true, não pede confirmação antes do import')
+    }
+
+    environment {
+        VAULT_ADDR = 'https://vault.app.sof.intra'
+        TF_IN_AUTOMATION = 'true'
+        PG_BACKEND_CREDENTIAL_ID = 'terraform-pg-backend'
+    }
+
+    stages {
+        stage('Validar parâmetros') {
+            steps {
+                script {
+                    env.STACK_DIR = [
+                        params.Diretorio,
+                        params.Ambiente,
+                        params.Site,
+                        params.Grupo
+                    ].collect { (it ?: '').toString().trim() }.join('/')
+
+                    if (!params.CategoryKey?.trim()) {
+                        error('Parâmetro CategoryKey é obrigatório (chave no terragrunt.hcl, ex.: category_ambiente).')
+                    }
+                    if (!params.CategoryName?.trim()) {
+                        error('Parâmetro CategoryName é obrigatório (ex.: Ambiente).')
+                    }
+                    if (!fileExists(env.STACK_DIR)) {
+                        error("Stack não encontrado: ${env.STACK_DIR}")
+                    }
+                    echo "Import destino: ${env.STACK_DIR}"
+                    echo "Recurso: module.terraform_vsphere_category[\"${params.CategoryKey.trim()}\"].vsphere_tag_category.category"
+                    echo "Import ID (nome no vCenter): ${params.CategoryName.trim()}"
+                }
+            }
+        }
+
+        stage('Prepare Environment') {
+            steps {
+                script {
+                    sh 'cp pipelines/conf/terragrunt.hcl envs/ || true'
+                }
+            }
+        }
+
+        stage('Aprovação do import') {
+            when {
+                expression { return !params.PularAprovacao }
+            }
+            steps {
+                script {
+                    timeout(time: 60, unit: 'MINUTES') {
+                        input(
+                            message: """Confirma IMPORTAR a category no tfstate (PostgreSQL)?
+
+Ambiente: ${params.Ambiente}
+Site: ${params.Site}
+Grupo: ${params.Grupo}
+CategoryKey (HCL): ${params.CategoryKey}
+CategoryName (vCenter): ${params.CategoryName}
+
+Isso NÃO cria/altera a category no vCenter — só associa o recurso existente ao state.
+O provider vsphere importa category pelo NOME (não pelo URN).""",
+                            ok: 'Aprovar e importar',
+                            submitterParameter: 'APROVADO_POR'
+                        )
+                    }
+                    echo "Import autorizado (submitter: ${params.APROVADO_POR ?: '—'}). Prosseguindo."
+                }
+            }
+        }
+
+        stage('Terragrunt Import') {
+            steps {
+                script {
+                    dir(env.STACK_DIR) {
+                        def secretsVcenter = [
+                            [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
+                                [envVar: 'passwd_vcenter', vaultKey: 'password']]]
+                        ]
+                        def vaultConfiguration = [vaultUrl: 'https://vault.app.sof.intra',
+                            vaultCredentialId: 'vault_approle_jenkins',
+                            engineVersion: 2]
+                        withCredentials([
+                            usernamePassword(credentialsId: env.PG_BACKEND_CREDENTIAL_ID,
+                                usernameVariable: 'TF_VAR_backend_pg_user',
+                                passwordVariable: 'TF_VAR_backend_pg_passwd'),
+                            string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'TF_VAR_hostname_vcenter_516'),
+                            string(credentialsId: 'TF_VAR_username_vcenter_516', variable: 'TF_VAR_username_vcenter_516'),
+                            string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'TF_VAR_password_vcenter_516'),
+                            string(credentialsId: 'TF_VAR_hostname_vcenter_k', variable: 'TF_VAR_hostname_vcenter_k'),
+                            string(credentialsId: 'TF_VAR_username_vcenter_k', variable: 'TF_VAR_username_vcenter_k'),
+                            string(credentialsId: 'TF_VAR_password_vcenter_k', variable: 'TF_VAR_password_vcenter_k')
+                        ]) {
+                            withVault([configuration: vaultConfiguration, vaultSecrets: secretsVcenter]) {
+                                def site = params.Site.toString().trim()
+                                def vcenterHostRaw = (site == 'vsphere-516') ? env.TF_VAR_hostname_vcenter_516 : env.TF_VAR_hostname_vcenter_k
+                                env.VSPHERE_SERVER = vcenterHostRaw?.trim()?.replaceAll('(?i)^https?://', '')?.replaceAll('/.*', '') ?: ''
+                                env.VCENTER_SITE   = site
+
+                                def categoryKey  = params.CategoryKey.trim()
+                                def categoryName = params.CategoryName.trim()
+                                def importAddr   = "module.terraform_vsphere_category[\"${categoryKey}\"].vsphere_tag_category.category"
+                                // Provider importa category pelo nome — ver docs vsphere_tag_category Import
+                                def importId     = categoryName
+
+                                echo "Executando: terragrunt import '${importAddr}' '${importId}'"
+                                sh """
+                                    . "\${WORKSPACE}/pipelines/conf/vsphere-preflight.sh"
+                                    vsphere_preflight
+
+                                    echo "DEBUG: listando state antes do import..."
+                                    terragrunt state list || true
+
+                                    terragrunt import '${importAddr}' '${importId}'
+
+                                    echo "DEBUG: listando state após o import..."
+                                    terragrunt state list | grep -F 'vsphere_tag_category.category' || terragrunt state list
+                                """
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Terragrunt Plan (pós-import)') {
+            when {
+                expression { return params.RodarPlanAposImport }
+            }
+            steps {
+                script {
+                    dir(env.STACK_DIR) {
+                        def secretsVcenter = [
+                            [path: 'secrets/servicos/user_svc_jenkins', engineVersion: 2, secretValues: [
+                                [envVar: 'passwd_vcenter', vaultKey: 'password']]]
+                        ]
+                        def vaultConfiguration = [vaultUrl: 'https://vault.app.sof.intra',
+                            vaultCredentialId: 'vault_approle_jenkins',
+                            engineVersion: 2]
+                        withCredentials([
+                            usernamePassword(credentialsId: env.PG_BACKEND_CREDENTIAL_ID,
+                                usernameVariable: 'TF_VAR_backend_pg_user',
+                                passwordVariable: 'TF_VAR_backend_pg_passwd'),
+                            string(credentialsId: 'TF_VAR_hostname_vcenter_516', variable: 'TF_VAR_hostname_vcenter_516'),
+                            string(credentialsId: 'TF_VAR_username_vcenter_516', variable: 'TF_VAR_username_vcenter_516'),
+                            string(credentialsId: 'TF_VAR_password_vcenter_516', variable: 'TF_VAR_password_vcenter_516'),
+                            string(credentialsId: 'TF_VAR_hostname_vcenter_k', variable: 'TF_VAR_hostname_vcenter_k'),
+                            string(credentialsId: 'TF_VAR_username_vcenter_k', variable: 'TF_VAR_username_vcenter_k'),
+                            string(credentialsId: 'TF_VAR_password_vcenter_k', variable: 'TF_VAR_password_vcenter_k')
+                        ]) {
+                            withVault([configuration: vaultConfiguration, vaultSecrets: secretsVcenter]) {
+                                def site = params.Site.toString().trim()
+                                def vcenterHostRaw = (site == 'vsphere-516') ? env.TF_VAR_hostname_vcenter_516 : env.TF_VAR_hostname_vcenter_k
+                                env.VSPHERE_SERVER = vcenterHostRaw?.trim()?.replaceAll('(?i)^https?://', '')?.replaceAll('/.*', '') ?: ''
+                                env.VCENTER_SITE   = site
+                                sh '''
+                                    . "${WORKSPACE}/pipelines/conf/vsphere-preflight.sh"
+                                    vsphere_preflight
+                                    echo "Plan pós-import: revise drift (cardinality/description). NÃO aplique destroy/recreate sem analisar."
+                                    terragrunt plan -lock=true
+                                '''
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
